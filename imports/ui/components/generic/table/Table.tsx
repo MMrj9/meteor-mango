@@ -1,22 +1,53 @@
-import React from 'react';
-import { Box, Table, Thead, Tbody, Tr, Th, Td, Link } from '@chakra-ui/react';
-import { Link as RouterLink } from 'react-router-dom';
+import React from 'react'
+import {
+  Box,
+  Table,
+  Text,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
+  Link,
+  Button,
+  Icon,
+  Flex,
+  Heading,
+} from '@chakra-ui/react'
+import { Link as RouterLink } from 'react-router-dom'
+import _ from 'lodash'
+import { AddIcon } from '@chakra-ui/icons'
 
 interface GenericTableProps<T> {
-  data: any[];
-  columns: { key: keyof T; label: string }[];
+  data: any[]
+  columns: { key: keyof T; label: string }[]
+  collectionName: string
 }
 
-const GenericTable = <T extends Record<string, any>>({ data, columns }: GenericTableProps<T>) => {
-  console.log(data)
+const GenericTable = <T extends Record<string, any>>({
+  data,
+  columns,
+  collectionName,
+}: GenericTableProps<T>) => {
   return (
     <Box>
+      <Heading variant="" textTransform="uppercase">
+        {collectionName}
+      </Heading>
       <Table variant="simple">
         <Thead>
           <Tr>
             {columns.map((column) => (
               <Th key={column.key as string}>{column.label}</Th>
             ))}
+            <Th>
+              <Button as={RouterLink} to={`add`} colorScheme="teal" size="sm">
+                <Flex align="center">
+                  <Icon as={AddIcon} mr={2} />
+                  <Text>Add</Text>
+                </Flex>
+              </Button>
+            </Th>
           </Tr>
         </Thead>
         <Tbody>
@@ -27,11 +58,11 @@ const GenericTable = <T extends Record<string, any>>({ data, columns }: GenericT
                   {columnIndex === 0 ? (
                     // Assuming the first column is the model ID
                     <Link as={RouterLink} to={`edit/${item._id}`}>
-                      {item[column.key]}
+                      {_.get(item, column.key)}
                     </Link>
                   ) : (
                     // Render other columns normally
-                    item[column.key]
+                    _.get(item, column.key)
                   )}
                 </Td>
               ))}
@@ -40,7 +71,7 @@ const GenericTable = <T extends Record<string, any>>({ data, columns }: GenericT
         </Tbody>
       </Table>
     </Box>
-  );
-};
+  )
+}
 
-export default GenericTable;
+export default GenericTable

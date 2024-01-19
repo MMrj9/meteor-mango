@@ -25,16 +25,13 @@
     "baseUrl": ".",
     "paths": {
       /* Support absolute /imports/* with a leading '/' */
-      "/*": ["*"]
+      "/*": ["*"],
     },
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "types": ["node", "mocha"],
     "esModuleInterop": true,
-    "preserveSymlinks": true
+    "preserveSymlinks": true,
   },
-  "exclude": [
-    "./.meteor/**",
-    "./packages/**"
-  ]
+  "exclude": ["./.meteor/**", "./packages/**"],
 }

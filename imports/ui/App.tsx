@@ -1,64 +1,79 @@
-import React, { ReactElement } from 'react';
-import { useNavigate, Link as RouterLink } from 'react-router-dom';
-import { Grid, GridItem, Button, Flex, Spacer, Text } from '@chakra-ui/react';
-import { HamburgerIcon } from '@chakra-ui/icons';
-import { Meteor } from 'meteor/meteor';
-
-interface MenuItem {
-  label: string;
-  icon: ReactElement;
-  path: string;
-}
-
-const MenuItems: MenuItem[] = [
-  {
-    label: "Main",
-    icon: <HamburgerIcon />,
-    path: "/"
-  }
-];
+import React, { useState } from 'react'
+import { Grid, GridItem, Button, Flex, Spacer, Text } from '@chakra-ui/react'
+import { HamburgerIcon } from '@chakra-ui/icons'
+import { Meteor } from 'meteor/meteor'
+import { useNavigate, Link as RouterLink } from 'react-router-dom'
+import MainNav from './components/Nav/MainNav'
 
 const App: React.FC = (props: any) => {
-  const navigate = useNavigate();
-  const isLoggedIn = !!Meteor.userId(); // Check if there is a logged-in user
-  const username = Meteor.user()?.username; // Get the username if available
+  const navigate = useNavigate()
+  const isLoggedIn = !!Meteor.userId()
+  const username = Meteor.user()?.username
+  const [isSidebarOpen, setSidebarOpen] = useState(false)
 
   const handleLogout = () => {
     Meteor.logout(() => {
-      navigate('/login');
-    });
-  };
+      navigate('/login')
+    })
+  }
 
   return (
     <Grid
-      templateAreas={`"header header"
-                  "nav main"
-                  "nav footer"`}
-      gridTemplateRows={'50px 1fr 30px'}
-      gridTemplateColumns={'150px 1fr'}
-      h='200px'
-      gap='1'
-      fontWeight='bold'
-      bg={"white"}
+      templateColumns="auto 1fr"
+      templateRows="50px 1fr 30px"
+      templateAreas={`"button header"
+                      "main main"
+                      "footer footer"`}
+      h="100vh"
+      gap="1"
+      fontWeight="bold"
+      bg={'white'}
     >
-      <GridItem pl='2' area={'header'}>
+      {/* Button Section */}
+      <GridItem pl="2" area={'button'} textAlign="left">
+        {!isSidebarOpen && (
+          <Button onClick={() => setSidebarOpen(true)} variant="link">
+            <HamburgerIcon boxSize={6} />
+          </Button>
+        )}
+      </GridItem>
+
+      {/* Header Section */}
+      <GridItem pl="2" area={'header'}>
         <Flex align="center" justify="flex-end">
           <Flex></Flex>
           <Spacer />
           <Flex alignItems={'center'}>
+            {/* ... (rest of the header content) */}
             {isLoggedIn ? (
               <>
-                <Text mr="2">Welcome, {username}</Text>
-                <Button onClick={handleLogout} colorScheme="teal" variant="outline" ml="2">
+                <Text ml="2">Welcome, {username}</Text>
+                <Button
+                  onClick={handleLogout}
+                  colorScheme="teal"
+                  variant="outline"
+                  ml="2"
+                >
                   Logout
                 </Button>
               </>
             ) : (
               <>
-                <Button as={RouterLink} to="/login" colorScheme="teal" variant="outline" mr="1">
+                <Button
+                  as={RouterLink}
+                  to="/login"
+                  colorScheme="teal"
+                  variant="outline"
+                  mr="1"
+                >
                   Login
                 </Button>
-                <Button as={RouterLink} to="/register" colorScheme="teal" ml="1">
+                <Button
+                  as={RouterLink}
+                  to="/register"
+                  colorScheme="teal"
+                  ml="1"
+                >
                   Register
                 </Button>
               </>
@@ -66,14 +81,22 @@ const App: React.FC = (props: any) => {
           </Flex>
         </Flex>
       </GridItem>
-      <GridItem pl='2' area={'main'}>
+
+      {/* Main Content Section */}
+      <GridItem pl="2" area={'main'}>
+        {/* ... (main content) */}
         {props.children}
       </GridItem>
-      <GridItem pl='2' area={'footer'}>
-        Footer
-      </GridItem>
-    </Grid>
-  );
-};
 
-export default App;
+      {/* Footer Section */}
+      <GridItem pl="2" area={'footer'}>
+        {/* ... (footer content) */}
+      </GridItem>
+
+      {/* Sidebar */}
+      <MainNav isSidebarOpen={isSidebarOpen} setSidebarOpen={setSidebarOpen} />
+    </Grid>
+  )
+}
+
+export default App

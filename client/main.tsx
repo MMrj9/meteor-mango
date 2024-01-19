@@ -1,23 +1,21 @@
-import React from 'react';
-import { render } from 'react-dom';
+import React from 'react'
+import { render } from 'react-dom'
 import App from '/imports/ui/App'
-import { createStore, applyMiddleware } from 'redux';
-import { BrowserRouter } from 'react-router-dom';
-import { onPageLoad } from 'meteor/server-render';
-import { Provider } from 'react-redux';
-import thunk from 'redux-thunk';
-import Routes from '../imports/Routes';
-import appReducer from '/imports/redux/reducers';
-import { extendTheme, ColorModeScript, ChakraProvider } from '@chakra-ui/react';
-
-
+import { createStore, applyMiddleware } from 'redux'
+import { BrowserRouter } from 'react-router-dom'
+import { onPageLoad } from 'meteor/server-render'
+import { Provider } from 'react-redux'
+import thunk from 'redux-thunk'
+import Routes from '../imports/Routes'
+import appReducer from '/imports/redux/reducers'
+import { extendTheme, ColorModeScript, ChakraProvider } from '@chakra-ui/react'
 
 //@ts-ignore
-const preloadedState = window.__PRELOADED_STATE__;
+const preloadedState = window.__PRELOADED_STATE__
 //@ts-ignore
-delete window.__PRELOADED_STATE__;
+delete window.__PRELOADED_STATE__
 
-const store = createStore(appReducer, preloadedState, applyMiddleware(thunk));
+const store = createStore(appReducer, preloadedState, applyMiddleware(thunk))
 
 const theme = extendTheme({
   config: {
@@ -27,13 +25,13 @@ const theme = extendTheme({
   styles: {
     global: () => ({
       body: {
-        bg: "#fff",
-        color: "#000"
+        bg: '#fff',
+        color: '#000',
       },
       input: {
-        bg: "#e5e5e5"
-      }
-    })
+        bg: '#e5e5e5',
+      },
+    }),
   },
   colors: {
     black: '#000',
@@ -42,13 +40,13 @@ const theme = extendTheme({
       50: '#e5e5e5',
     },
     orange: {
-      50: "#fca311"
+      50: '#fca311',
     },
     blue: {
-      50: "#14213d"
-    }
+      50: '#14213d',
+    },
   },
-});
+})
 
 const app = (
   <Provider store={store}>
@@ -65,5 +63,5 @@ const app = (
 )
 
 onPageLoad(() => {
-  render(app, document.getElementById('app'));
-});
+  render(app, document.getElementById('app'))
+})
