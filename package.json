@@ -14,6 +14,7 @@
     "@chakra-ui/react": "^2.4.5",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
+    "formik": "^2.4.5",
     "framer-motion": "^8.4.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -21,7 +22,8 @@
     "react-redux": "^8.0.5",
     "react-router-dom": "^6.6.2",
     "redux": "^4.2.0",
-    "redux-thunk": "^2.4.2"
+    "redux-thunk": "^2.4.2",
+    "yup": "^1.3.3"
   },
   "devDependencies": {
     "@types/meteor": "^1.4.87",

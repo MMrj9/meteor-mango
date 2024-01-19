@@ -7,10 +7,11 @@ import { StaticRouter } from "react-router-dom/server";
 import { Helmet } from 'react-helmet';
 import { renderToString } from 'react-dom/server';
 
-import '/server/publish'
+import '/server/publish';
 import Routes from '../imports/Routes';
 import appReducer from '/imports/redux/reducers';
-
+import '/server/collections/company';
+import '/server/collections/user';
 
 
 onPageLoad((sink: any) => {
