@@ -24,7 +24,12 @@ const UserTable: React.FC = () => {
 
   return (
     <Box p={4}>
-      <GenericTable collectionName="user" data={data} columns={columns} />
+      <GenericTable
+        collectionName="user"
+        data={data}
+        columns={columns}
+        add={false}
+      />
     </Box>
   )
 }

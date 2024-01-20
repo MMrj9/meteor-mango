@@ -6,9 +6,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { useToast } from '@chakra-ui/react'
 import { Tracker } from 'meteor/tracker'
 
-interface CompanyFormProps {
-  initialCompany?: Company
-}
+interface CompanyFormProps {}
 
 const formFields = {
   name: { label: 'Name', disabled: false, maxCharacters: 50 },
@@ -19,6 +17,8 @@ const formFields = {
     disabled: false,
     maxCharacters: 3,
   },
+  created_on: { label: 'Created On', disabled: true, hideOnCreate: true },
+  updated_on: { label: 'Updated On', disabled: true, hideOnCreate: true },
 }
 
 const initialValues = { name: '', description: '', employees: 0 }

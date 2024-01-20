@@ -31,8 +31,10 @@ Meteor.methods({
     }
 
     if (company._id) {
+      company.updated_on = new Date()
       Company.update(company._id, { $set: company })
     } else {
+      company.created_on = new Date()
       Company.insert(company)
     }
   },

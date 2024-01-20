@@ -30,7 +30,7 @@ const App: React.FC = (props: any) => {
       bg={'white'}
     >
       {/* Button Section */}
-      <GridItem pl="2" area={'button'} textAlign="left">
+      <GridItem p="2" area={'button'} textAlign="left">
         {!isSidebarOpen && (
           <Button onClick={() => setSidebarOpen(true)} variant="link">
             <HamburgerIcon boxSize={6} />
@@ -39,7 +39,7 @@ const App: React.FC = (props: any) => {
       </GridItem>
 
       {/* Header Section */}
-      <GridItem pl="2" area={'header'}>
+      <GridItem pl="2" area={'header'} p={2}>
         <Flex align="center" justify="flex-end">
           <Flex></Flex>
           <Spacer />
@@ -83,7 +83,7 @@ const App: React.FC = (props: any) => {
       </GridItem>
 
       {/* Main Content Section */}
-      <GridItem pl="2" area={'main'}>
+      <GridItem p="20" area={'main'}>
         {/* ... (main content) */}
         {props.children}
       </GridItem>

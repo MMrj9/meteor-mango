@@ -9,6 +9,7 @@ const columns = [
   { key: 'name', label: 'Name' },
   { key: 'description', label: 'Description' },
   { key: 'employees', label: 'Number of Employees' },
+  { key: 'created_on', label: 'Created On' },
 ]
 
 const CompanyTable: React.FC = () => {

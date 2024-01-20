@@ -13,7 +13,6 @@ Meteor.publish('company', function (companyId) {
 })
 
 Meteor.publish('user', function () {
-  console.log('here', this.userId)
   if (this.userId) {
     // Only publish data for the logged-in user
     return Meteor.users.find(

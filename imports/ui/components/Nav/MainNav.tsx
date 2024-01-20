@@ -16,7 +16,7 @@ import {
   Flex,
   Text,
   IconButton,
-  useToast,
+  Divider, // Added Divider
 } from '@chakra-ui/react'
 
 interface MenuItem {
@@ -100,18 +100,22 @@ const MainNav = ({ isSidebarOpen, setSidebarOpen }: MainNavProps) => {
         </DrawerHeader>
         <DrawerBody>
           <Box p={4}>
-            {menuItems.map((menuItem) => (
-              <Flex key={menuItem.label} align="center" mb={2}>
-                <Button
-                  as={RouterLink}
-                  to={menuItem.path}
-                  variant="link"
-                  size="sm"
-                  onClick={() => setSidebarOpen(false)}
-                >
-                  <Text fontSize="md">{menuItem.label}</Text>
-                </Button>
-              </Flex>
+            {menuItems.map((menuItem, index) => (
+              <React.Fragment key={menuItem.label}>
+                <Flex align="center" mb={2}>
+                  <Button
+                    as={RouterLink}
+                    to={menuItem.path}
+                    variant="link"
+                    size="sm"
+                    onClick={() => setSidebarOpen(false)}
+                  >
+                    <Text fontSize="md">{menuItem.label}</Text>
+                  </Button>
+                </Flex>
+                {index < menuItems.length - 1 && <Divider mt={2} mb={2} />}{' '}
+                {/* Add Divider */}
+              </React.Fragment>
             ))}
           </Box>
         </DrawerBody>

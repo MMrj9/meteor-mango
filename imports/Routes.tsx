@@ -6,6 +6,7 @@ import CompanyTable from './ui/components/Company/CompanyTable'
 import RegistrationForm from './ui/components/Authentication/RegistrationForm'
 import LoginForm from './ui/components/Authentication/LoginForm'
 import UserTable from './ui/components/User/UserTable'
+import UserForm from './ui/components/User/UserForm'
 
 const routes = () => (
   <Routes>
@@ -27,8 +28,7 @@ const CompanyRoutes = () => (
 
 const UserRoutes = () => (
   <Routes>
-    {/* <Route path="add" element={<UserForm />} />
-    <Route path="edit/:userId" element={<UserForm />} /> */}
+    <Route path="edit/:userId" element={<UserForm />} />
     <Route path="" element={<UserTable />} />
   </Routes>
 )
