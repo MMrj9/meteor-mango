@@ -39,3 +39,8 @@ Meteor.publish(null, function () {
     this.ready()
   }
 })
+
+Meteor.publish('role', function (user_id: string) {
+  //@ts-ignore
+  return Meteor.roleAssignment.find({ 'user._id': user_id })
+})

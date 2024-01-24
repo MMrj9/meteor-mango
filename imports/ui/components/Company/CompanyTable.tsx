@@ -10,7 +10,7 @@ const columns = [
   { key: 'description', label: 'Description' },
   { key: 'employees', label: 'Number of Employees' },
   { key: 'created_on', label: 'Created On' },
-]
+] as { key: keyof Company; label: string }[]
 
 const CompanyTable: React.FC = () => {
   const data = useTracker(() => {

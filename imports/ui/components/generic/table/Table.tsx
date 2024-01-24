@@ -16,12 +16,17 @@ import {
   Input,
 } from '@chakra-ui/react'
 import { Link as RouterLink } from 'react-router-dom'
-import { AddIcon, SearchIcon } from '@chakra-ui/icons'
+import {
+  AddIcon,
+  SearchIcon,
+  ChevronDownIcon,
+  ChevronUpIcon,
+} from '@chakra-ui/icons'
 import _ from 'lodash'
 import { formatTableData } from './utils'
 
 interface GenericTableProps<T> {
-  data: any[]
+  data: T[]
   columns: { key: keyof T; label: string }[]
   collectionName: string
   add?: boolean
@@ -34,7 +39,43 @@ const GenericTable = <T extends Record<string, any>>({
   add = true,
 }: GenericTableProps<T>) => {
   const [searchTerm, setSearchTerm] = useState('')
-  const filteredData = data.filter((item) => {
+  const [sortConfig, setSortConfig] = useState<{
+    key: keyof T
+    direction: 'asc' | 'desc' | null
+  }>({
+    key: 'created_on',
+    direction: 'desc',
+  })
+
+  const handleSort = (key: keyof T) => {
+    let direction: 'asc' | 'desc' = 'asc'
+    if (sortConfig.key === key && sortConfig.direction === 'asc') {
+      direction = 'desc'
+    }
+
+    setSortConfig({ key, direction })
+  }
+
+  const sortedData = () => {
+    if (sortConfig.key) {
+      //@ts-ignore
+      return _.orderBy(data, [sortConfig.key], [sortConfig.direction])
+    }
+    return data
+  }
+
+  const getSortIcon = (key: keyof T) => {
+    if (sortConfig.key === key) {
+      return sortConfig.direction === 'asc' ? (
+        <ChevronUpIcon />
+      ) : (
+        <ChevronDownIcon />
+      )
+    }
+    return null
+  }
+
+  const filteredData = sortedData().filter((item) => {
     return columns.some((column) => {
       const cellValue = _.get(item, column.key)
       return (
@@ -83,12 +124,19 @@ const GenericTable = <T extends Record<string, any>>({
           <Thead>
             <Tr>
               {columns.map((column) => (
-                <Th key={column.key as string}>{column.label}</Th>
+                <Th
+                  key={column.key as string}
+                  onClick={() => handleSort(column.key)}
+                  _hover={{ cursor: 'pointer' }}
+                >
+                  {column.label}{' '}
+                  {column.key === sortConfig.key && getSortIcon(column.key)}
+                </Th>
               ))}
             </Tr>
           </Thead>
           <Tbody>
-            {filteredData.map((item: any, index: number) => (
+            {filteredData.map((item: T, index: number) => (
               <Tr key={index}>
                 {columns.map((column, columnIndex) => (
                   <Td key={column.key as string}>

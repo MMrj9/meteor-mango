@@ -1,24 +1,46 @@
 import React, { useEffect, useState } from 'react'
-import { Company } from '/imports/api/company'
-import GenericForm from '../generic/form/Form'
+import { Company, CompanyFields } from '/imports/api/company'
+import GenericForm, { FormField } from '../generic/form/Form'
 import { Meteor } from 'meteor/meteor'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useToast } from '@chakra-ui/react'
 import { Tracker } from 'meteor/tracker'
+import { formatDate } from '/imports/utils/date'
 
 interface CompanyFormProps {}
 
-const formFields = {
-  name: { label: 'Name', disabled: false, maxCharacters: 50 },
-  description: { label: 'Description', disabled: false, maxCharacters: 200 },
+const formFields: Record<string, FormField> = {
+  name: {
+    label: 'Name',
+    disabled: false,
+    minCharacters: CompanyFields.name.minCharacters,
+    maxCharacters: CompanyFields.name.maxCharacters,
+  },
+  description: {
+    label: 'Description',
+    disabled: false,
+    minCharacters: CompanyFields.description.minCharacters,
+    maxCharacters: CompanyFields.description.maxCharacters,
+  },
   employees: {
     label: 'Number of Employees',
     type: 'number',
     disabled: false,
-    maxCharacters: 3,
+    minCharacters: CompanyFields.employees.minCharacters,
+    maxCharacters: CompanyFields.employees.maxCharacters,
   },
-  created_on: { label: 'Created On', disabled: true, hideOnCreate: true },
-  updated_on: { label: 'Updated On', disabled: true, hideOnCreate: true },
+  created_on: {
+    label: 'Created On',
+    disabled: true,
+    hideOnCreate: true,
+    format: formatDate,
+  },
+  updated_on: {
+    label: 'Updated On',
+    disabled: true,
+    hideOnCreate: true,
+    format: formatDate,
+  },
 }
 
 const initialValues = { name: '', description: '', employees: 0 }

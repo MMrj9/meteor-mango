@@ -1,21 +1,73 @@
-import { Meteor } from 'meteor/meteor'
-import assert from 'assert'
+import { processValues } from '/imports/ui/components/generic/form/utils'
+import { assert } from 'chai'
 
-describe('continente-watcher', function () {
-  it('package.json has correct name', async function () {
-    const { name } = await import('../package.json')
-    assert.strictEqual(name, 'continente-watcher')
+//@ts-ignore
+describe('processValues function', () => {
+  const UserFormFields = {
+    username: {
+      label: 'Username',
+      disabled: true,
+      minCharacters: 5,
+      maxCharacters: 20,
+    },
+    'emails[0].address': {
+      label: 'Email',
+      disabled: true,
+      minCharacters: 5,
+      maxCharacters: 50,
+    },
+    roles: {
+      label: 'roles',
+      type: 'autocomplete',
+      autocompleteOptions: [
+        { value: 'admin', label: 'admin' },
+        { value: 'manager', label: 'manager' },
+        { value: 'basic', label: 'basic' },
+      ],
+    },
+  }
+
+  //@ts-ignore
+  it('processValues should correctly handle autocomplete fields', () => {
+    const inputValues = {
+      _id: '2CZ77sxvPLDnBa3Ng',
+      emails: [
+        {
+          address: 'miguelmorujao@gmail.com',
+          verified: false,
+        },
+      ],
+      profile: {},
+      username: 'miguelmorujao',
+      roles: [
+        {
+          value: 'admin',
+          label: 'admin',
+        },
+        {
+          value: 'manager',
+          label: 'manager',
+        },
+      ],
+    }
+
+    const expectedOutput = {
+      _id: '2CZ77sxvPLDnBa3Ng',
+      emails: [
+        {
+          address: 'miguelmorujao@gmail.com',
+          verified: false,
+        },
+      ],
+      profile: {},
+      username: 'miguelmorujao',
+      roles: ['admin', 'manager'],
+    }
+
+    const processedValues = processValues(UserFormFields, inputValues)
+
+    assert.deepEqual(processedValues, expectedOutput)
   })
 
-  if (Meteor.isClient) {
-    it('client is not server', function () {
-      assert.strictEqual(Meteor.isServer, false)
-    })
-  }
-
-  if (Meteor.isServer) {
-    it('server is not client', function () {
-      assert.strictEqual(Meteor.isClient, false)
-    })
-  }
+  // Add more tests as needed
 })

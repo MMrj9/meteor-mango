@@ -1,15 +1,36 @@
 import React, { useEffect, useState } from 'react'
-import GenericForm from '../generic/form/Form'
+//@ts-ignore
+import { Roles } from 'meteor/alanning:roles'
+import GenericForm, { FormField } from '../generic/form/Form'
 import { Meteor } from 'meteor/meteor'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useToast } from '@chakra-ui/react'
 import { Tracker } from 'meteor/tracker'
+import { AllRoles, UserFields } from '/imports/api/user'
+import { processValues } from '../generic/form/utils'
+import { mapValuesToAutocompleteOptions } from './utils'
 
 interface UserFormProps {}
 
-const formFields = {
-  username: { label: 'Username', disabled: true, maxCharacters: 25 },
-  'emails[0].address': { label: 'Email', disabled: true, maxCharacters: 50 },
+const UserFormFields: Record<string, FormField> = {
+  username: {
+    label: 'Username',
+    disabled: true,
+    minCharacters: UserFields.username.minCharacters,
+    maxCharacters: UserFields.username.maxCharacters,
+  },
+  'emails[0].address': {
+    label: 'Email',
+    disabled: true,
+    minCharacters: UserFields.email.minCharacters,
+    maxCharacters: UserFields.email.maxCharacters,
+  },
+  roles: {
+    label: 'roles',
+    type: 'autocomplete',
+    autocompleteOptions: [],
+    autocompleteInitialValues: [],
+  },
 }
 
 const UserForm: React.FC<UserFormProps> = () => {
@@ -20,11 +41,13 @@ const UserForm: React.FC<UserFormProps> = () => {
 
   useEffect(() => {
     let userSubscription: Meteor.SubscriptionHandle | null = null
+    let roleSubscription: Meteor.SubscriptionHandle | null = null
     let trackerHandler: Tracker.Computation | null = null
 
     const fetchUserData = () => {
       if (Meteor.isClient && userId) {
         userSubscription = Meteor.subscribe('user', userId)
+        roleSubscription = Meteor.subscribe('role', userId)
 
         trackerHandler = Tracker.autorun(() => {
           const _user = Meteor.users.findOne({ _id: userId })
@@ -38,6 +61,7 @@ const UserForm: React.FC<UserFormProps> = () => {
     return () => {
       if (userSubscription) {
         userSubscription.stop()
+        roleSubscription?.stop
       }
       if (trackerHandler) {
         trackerHandler.stop()
@@ -46,7 +70,8 @@ const UserForm: React.FC<UserFormProps> = () => {
   }, [userId])
 
   const handleSubmit = (values: Meteor.User) => {
-    Meteor.call('user.update', values, (error: Meteor.Error) => {
+    processValues(UserFormFields, values)
+    Meteor.call('user.update', values, Meteor.user(), (error: Meteor.Error) => {
       if (error) {
         toast({
           title: 'Error',
@@ -71,16 +96,26 @@ const UserForm: React.FC<UserFormProps> = () => {
 
   if (!user) return
 
-  console.log('user', user)
+  mapValuesToAutocompleteOptions(
+    Roles.getRolesForUser(user),
+    'roles.autocompleteInitialValues',
+    UserFormFields,
+  )
+  mapValuesToAutocompleteOptions(
+    AllRoles,
+    'roles.autocompleteOptions',
+    UserFormFields,
+  )
 
   return (
     <GenericForm
       collectionName="user"
       initialValues={user}
       onSubmit={handleSubmit}
-      formFields={formFields}
+      formFields={UserFormFields}
     />
   )
 }
 
+export { UserFormFields }
 export default UserForm

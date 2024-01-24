@@ -8,7 +8,7 @@ const columns = [
   { key: 'username', label: 'Name' },
   { key: 'emails[0].address', label: 'email' },
   //   { key: '', label: 'Number of Employees' },
-]
+] as { key: keyof Meteor.User; label: string }[]
 
 const UserTable: React.FC = () => {
   const data = useTracker(() => {

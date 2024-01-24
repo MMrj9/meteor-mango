@@ -12,6 +12,7 @@ import { Formik, Form, Field, FieldProps, FormikHelpers } from 'formik'
 import * as Yup from 'yup'
 import { Meteor } from 'meteor/meteor'
 import { useNavigate } from 'react-router-dom'
+import { UserFields } from '/imports/api/user'
 
 interface RegistrationFormValues {
   email: string
@@ -28,13 +29,36 @@ const initialValues: RegistrationFormValues = {
 }
 
 const validationSchema = Yup.object().shape({
-  email: Yup.string().email('Invalid email address').required('Required'),
-  username: Yup.string().required('Required'),
-  password: Yup.string()
-    .min(8, 'Password must be at least 8 characters')
+  email: Yup.string()
+    .email('Invalid email address')
+    .min(UserFields.email.minCharacters, 'Email must be at least 6 characters')
+    .max(UserFields.email.maxCharacters, 'Email must be at most 320 characters')
     .required('Required'),
-  // @ts-ignore
+
+  username: Yup.string()
+    .min(
+      UserFields.username.minCharacters,
+      'Username must be at least 6 characters',
+    )
+    .max(
+      UserFields.username.maxCharacters,
+      'Username must be at most 30 characters',
+    )
+    .required('Required'),
+
+  password: Yup.string()
+    .min(
+      UserFields.password.minCharacters,
+      'Password must be at least 8 characters',
+    )
+    .max(
+      UserFields.password.maxCharacters,
+      'Password must be at most 320 characters',
+    )
+    .required('Required'),
+
   confirmPassword: Yup.string()
+    //@ts-ignore
     .oneOf([Yup.ref('password'), null], 'Passwords must match')
     .required('Required'),
 })
