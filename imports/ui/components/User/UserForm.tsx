@@ -6,9 +6,10 @@ import { Meteor } from 'meteor/meteor'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useToast } from '@chakra-ui/react'
 import { Tracker } from 'meteor/tracker'
-import { AllRoles, UserFields } from '/imports/api/user'
+import { AllRoles } from '/imports/api/user'
 import { processValues } from '../generic/form/utils'
 import { mapValuesToAutocompleteOptions } from './utils'
+import Schema from '/imports/api'
 
 interface UserFormProps {}
 
@@ -16,14 +17,10 @@ const UserFormFields: Record<string, FormField> = {
   username: {
     label: 'Username',
     disabled: true,
-    minCharacters: UserFields.username.minCharacters,
-    maxCharacters: UserFields.username.maxCharacters,
   },
   'emails[0].address': {
     label: 'Email',
     disabled: true,
-    minCharacters: UserFields.email.minCharacters,
-    maxCharacters: UserFields.email.maxCharacters,
   },
   roles: {
     label: 'roles',

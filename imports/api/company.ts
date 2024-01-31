@@ -1,28 +1,42 @@
 import { Mongo } from 'meteor/mongo'
-import { Timestamped } from './common'
+//@ts-ignore
+import SimpleSchema from 'meteor/aldeed:simple-schema'
+import { Disabled, Timestamped } from './common'
+import Schema, { DisabledSchemaBase, TimestampedSchemaBase } from '.'
 
-export interface Company extends Timestamped {
+export interface Company extends Timestamped, Disabled {
   _id?: string
   name: string
   description: string
-  employees: number
+  numberOfEmployees: number
 }
 
-const CompanyFields = {
+Schema.Company = new SimpleSchema({
   name: {
-    minCharacters: 1,
-    maxCharacters: 50,
+    type: String,
+    label: 'Name',
+    min: 1,
+    max: 50,
   },
   description: {
-    minCharacters: 0,
-    maxCharacters: 300,
+    type: String,
+    label: 'Description',
+    min: 0,
+    max: 300,
   },
-  employees: {
-    minCharacters: 0,
-    maxCharacters: 3,
+  numberOfEmployees: {
+    type: SimpleSchema.Integer,
+    label: 'Number of Employees',
+    min: 0,
+    max: 999,
   },
-}
+  ...TimestampedSchemaBase,
+  ...DisabledSchemaBase,
+})
 
-export const Company = new Mongo.Collection<Company>('company')
+const Company = new Mongo.Collection<Company>('company')
 
-export { CompanyFields }
+//@ts-ignore
+Company.attachSchema(Schema.Company)
+
+export { Company }

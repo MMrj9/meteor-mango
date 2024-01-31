@@ -8,33 +8,13 @@ import {
   AllRoles,
   DefaultRoles,
   Profile,
-  UserFields,
   validateUserPermissions,
 } from '/imports/api/user'
 
 function validateUser(user: any) {
   validateObject(user)
 
-  const { username, email, password } = user
-
-  validateString(
-    'Username',
-    username,
-    UserFields.username.minCharacters,
-    UserFields.username.maxCharacters,
-  )
-  validateString(
-    'Email',
-    email,
-    UserFields.email.minCharacters,
-    UserFields.email.maxCharacters,
-  )
-  validateString(
-    'Password',
-    password,
-    UserFields.password.minCharacters,
-    UserFields.password.minCharacters,
-  )
+  const { username, email } = user
 
   if (!validateEmail(email)) {
     throw new Meteor.Error(
@@ -43,13 +23,19 @@ function validateUser(user: any) {
     )
   }
 
-  if (Meteor.users.findOne({ username })) {
+  if (!user._id && Meteor.users.findOne({ username })) {
     throw new Meteor.Error('username-taken', 'Username is already taken.')
   }
 
-  if (Meteor.users.findOne({ 'emails.address': email })) {
+  if (!user._id && Meteor.users.findOne({ 'emails.address': email })) {
     throw new Meteor.Error('email-taken', 'Email address is already taken.')
   }
+}
+
+const getUserById = (_id: string) => {
+  const user = Meteor.users.findOne({ _id })
+  if (!user) throw new Meteor.Error('not-fount', 'User not found.')
+  return user
 }
 
 Meteor.methods({
@@ -65,9 +51,10 @@ Meteor.methods({
 
     return id
   },
-  'user.update': (data, user: Meteor.User) => {
-    validateUserPermissions(user, [])
+  'user.update': (data: any) => {
+    validateUserPermissions()
 
+    const user = getUserById(data._id)
     const newRoles = data['roles']
     const existingRoles = Roles.getRolesForUser(user)
 

@@ -1,6 +1,10 @@
 interface Timestamped {
-  created_on?: Date
+  createdOn?: Date
   updated_on?: Date
 }
 
-export { Timestamped }
+interface Disabled {
+  disabled?: boolean
+}
+
+export { Timestamped, Disabled }

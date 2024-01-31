@@ -14,6 +14,7 @@ import {
   Flex,
   Heading,
   Input,
+  Select,
 } from '@chakra-ui/react'
 import { Link as RouterLink } from 'react-router-dom'
 import {
@@ -24,30 +25,40 @@ import {
 } from '@chakra-ui/icons'
 import _ from 'lodash'
 import { formatTableData } from './utils'
+import { TableFilter, TableFilterOption } from '../filters/Filters'
+import { Action } from '../actions/Actions'
 
-interface GenericTableProps<T> {
-  data: T[]
-  columns: { key: keyof T; label: string }[]
+interface GenericTableProps {
+  data: Record<string, any>[]
+  columns: { key: string; label: string }[]
   collectionName: string
   add?: boolean
+  filters?: TableFilter<Record<string, any>>[]
+  selectedFilters?: { [key: string]: any }
+  setSelectedFilters?: (prevFilters: { [key: string]: any }) => void
+  actions?: Action[]
 }
 
-const GenericTable = <T extends Record<string, any>>({
+const GenericTable = ({
   data,
   columns,
   collectionName,
   add = true,
-}: GenericTableProps<T>) => {
+  filters = [],
+  selectedFilters,
+  setSelectedFilters,
+  actions,
+}: GenericTableProps) => {
   const [searchTerm, setSearchTerm] = useState('')
   const [sortConfig, setSortConfig] = useState<{
-    key: keyof T
+    key: string
     direction: 'asc' | 'desc' | null
   }>({
-    key: 'created_on',
+    key: 'createdOn',
     direction: 'desc',
   })
 
-  const handleSort = (key: keyof T) => {
+  const handleSort = (key: string) => {
     let direction: 'asc' | 'desc' = 'asc'
     if (sortConfig.key === key && sortConfig.direction === 'asc') {
       direction = 'desc'
@@ -56,15 +67,13 @@ const GenericTable = <T extends Record<string, any>>({
     setSortConfig({ key, direction })
   }
 
-  const sortedData = () => {
-    if (sortConfig.key) {
-      //@ts-ignore
-      return _.orderBy(data, [sortConfig.key], [sortConfig.direction])
-    }
-    return data
+  const handleFilterChange = (key: string, value: any) => {
+    setSelectedFilters?.((prevFilters: any) => {
+      return { ...prevFilters, [key]: value }
+    })
   }
 
-  const getSortIcon = (key: keyof T) => {
+  const getSortIcon = (key: string) => {
     if (sortConfig.key === key) {
       return sortConfig.direction === 'asc' ? (
         <ChevronUpIcon />
@@ -73,6 +82,14 @@ const GenericTable = <T extends Record<string, any>>({
       )
     }
     return null
+  }
+
+  const sortedData = () => {
+    if (sortConfig.key) {
+      //@ts-ignore
+      return _.orderBy(data, [sortConfig.key], [sortConfig.direction])
+    }
+    return data
   }
 
   const filteredData = sortedData().filter((item) => {
@@ -91,8 +108,8 @@ const GenericTable = <T extends Record<string, any>>({
         {collectionName}
       </Heading>
 
-      <Flex justify="space-between" mb={4} align="center">
-        <Flex align="center" maxWidth={'400'}>
+      <Flex justify="space-between" mb={4} align="flex-end">
+        <Flex align="flex-end" maxWidth={'400'} mr={4}>
           <Input
             placeholder="Search..."
             value={searchTerm}
@@ -108,6 +125,31 @@ const GenericTable = <T extends Record<string, any>>({
             <Icon as={SearchIcon} boxSize={4} />
           </Button>
         </Flex>
+
+        {filters && filters.length > 0 && (
+          <Flex flex={1}>
+            {filters.map((filter) => (
+              <Box key={filter.key as string} ml={4}>
+                <Text fontWeight="bold">{filter.label}</Text>
+                {filter.type === 'dropdown' && (
+                  <Select
+                    value={selectedFilters?.[filter.key] || ''}
+                    onChange={(e) =>
+                      handleFilterChange(filter.key, e.target.value)
+                    }
+                    height={8}
+                  >
+                    {filter.options?.map((option: TableFilterOption) => (
+                      <option key={option.label} value={option.label}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </Select>
+                )}
+              </Box>
+            ))}
+          </Flex>
+        )}
 
         {add && (
           <Button as={RouterLink} to={`add`} colorScheme="teal" size="sm">
@@ -133,15 +175,15 @@ const GenericTable = <T extends Record<string, any>>({
                   {column.key === sortConfig.key && getSortIcon(column.key)}
                 </Th>
               ))}
+              {actions && actions.length > 0 && <Th>Actions</Th>}
             </Tr>
           </Thead>
           <Tbody>
-            {filteredData.map((item: T, index: number) => (
+            {filteredData.map((item: Record<string, any>, index: number) => (
               <Tr key={index}>
                 {columns.map((column, columnIndex) => (
                   <Td key={column.key as string}>
                     {columnIndex === 0 ? (
-                      // Assuming the first column is the model ID
                       <Link
                         as={RouterLink}
                         to={`edit/${item._id}`}
@@ -150,11 +192,24 @@ const GenericTable = <T extends Record<string, any>>({
                         {_.get(item, column.key)}
                       </Link>
                     ) : (
-                      // Render other columns normally
                       formatTableData(_.get(item, column.key))
                     )}
                   </Td>
                 ))}
+                {actions && actions.length > 0 && (
+                  <Td>
+                    {actions.map((action, actionIndex) => (
+                      <Button
+                        key={actionIndex}
+                        size="sm"
+                        onClick={() => action.effect(item._id)}
+                        bgColor={action.bgColor}
+                      >
+                        {action.label}
+                      </Button>
+                    ))}
+                  </Td>
+                )}
               </Tr>
             ))}
           </Tbody>

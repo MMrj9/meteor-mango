@@ -20,8 +20,8 @@ interface FormField {
   label: string
   type?: string
   disabled?: boolean
-  minCharacters?: number
-  maxCharacters?: number
+  min?: number
+  max?: number
   hideOnCreate?: boolean
   key?: string
   format?: (value: any) => any
@@ -54,8 +54,8 @@ const GenericForm = <T extends Record<string, any>>({
       type = 'text',
       label,
       disabled = false,
-      minCharacters,
-      maxCharacters,
+      min,
+      max,
       format,
       autocompleteOptions,
       autocompleteAllowNewOptions = false,
@@ -100,8 +100,8 @@ const GenericForm = <T extends Record<string, any>>({
             value={formattedValue}
             onChange={formik.handleChange}
             disabled={disabled}
-            minLength={minCharacters}
-            maxLength={maxCharacters}
+            minLength={min}
+            maxLength={max}
           />
         ) : type === 'number' ? (
           <Input
@@ -110,8 +110,8 @@ const GenericForm = <T extends Record<string, any>>({
             value={formattedValue}
             onChange={formik.handleChange}
             disabled={disabled}
-            minLength={minCharacters}
-            maxLength={maxCharacters}
+            min={min}
+            max={max}
           />
         ) : type === 'checkbox' ? (
           <Checkbox
@@ -129,8 +129,8 @@ const GenericForm = <T extends Record<string, any>>({
             value={formattedValue}
             onChange={formik.handleChange}
             disabled={disabled}
-            minLength={minCharacters}
-            maxLength={maxCharacters}
+            minLength={min}
+            maxLength={max}
           />
         )}
       </FormControl>

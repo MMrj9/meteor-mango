@@ -1,43 +1,32 @@
 import { Meteor } from 'meteor/meteor'
-import { Company, CompanyFields } from '/imports/api/company'
+import { Company } from '/imports/api/company'
 import { validateObject } from '/imports/utils/object'
-import { validateString } from '/imports/utils/string'
+import { validateUserPermissions } from '/imports/api/user'
 
 function validateCompany(company: Company) {
   validateObject(company)
 
-  const { name, description } = company
+  const { name } = company
 
-  validateString(
-    'Name',
-    name,
-    CompanyFields.name.minCharacters,
-    CompanyFields.name.maxCharacters,
-  )
-  validateString(
-    'Description',
-    description,
-    CompanyFields.description.minCharacters,
-    CompanyFields.description.maxCharacters,
-  )
-
-  if (Company.findOne({ name })) {
-    throw new Meteor.Error('username-taken', 'Username is already taken.')
+  if (!company._id && Company.findOne({ name })) {
+    throw new Meteor.Error(
+      'not-unique',
+      'Company with that name already exists.',
+    )
   }
 }
 
 Meteor.methods({
   'company.insertOrUpdate'(company: Company) {
+    validateUserPermissions()
     validateCompany(company)
 
     if (company._id) {
       company.updated_on = new Date()
       Company.update(company._id, { $set: company })
     } else {
-      company.created_on = new Date()
+      company.createdOn = new Date()
       Company.insert(company)
     }
   },
 })
-
-export { CompanyFields }

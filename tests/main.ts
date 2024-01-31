@@ -7,14 +7,14 @@ describe('processValues function', () => {
     username: {
       label: 'Username',
       disabled: true,
-      minCharacters: 5,
-      maxCharacters: 20,
+      min: 5,
+      max: 20,
     },
     'emails[0].address': {
       label: 'Email',
       disabled: true,
-      minCharacters: 5,
-      maxCharacters: 50,
+      min: 5,
+      max: 50,
     },
     roles: {
       label: 'roles',

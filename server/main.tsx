@@ -12,6 +12,7 @@ import Routes from '../imports/Routes'
 import appReducer from '/imports/redux/reducers'
 import '/server/collections/company'
 import '/server/collections/user'
+import '/server/collections/common'
 
 onPageLoad((sink: any) => {
   const store = createStore(appReducer, {}, applyMiddleware(thunk))
