@@ -21,7 +21,7 @@ const TimestampedSchemaBase = {
 }
 
 const DisabledSchemaBase = {
-  disabeld: {
+  disabled: {
     type: Boolean,
     optional: true,
   },

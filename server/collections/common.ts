@@ -4,11 +4,15 @@ import { check } from 'meteor/check'
 import { validateUserPermissions } from '/imports/api/user'
 
 Meteor.methods({
-  disable(collectionName: string, documentId: string) {
+  setField(
+    collectionName: string,
+    documentId: string,
+    fieldName: string,
+    value: any,
+  ) {
     check(collectionName, String)
     check(documentId, String)
-
-    console.log('here')
+    check(fieldName, String)
 
     validateUserPermissions()
 
@@ -19,24 +23,23 @@ Meteor.methods({
       throw new Meteor.Error('invalid-collection', 'Invalid collection name')
     }
 
-    // Check if the collection has a 'disable' field
-    // TODO Implement collections2
+    // Check if the collection has field
     const collectionSchema = collection.simpleSchema()
     if (
       !collectionSchema ||
       !collectionSchema._schema ||
-      !collectionSchema._schema.disable
+      !collectionSchema._schema[fieldName]
     ) {
       throw new Meteor.Error(
         'no-disable-field',
-        'The collection does not have a "disable" field',
+        `The collection does not have a ${fieldName} field`,
       )
     }
 
     // Construct the update query
     const updateQuery = {
       $set: {
-        disable: true,
+        [fieldName]: value,
       },
     }
 

@@ -12,7 +12,6 @@ import { Formik, Form, Field, FieldProps, FormikHelpers } from 'formik'
 import * as Yup from 'yup'
 import { Meteor } from 'meteor/meteor'
 import { useNavigate } from 'react-router-dom'
-import Schema from '/imports/api'
 
 interface RegistrationFormValues {
   email: string

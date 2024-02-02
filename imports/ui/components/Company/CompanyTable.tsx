@@ -11,9 +11,12 @@ import {
   buildQueryFromSelectedFilters,
 } from '../generic/filters/Filters'
 import {
-  Action,
+  ActionFailedToastData,
+  ActionSuccessToastData,
   BaseDisableAction,
+  BaseEnableAction,
   DisableActionEffect,
+  EnableActionEffect,
 } from '../generic/actions/Actions'
 
 const CollectionName = 'company'
@@ -46,13 +49,18 @@ const CompanyTable: React.FC = () => {
   const handleDisableAction = async (id: string) => {
     try {
       await DisableActionEffect(CollectionName, id)
+      toast(ActionSuccessToastData)
     } catch (error) {
-      toast({
-        title: 'Error while executing action. Please try again.',
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-      })
+      toast(ActionFailedToastData)
+    }
+  }
+
+  const handleEnableAction = async (id: string) => {
+    try {
+      await EnableActionEffect(CollectionName, id)
+      toast(ActionSuccessToastData)
+    } catch (error) {
+      toast(ActionFailedToastData)
     }
   }
 
@@ -60,6 +68,10 @@ const CompanyTable: React.FC = () => {
     {
       ...BaseDisableAction,
       effect: handleDisableAction,
+    },
+    {
+      ...BaseEnableAction,
+      effect: handleEnableAction,
     },
   ]
 

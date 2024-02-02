@@ -198,16 +198,24 @@ const GenericTable = ({
                 ))}
                 {actions && actions.length > 0 && (
                   <Td>
-                    {actions.map((action, actionIndex) => (
-                      <Button
-                        key={actionIndex}
-                        size="sm"
-                        onClick={() => action.effect(item._id)}
-                        bgColor={action.bgColor}
-                      >
-                        {action.label}
-                      </Button>
-                    ))}
+                    {actions.map((action, actionIndex) => {
+                      const isApplicable = action.isApplicable
+                        ? action.isApplicable(item)
+                        : true
+
+                      return (
+                        isApplicable && (
+                          <Button
+                            key={actionIndex}
+                            size="sm"
+                            onClick={() => action.effect(item._id)}
+                            bgColor={action.bgColor}
+                          >
+                            {action.label}
+                          </Button>
+                        )
+                      )
+                    })}
                   </Td>
                 )}
               </Tr>
