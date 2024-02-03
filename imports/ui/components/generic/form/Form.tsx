@@ -10,11 +10,13 @@ import {
   Icon,
   Text,
   Checkbox,
+  Box,
 } from '@chakra-ui/react'
 import { Link as RouterLink } from 'react-router-dom'
 import { ArrowBackIcon } from '@chakra-ui/icons'
 import { CUIAutoComplete } from 'chakra-ui-autocomplete'
 import _ from 'lodash'
+import ChangelogTable from './ChangeLog'
 
 interface FormField {
   label: string
@@ -138,31 +140,41 @@ const GenericForm = <T extends Record<string, any>>({
   }
 
   return (
-    <form onSubmit={formik.handleSubmit}>
-      {Object.entries(formFields).map(([fieldName, fieldConfig]) => {
-        const { hideOnCreate, key } = fieldConfig
-        if (!formik.values['_id'] && hideOnCreate) return null
-        return renderField(key || fieldName, fieldConfig)
-      })}
+    <Flex>
+      <Box flex={1}>
+        <form onSubmit={formik.handleSubmit}>
+          {Object.entries(formFields).map(([fieldName, fieldConfig]) => {
+            const { hideOnCreate, key } = fieldConfig
+            if (!formik.values['_id'] && hideOnCreate) return null
+            return renderField(key || fieldName, fieldConfig)
+          })}
 
-      <Flex mt={4} justifyContent={'flex-end'}>
-        <Button
-          colorScheme="gray"
-          as={RouterLink}
-          to={`/${collectionName}`}
-          size="sm"
-          mr="1"
-        >
-          <Icon as={ArrowBackIcon} />
-          <Text>Go Back</Text>
-        </Button>
-        <Button colorScheme="teal" type="submit" size="sm">
-          <Flex align="center">
-            <Text>Save</Text>
+          <Flex mt={4} justifyContent={'flex-end'}>
+            <Button
+              colorScheme="gray"
+              as={RouterLink}
+              to={`/${collectionName}`}
+              size="sm"
+              mr="1"
+            >
+              <Icon as={ArrowBackIcon} />
+              <Text>Go Back</Text>
+            </Button>
+            <Button colorScheme="teal" type="submit" size="sm">
+              <Flex align="center">
+                <Text>Save</Text>
+              </Flex>
+            </Button>
           </Flex>
-        </Button>
-      </Flex>
-    </form>
+        </form>
+      </Box>
+      <Box flex={1}>
+        <ChangelogTable
+          collection={collectionName}
+          objectId={formik.values._id}
+        />
+      </Box>
+    </Flex>
   )
 }
 

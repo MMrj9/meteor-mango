@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor'
 import { Company } from '/imports/api/company'
 import { validateObject } from '/imports/utils/object'
 import { validateUserPermissions } from '/imports/api/user'
+import { logChanges } from '/imports/api/changelog'
 
 function validateCompany(company: Company) {
   validateObject(company)
@@ -22,11 +23,17 @@ Meteor.methods({
     validateCompany(company)
 
     if (company._id) {
+      const existingCompany = Company.findOne(company._id)
+
+      logChanges(company._id, 'company', 'update', existingCompany, company)
+
       company.updated_on = new Date()
       Company.update(company._id, { $set: company })
     } else {
       company.createdOn = new Date()
-      Company.insert(company)
+      const _id = Company.insert(company)
+
+      logChanges(_id, 'company', 'create', {}, company)
     }
   },
 })

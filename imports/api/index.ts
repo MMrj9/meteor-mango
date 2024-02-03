@@ -10,7 +10,7 @@ const Schema: any = {
 
 const TimestampedSchemaBase = {
   createdOn: {
-    type: String,
+    type: Date, // Change type to Date for consistency
     label: 'Created On',
   },
   updatedOn: {

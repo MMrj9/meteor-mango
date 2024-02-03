@@ -10,6 +10,7 @@ import {
   Profile,
   validateUserPermissions,
 } from '/imports/api/user'
+import { logChanges } from '/imports/api/changelog'
 
 function validateUser(user: any) {
   validateObject(user)
@@ -54,20 +55,26 @@ Meteor.methods({
   'user.update': (data: any) => {
     validateUserPermissions()
 
-    const user = getUserById(data._id)
+    const _id = data._id
+    const user = getUserById(_id)
     const newRoles = data['roles']
     const existingRoles = Roles.getRolesForUser(user)
 
-    newRoles.forEach((newRole: string) => {
-      if (!AllRoles.includes(newRole))
-        throw new Meteor.Error('invalid-role', 'Invalid Role')
-      if (!existingRoles.includes(newRole))
-        Roles.addUsersToRoles(user._id, [newRole])
-    })
-    existingRoles.forEach((existingRole: string) => {
-      if (!newRoles.includes(existingRole))
-        Roles.removeUsersFromRoles(user._id, [existingRole])
-    })
+    if (newRoles) {
+      newRoles.forEach((newRole: string) => {
+        if (!AllRoles.includes(newRole))
+          throw new Meteor.Error('invalid-role', 'Invalid Role')
+        if (!existingRoles.includes(newRole))
+          Roles.addUsersToRoles(user._id, [newRole])
+      })
+      existingRoles.forEach((existingRole: string) => {
+        if (!newRoles.includes(existingRole))
+          Roles.removeUsersFromRoles(user._id, [existingRole])
+      })
+    }
+
+    const updatedUser = getUserById(data._id)
+    logChanges(_id, 'user', 'update', user, updatedUser)
   },
 })
 

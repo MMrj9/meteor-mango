@@ -10,9 +10,10 @@ import { renderToString } from 'react-dom/server'
 import '/server/publish'
 import Routes from '../imports/Routes'
 import appReducer from '/imports/redux/reducers'
+import '/server/collections/common'
 import '/server/collections/company'
 import '/server/collections/user'
-import '/server/collections/common'
+import '/server/collections/changelog'
 
 onPageLoad((sink: any) => {
   const store = createStore(appReducer, {}, applyMiddleware(thunk))

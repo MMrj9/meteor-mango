@@ -101,10 +101,18 @@ const validateUserPermissions = (roles: string[] = []) => {
     throw new Meteor.Error('invalid-permissions', 'Invalid Permissions')
 }
 
+const getUserName = () => {
+  const user = Meteor.user()
+  if (!user)
+    throw new Meteor.Error('invalid-permissions', 'Invalid Permissions')
+  return user?.username
+}
+
 export {
   AllRoles,
   DefaultRoles,
   Profile,
   validateUserIsAdmin,
   validateUserPermissions,
+  getUserName,
 }
