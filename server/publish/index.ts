@@ -1,5 +1,7 @@
 import { Meteor } from 'meteor/meteor'
 import { Company } from '/imports/api/company'
+import { Changelog } from '/imports/api/changelog'
+import { AdminComment } from '/imports/api/adminComment'
 
 Meteor.publish('company', function (companyId) {
   // Check if companyId is provided and is a valid string
@@ -43,4 +45,15 @@ Meteor.publish(null, function () {
 Meteor.publish('role', function (user_id: string) {
   //@ts-ignore
   return Meteor.roleAssignment.find({ 'user._id': user_id })
+})
+
+Meteor.publish('changelog', function (collection, objectId) {
+  return Changelog.find({ collection, objectId }, { sort: { timestamp: -1 } })
+})
+
+Meteor.publish('admincomment', function (collection, objectId) {
+  return AdminComment.find(
+    { collection, objectId },
+    { sort: { createdOn: -1 } },
+  )
 })

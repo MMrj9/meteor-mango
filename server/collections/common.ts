@@ -55,7 +55,13 @@ Meteor.methods({
 
     const updatedDocument = collection.findOne({ _id: documentId })
 
-    logChanges(documentId, collectionName, 'update', existingDocument, updatedDocument)
+    logChanges(
+      documentId,
+      collectionName,
+      'update',
+      existingDocument,
+      updatedDocument,
+    )
 
     // You can return additional information if needed
     return { success: true }

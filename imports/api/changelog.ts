@@ -11,7 +11,7 @@ interface FieldChange {
 }
 
 interface Changelog {
-  _id?: string
+  _id: string
   objectId: string
   collection: string
   user: string
@@ -75,9 +75,12 @@ const Changelog = new Mongo.Collection<Changelog>('changelog')
 Changelog.attachSchema(Schema.Changelog)
 
 const changelogIgnoreFields = [
-    'created_on', 'updated_on', 'createdAt', 'services', 'emails'
+  'created_on',
+  'updated_on',
+  'createdAt',
+  'services',
+  'emails',
 ]
-
 
 function logChanges(
   objectId: string,
@@ -87,17 +90,20 @@ function logChanges(
   updatedDocument: any,
   parentField = '',
 ) {
-  const user = getUserName();
-  const changes: FieldChange[] = [];
+  const user = getUserName()
+  const changes: FieldChange[] = []
 
   Object.keys(updatedDocument).forEach((field) => {
-    const fullPath = parentField ? `${parentField}.${field}` : field;
+    const fullPath = parentField ? `${parentField}.${field}` : field
 
     if (
       updatedDocument[field] !== existingDocument[field] &&
       !changelogIgnoreFields.includes(fullPath)
     ) {
-      if (typeof updatedDocument[field] === 'object' && updatedDocument[field] !== null) {
+      if (
+        typeof updatedDocument[field] === 'object' &&
+        updatedDocument[field] !== null
+      ) {
         // If the field is an object, recursively log changes for each nested field
         const nestedChanges = logChanges(
           objectId,
@@ -106,17 +112,17 @@ function logChanges(
           existingDocument[field],
           updatedDocument[field],
           fullPath,
-        );
-        changes.push(...nestedChanges);
+        )
+        changes.push(...nestedChanges)
       } else {
         changes.push({
           field: fullPath,
           oldValue: existingDocument[field],
           newValue: updatedDocument[field],
-        });
+        })
       }
     }
-  });
+  })
 
   if (changes.length > 0) {
     Changelog.insert({
@@ -126,10 +132,10 @@ function logChanges(
       changeType,
       timestamp: new Date(),
       changes,
-    });
+    })
   }
 
-  return changes;
+  return changes
 }
 
 export { Changelog, FieldChange, logChanges }

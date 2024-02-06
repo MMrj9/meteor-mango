@@ -17,6 +17,7 @@ import { ArrowBackIcon } from '@chakra-ui/icons'
 import { CUIAutoComplete } from 'chakra-ui-autocomplete'
 import _ from 'lodash'
 import ChangelogTable from './ChangeLog'
+import ObjectTabs from './Tabs'
 
 interface FormField {
   label: string
@@ -168,12 +169,12 @@ const GenericForm = <T extends Record<string, any>>({
           </Flex>
         </form>
       </Box>
-      <Box flex={1}>
-        <ChangelogTable
-          collection={collectionName}
+      {formik.values._id && (
+        <ObjectTabs
+          collectionName={collectionName}
           objectId={formik.values._id}
         />
-      </Box>
+      )}
     </Flex>
   )
 }

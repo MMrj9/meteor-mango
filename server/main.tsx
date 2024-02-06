@@ -13,7 +13,7 @@ import appReducer from '/imports/redux/reducers'
 import '/server/collections/common'
 import '/server/collections/company'
 import '/server/collections/user'
-import '/server/collections/changelog'
+import '/server/collections/adminComment'
 
 onPageLoad((sink: any) => {
   const store = createStore(appReducer, {}, applyMiddleware(thunk))

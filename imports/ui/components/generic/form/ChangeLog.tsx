@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { Table, Thead, Tbody, Tr, Th, Td, Spinner } from '@chakra-ui/react'
-import { Meteor } from 'meteor/meteor'
+import { useTracker } from 'meteor/react-meteor-data'
 import { Changelog, FieldChange } from '/imports/api/changelog'
 import { formatTableData } from '../table/utils'
-import _ from 'lodash'
 import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons'
+import { Meteor } from 'meteor/meteor'
 
 interface ChangelogTableProps {
   collection: string
@@ -19,9 +19,8 @@ const MainTable = ({ changelogs }: { changelogs: Changelog[] }) => {
     if (!expandedChangelogs.includes(changelogId)) {
       updatedExpandedChangeLogs.push(changelogId)
     } else {
-      updatedExpandedChangeLogs = _.without(
-        updatedExpandedChangeLogs,
-        changelogId,
+      updatedExpandedChangeLogs = updatedExpandedChangeLogs.filter(
+        (id) => id !== changelogId,
       )
     }
     setExpandedChangelogs(updatedExpandedChangeLogs)
@@ -45,8 +44,8 @@ const MainTable = ({ changelogs }: { changelogs: Changelog[] }) => {
               <Td>{entry.user}</Td>
               <Td>{new Date(entry.timestamp).toLocaleString()}</Td>
               <Td>
-                <button onClick={() => onExpandCollapse(entry._id as string)}>
-                  {expandedChangelogs.includes(entry._id as string) ? (
+                <button onClick={() => onExpandCollapse(entry._id)}>
+                  {expandedChangelogs.includes(entry._id) ? (
                     <ChevronUpIcon boxSize={4} />
                   ) : (
                     <ChevronDownIcon boxSize={4} />
@@ -54,7 +53,7 @@ const MainTable = ({ changelogs }: { changelogs: Changelog[] }) => {
                 </button>
               </Td>
             </Tr>
-            {expandedChangelogs.includes(entry._id as string) && (
+            {expandedChangelogs.includes(entry._id) && (
               <Tr>
                 <Td colSpan={3}>
                   <NestedTable changes={entry.changes} />
@@ -94,37 +93,14 @@ const NestedTable = ({ changes }: { changes: FieldChange[] }) => {
 }
 
 const ChangelogTable = ({ collection, objectId }: ChangelogTableProps) => {
-  const [changelogs, setChangelogs] = useState([])
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    const fetchChangelogData = async () => {
-      try {
-        const changelogData = await new Promise((resolve, reject) => {
-          Meteor.call(
-            'changelog.list',
-            collection,
-            objectId,
-            (error: Meteor.Error, result: any) => {
-              if (error) {
-                reject(error)
-              } else {
-                resolve(result)
-              }
-            },
-          )
-        })
-
-        setChangelogs(changelogData as any)
-        setLoading(false)
-      } catch (error) {
-        console.error('Error fetching changelog:', error)
-        // Handle error if needed
-      }
+  const changelogs = useTracker(() => {
+    if (Meteor.isClient) {
+      Meteor.subscribe('changelog', collection, objectId)
+      return Changelog.find({ collection, objectId }).fetch()
     }
+  })
 
-    fetchChangelogData()
-  }, [collection, objectId])
+  const loading = !changelogs
 
   if (loading) {
     return <Spinner size="lg" />
