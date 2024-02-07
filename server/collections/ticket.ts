@@ -13,9 +13,7 @@ Meteor.methods({
       Ticket.update(ticket._id, { $set: ticket })
     } else {
       ticket.createdOn = new Date()
-      const _id = Ticket.insert(ticket)
-
-      logChanges(_id, 'ticket', 'create', {}, ticket)
+      Ticket.insert(ticket)
     }
   },
 })

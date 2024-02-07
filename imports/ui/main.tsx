@@ -6,12 +6,11 @@ import { useTracker } from 'meteor/react-meteor-data'
 import { Meteor } from 'meteor/meteor'
 import AdminRoutes from './AdminRoutes'
 import LoginForm from './components/Authentication/LoginForm'
-import AdminLayout from './AdminLayout'
 import DefaultRoutes from './DefaultRoutes'
 import thunk from 'redux-thunk'
 import { ChakraProvider, ColorModeScript, theme } from '@chakra-ui/react'
-import DefaultLayout from './DefaultLayout'
 import appReducer from '../redux/reducers'
+import AdminLayout from './AdminLayout'
 
 const App = () => {
   const { user } = useTracker(() => ({
@@ -23,7 +22,15 @@ const App = () => {
       {/* Admin Routes */}
       <Route
         path="/admin/*"
-        element={user ? <AdminRoutes /> : <Navigate to="/login" />}
+        element={
+          user ? (
+            <AdminLayout>
+              <AdminRoutes />
+            </AdminLayout>
+          ) : (
+            <Navigate to="/login" />
+          )
+        }
       />
 
       {/* Non-Admin Routes */}

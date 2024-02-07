@@ -3,10 +3,9 @@ import { Grid, GridItem, Button, Flex, Spacer, Text } from '@chakra-ui/react'
 import { HamburgerIcon } from '@chakra-ui/icons'
 import { Meteor } from 'meteor/meteor'
 import { useNavigate, Link as RouterLink } from 'react-router-dom'
-import MainNav from './components/Nav/MainNav'
+import AdminNav from './components/Nav/AdminNav'
 
 const AdminLayout: React.FC = (props: any) => {
-  const navigate = useNavigate()
   const isLoggedIn = !!Meteor.userId()
   const username = Meteor.user()?.username
   const [isSidebarOpen, setSidebarOpen] = useState(false)
@@ -92,7 +91,7 @@ const AdminLayout: React.FC = (props: any) => {
       </GridItem>
 
       {/* Sidebar */}
-      <MainNav isSidebarOpen={isSidebarOpen} setSidebarOpen={setSidebarOpen} />
+      <AdminNav isSidebarOpen={isSidebarOpen} setSidebarOpen={setSidebarOpen} />
     </Grid>
   )
 }

@@ -9,42 +9,39 @@ import UserTable from './components/User/UserTable'
 import UserForm from './components/User/UserForm'
 import TicketForm from './components/Ticket/TicketForm'
 import TicketTable from './components/Ticket/TicketTable'
-import AdminLayout from './AdminLayout'
 
-const adminRoutes = () => (
+const AdminRoutes = () => (
   <Routes>
-    <Route path="/" element={<AdminLayout />}>
-      <Route index element={<Main />} />
-      <Route path="login" element={<LoginForm />} />
-      <Route path="register" element={<RegistrationForm />} />
-      <Route path="company" element={<CompanyRoutes />} />
-      <Route path="user" element={<UserRoutes />} />
-      <Route path="ticket" element={<TicketRoutes />} />
-    </Route>
+    <Route path="/" element={<Main />} />
+    <Route path="/login" element={<LoginForm />} />
+    <Route path="/register" element={<RegistrationForm />} />
+    <Route path="company/*" element={<CompanyRoutes />} />
+    <Route path="user/*" element={<UserRoutes />} />
+    <Route path="ticket/*" element={<TicketRoutes />} />
   </Routes>
 )
 
 const CompanyRoutes = () => (
-  <>
+  <Routes>
     <Route path="add" element={<CompanyForm />} />
     <Route path="edit/:companyId" element={<CompanyForm />} />
-    <Route index element={<CompanyTable />} />
-  </>
+    <Route path="" element={<CompanyTable />} />
+  </Routes>
 )
 
 const UserRoutes = () => (
-  <>
+  <Routes>
     <Route path="edit/:userId" element={<UserForm />} />
-    <Route index element={<UserTable />} />
-  </>
+    <Route path="" element={<UserTable />} />
+  </Routes>
 )
 
 const TicketRoutes = () => (
-  <>
+  <Routes>
     <Route path="add" element={<TicketForm />} />
     <Route path="edit/:ticketId" element={<TicketForm />} />
-    <Route index element={<TicketTable />} />
-  </>
+    <Route path="" element={<TicketTable />} />
+  </Routes>
 )
 
-export default adminRoutes
+export default AdminRoutes

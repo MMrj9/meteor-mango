@@ -31,24 +31,24 @@ const DefaultMenuItems: MenuItem[] = [
   },
   {
     label: 'Company',
-    path: '/company',
+    path: '/admin/company',
   },
   {
     label: 'User',
-    path: '/user',
+    path: '/admin/user',
   },
   {
     label: 'Ticket',
-    path: '/ticket',
+    path: '/admin/ticket',
   },
 ]
 
-interface MainNavProps {
+interface AdminNavProps {
   isSidebarOpen: boolean
   setSidebarOpen: (isOpen: boolean) => void
 }
 
-const MainNav = ({ isSidebarOpen, setSidebarOpen }: MainNavProps) => {
+const AdminNav = ({ isSidebarOpen, setSidebarOpen }: AdminNavProps) => {
   const [searchTerm, setSearchTerm] = useState('')
   const [menuItems, setMenuItems] = useState(DefaultMenuItems)
 
@@ -128,4 +128,4 @@ const MainNav = ({ isSidebarOpen, setSidebarOpen }: MainNavProps) => {
   )
 }
 
-export default MainNav
+export default AdminNav
