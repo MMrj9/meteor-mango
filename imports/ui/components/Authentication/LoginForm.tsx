@@ -58,17 +58,8 @@ const LoginForm: React.FC = () => {
           duration: 5000,
           isClosable: true,
         })
-        setSubmitting(false)
-      } else {
-        toast({
-          title: 'Success',
-          description: 'Logged in successfully',
-          status: 'success',
-          duration: 5000,
-          isClosable: true,
-        })
-        navigate('/')
       }
+      setSubmitting(false)
     })
   }
 

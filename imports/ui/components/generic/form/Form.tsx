@@ -38,6 +38,7 @@ interface GenericFormProps<T> {
   onSubmit: (values: T) => void
   formFields: Record<string, FormField>
   collectionName: string
+  hideSave?: boolean
 }
 
 const GenericForm = <T extends Record<string, any>>({
@@ -45,6 +46,7 @@ const GenericForm = <T extends Record<string, any>>({
   onSubmit,
   formFields,
   collectionName,
+  hideSave,
 }: GenericFormProps<T>) => {
   const formik = useFormik({
     initialValues,
@@ -161,11 +163,13 @@ const GenericForm = <T extends Record<string, any>>({
               <Icon as={ArrowBackIcon} />
               <Text>Go Back</Text>
             </Button>
-            <Button colorScheme="teal" type="submit" size="sm">
-              <Flex align="center">
-                <Text>Save</Text>
-              </Flex>
-            </Button>
+            {hideSave && (
+              <Button colorScheme="teal" type="submit" size="sm">
+                <Flex align="center">
+                  <Text>Save</Text>
+                </Flex>
+              </Button>
+            )}
           </Flex>
         </form>
       </Box>

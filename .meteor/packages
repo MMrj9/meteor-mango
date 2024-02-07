@@ -27,3 +27,4 @@ alanning:roles
 check
 dburles:mongo-collection-instances
 aldeed:collection2
+communitypackages:react-router-ssr

@@ -2,14 +2,12 @@ import { Meteor } from 'meteor/meteor'
 import { Company } from '/imports/api/company'
 import { Changelog } from '/imports/api/changelog'
 import { AdminComment } from '/imports/api/adminComment'
+import { Ticket } from '/imports/api/ticket'
 
 Meteor.publish('company', function (companyId) {
-  // Check if companyId is provided and is a valid string
   if (companyId) {
-    // If companyId is provided, publish the specific company with the given ID
     return Company.find({ _id: companyId })
   } else {
-    // If companyId is not provided or not a valid string, publish all companies
     return Company.find({})
   }
 })
@@ -56,4 +54,12 @@ Meteor.publish('admincomment', function (collection, objectId) {
     { collection, objectId },
     { sort: { createdOn: -1 } },
   )
+})
+
+Meteor.publish('ticket', function (ticketId) {
+  if (ticketId) {
+    return Ticket.find({ _id: ticketId })
+  } else {
+    return Ticket.find({})
+  }
 })

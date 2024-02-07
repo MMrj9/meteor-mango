@@ -5,16 +5,14 @@ import { Meteor } from 'meteor/meteor'
 import { useNavigate, Link as RouterLink } from 'react-router-dom'
 import MainNav from './components/Nav/MainNav'
 
-const App: React.FC = (props: any) => {
+const AdminLayout: React.FC = (props: any) => {
   const navigate = useNavigate()
   const isLoggedIn = !!Meteor.userId()
   const username = Meteor.user()?.username
   const [isSidebarOpen, setSidebarOpen] = useState(false)
 
   const handleLogout = () => {
-    Meteor.logout(() => {
-      navigate('/login')
-    })
+    Meteor.logout()
   }
 
   return (
@@ -99,4 +97,4 @@ const App: React.FC = (props: any) => {
   )
 }
 
-export default App
+export default AdminLayout

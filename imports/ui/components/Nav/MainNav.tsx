@@ -37,6 +37,10 @@ const DefaultMenuItems: MenuItem[] = [
     label: 'User',
     path: '/user',
   },
+  {
+    label: 'Ticket',
+    path: '/ticket',
+  },
 ]
 
 interface MainNavProps {
