@@ -3,6 +3,7 @@ import { Company } from '/imports/api/company'
 import { Changelog } from '/imports/api/changelog'
 import { AdminComment } from '/imports/api/adminComment'
 import { Ticket } from '/imports/api/ticket'
+import { Notification } from '/imports/api/notifications'
 
 Meteor.publish('company', function (companyId) {
   if (companyId) {
@@ -62,4 +63,9 @@ Meteor.publish('ticket', function (ticketId) {
   } else {
     return Ticket.find({})
   }
+})
+
+Meteor.publish('notification', function () {
+  const user = Meteor.user()
+  if (user) return Notification.find({ user: user.username })
 })

@@ -4,6 +4,7 @@ import { HamburgerIcon } from '@chakra-ui/icons'
 import { Meteor } from 'meteor/meteor'
 import { useNavigate, Link as RouterLink } from 'react-router-dom'
 import AdminNav from './components/Nav/AdminNav'
+import Notifications from './components/generic/notifications/Notifications'
 
 const AdminLayout: React.FC = (props: any) => {
   const isLoggedIn = !!Meteor.userId()
@@ -44,6 +45,7 @@ const AdminLayout: React.FC = (props: any) => {
             {/* ... (rest of the header content) */}
             {isLoggedIn ? (
               <>
+                <Notifications />
                 <Text ml="2">Welcome, {username}</Text>
                 <Button
                   onClick={handleLogout}
