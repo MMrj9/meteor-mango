@@ -1,14 +1,15 @@
 import React, { useState } from 'react'
 import { Box, useToast } from '@chakra-ui/react'
-import GenericTable from '../generic/table/Table'
+import GenericTable from '../../../components/generic/table/Table'
 import { Meteor } from 'meteor/meteor'
 import { useTracker } from 'meteor/react-meteor-data' // Import useTracker
+import { Company } from '/imports/api/company'
 import {
   DisabledTableFilter,
   SelectedFilters,
   TableFilter,
   buildQueryFromSelectedFilters,
-} from '../generic/filters/Filters'
+} from '../../../components/generic/filters/Filters'
 import {
   ActionFailedToastData,
   ActionSuccessToastData,
@@ -16,21 +17,20 @@ import {
   BaseEnableAction,
   DisableActionEffect,
   EnableActionEffect,
-} from '../generic/actions/Actions'
-import { Ticket } from '/imports/api/ticket'
+} from '../../../components/generic/actions/Actions'
 
-const CollectionName = 'ticket'
+const CollectionName = 'company'
 
 const Columns = [
-  { key: 'type', label: 'Type' },
   { key: 'name', label: 'Name' },
-  { key: 'email', label: 'Email' },
-  { key: 'subject', label: 'Subject' },
-] as { key: keyof Ticket; label: string }[]
+  { key: 'description', label: 'Description' },
+  { key: 'numberOfEmployees', label: 'Number of Employees' },
+  { key: 'createdOn', label: 'Created On' },
+] as { key: keyof Company; label: string }[]
 
 const Filters: TableFilter<SelectedFilters>[] = [DisabledTableFilter]
 
-const TicketTable: React.FC = () => {
+const CompanyTable: React.FC = () => {
   const toast = useToast()
   const [selectedFilters, setSelectedFilters] = useState({})
 
@@ -39,7 +39,7 @@ const TicketTable: React.FC = () => {
       const handle = Meteor.subscribe(CollectionName)
       if (handle.ready()) {
         const query = buildQueryFromSelectedFilters(Filters, selectedFilters)
-        return Ticket.find(query).fetch()
+        return Company.find(query).fetch()
       }
     }
 
@@ -86,10 +86,9 @@ const TicketTable: React.FC = () => {
         selectedFilters={selectedFilters}
         setSelectedFilters={setSelectedFilters}
         actions={Actions}
-        add={false}
       />
     </Box>
   )
 }
 
-export default TicketTable
+export default CompanyTable

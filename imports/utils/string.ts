@@ -20,4 +20,8 @@ const validateString = (
   }
 }
 
-export { validateEmail, validateString }
+const truncate = (text: string, max: number) => {
+  return text.length > max ? text.slice(0, max) + '...' : text
+}
+
+export { validateEmail, validateString, truncate }

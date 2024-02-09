@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from 'react'
 //@ts-ignore
 import { Roles } from 'meteor/alanning:roles'
-import GenericForm, { FormField } from '../generic/form/Form'
+import GenericForm, { FormField } from '../../../components/generic/form/Form'
 import { Meteor } from 'meteor/meteor'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useToast } from '@chakra-ui/react'
 import { Tracker } from 'meteor/tracker'
 import { AllRoles } from '/imports/api/user'
-import { processValues } from '../generic/form/utils'
-import { mapValuesToAutocompleteOptions } from './utils'
-import Schema from '/imports/api'
+import {
+  mapValuesToAutocompleteOptions,
+  processValues,
+} from '../../../components/generic/form/utils'
+import { error, success } from '/imports/ui/components/generic/utils'
 
 interface UserFormProps {}
 
@@ -68,24 +70,11 @@ const UserForm: React.FC<UserFormProps> = () => {
 
   const handleSubmit = (values: Meteor.User) => {
     processValues(UserFormFields, values)
-    Meteor.call('user.update', values, Meteor.user(), (error: Meteor.Error) => {
-      if (error) {
-        toast({
-          title: 'Error',
-          description: `Failed to save user: ${error.reason}`,
-          status: 'error',
-          duration: 5000,
-          isClosable: true,
-        })
+    Meteor.call('user.update', values, Meteor.user(), (err: Meteor.Error) => {
+      if (err) {
+        error(toast, `Failed to save user: ${err.reason}`)
       } else {
-        toast({
-          title: 'Success',
-          description: 'User saved successfully',
-          status: 'success',
-          duration: 5000,
-          isClosable: true,
-        })
-
+        success(toast, 'User saved successfully')
         navigate('/user')
       }
     })

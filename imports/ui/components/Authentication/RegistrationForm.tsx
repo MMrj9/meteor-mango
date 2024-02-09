@@ -12,6 +12,7 @@ import { Formik, Form, Field, FieldProps, FormikHelpers } from 'formik'
 import * as Yup from 'yup'
 import { Meteor } from 'meteor/meteor'
 import { useNavigate } from 'react-router-dom'
+import { error, info, success } from '../generic/utils'
 
 interface RegistrationFormValues {
   email: string
@@ -55,12 +56,7 @@ const RegistrationForm: React.FC = () => {
   const toast = useToast()
 
   if (Meteor.isClient && Meteor.userId()) {
-    toast({
-      title: '',
-      description: `Already logged in`,
-      status: 'info',
-      isClosable: true,
-    })
+    info(toast, `Already logged in`)
     navigate('/')
   }
 
@@ -73,25 +69,13 @@ const RegistrationForm: React.FC = () => {
       username: values.username,
       password: values.password,
     }
-    Meteor.call('user.register', user, (error: Meteor.Error) => {
-      if (error) {
-        toast({
-          title: 'Error',
-          description: `Failed to register user: ${error.message}`,
-          status: 'error',
-          duration: 5000,
-          isClosable: true,
-        })
+    Meteor.call('user.register', user, (err: Meteor.Error) => {
+      if (err) {
+        error(toast, `Failed to register user: ${err.message}`)
         setSubmitting(false)
       } else {
         resetForm()
-        toast({
-          title: 'Success',
-          description: 'User created',
-          status: 'success',
-          duration: 5000,
-          isClosable: true,
-        })
+        success(toast, 'User created')
         navigate('/login')
       }
     })

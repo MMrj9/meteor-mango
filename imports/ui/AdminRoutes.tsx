@@ -1,14 +1,14 @@
 import React from 'react'
 import { Routes, Route } from 'react-router-dom'
 import Main from './components/Main'
-import CompanyForm from './components/Company/CompanyForm'
-import CompanyTable from './components/Company/CompanyTable'
+import CompanyForm from './pages/admin/Company/CompanyForm'
+import CompanyTable from './pages/admin/Company/CompanyTable'
 import RegistrationForm from './components/Authentication/RegistrationForm'
 import LoginForm from './components/Authentication/LoginForm'
-import UserTable from './components/User/UserTable'
-import UserForm from './components/User/UserForm'
-import TicketForm from './components/Ticket/TicketForm'
-import TicketTable from './components/Ticket/TicketTable'
+import UserTable from './pages/admin/User/UserTable'
+import UserForm from './pages/admin/User/UserForm'
+import TicketForm from './pages/admin/Ticket/TicketForm'
+import TicketTable from './pages/admin/Ticket/TicketTable'
 
 const AdminRoutes = () => (
   <Routes>

@@ -67,5 +67,10 @@ Meteor.publish('ticket', function (ticketId) {
 
 Meteor.publish('notification', function () {
   const user = Meteor.user()
-  if (user) return Notification.find({ user: user.username })
+  if (user) {
+    return Notification.find(
+      { user: user.username },
+      { sort: { createdOn: -1 } },
+    )
+  }
 })

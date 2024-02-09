@@ -156,7 +156,7 @@ const GenericForm = <T extends Record<string, any>>({
             <Button
               colorScheme="gray"
               as={RouterLink}
-              to={`/${collectionName}`}
+              to={`/admin/${collectionName}`}
               size="sm"
               mr="1"
             >

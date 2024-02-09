@@ -1,6 +1,22 @@
-import { FormField } from './Form'
-//@ts-ignore
+// @ts-ignore
 import { Roles } from 'meteor/alanning:roles'
+import _ from 'lodash'
+import { FormField } from './Form'
+
+const mapValuesToAutocompleteOptions = (
+  values: string[],
+  path: string,
+  formFields: Record<string, FormField>,
+) => {
+  //@ts-ignore
+  _.set(
+    formFields,
+    path,
+    values.map((role: string) => {
+      return { value: role, label: role }
+    }),
+  )
+}
 
 const processValues = (
   fields: Record<string, FormField>,
@@ -23,4 +39,4 @@ const processValues = (
   return values
 }
 
-export { processValues }
+export { mapValuesToAutocompleteOptions, processValues }

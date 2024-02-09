@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { Company } from '/imports/api/company'
-import GenericForm, { FormField } from '../generic/form/Form'
+import GenericForm, { FormField } from '../../../components/generic/form/Form'
 import { Meteor } from 'meteor/meteor'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useToast } from '@chakra-ui/react'
 import { Tracker } from 'meteor/tracker'
 import { formatDate } from '/imports/utils/date'
+import { error, success } from '/imports/ui/components/generic/utils'
 
 interface CompanyFormProps {}
 
@@ -77,24 +78,11 @@ const CompanyForm: React.FC<CompanyFormProps> = () => {
   }, [companyId])
 
   const handleSubmit = (values: Company) => {
-    Meteor.call('company.insertOrUpdate', values, (error: Meteor.Error) => {
-      if (error) {
-        toast({
-          title: 'Error',
-          description: `Failed to save company: ${error.reason}`,
-          status: 'error',
-          duration: 5000,
-          isClosable: true,
-        })
+    Meteor.call('company.insertOrUpdate', values, (err: Meteor.Error) => {
+      if (err) {
+        error(toast, `Failed to save company: ${err.reason}`)
       } else {
-        toast({
-          title: 'Success',
-          description: 'Company saved successfully',
-          status: 'success',
-          duration: 5000,
-          isClosable: true,
-        })
-
+        success(toast, 'Company saved successfully')
         navigate('/company')
       }
     })

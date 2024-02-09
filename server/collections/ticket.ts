@@ -18,7 +18,7 @@ Meteor.methods({
       sendNotificationToGroups(
         ['admin'],
         `[Ticket Created] ${ticket.subject}`,
-        `/admin/ticket/${_id}`,
+        `/admin/ticket/edit/${_id}`,
       )
     }
   },

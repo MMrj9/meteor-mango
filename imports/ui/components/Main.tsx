@@ -1,9 +1,9 @@
 import React from 'react'
-import TicketUserForm from './Ticket/TicketUserForm'
+import TicketForm from '../pages/default/Ticket/TicketForm'
 
 const Main = () => (
   <>
-    <TicketUserForm />
+    <TicketForm />
   </>
 )
 

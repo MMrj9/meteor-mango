@@ -13,6 +13,7 @@ import {
 import { Formik, Form, Field, FieldProps, FormikHelpers } from 'formik'
 import * as Yup from 'yup'
 import { Meteor } from 'meteor/meteor'
+import { info } from '../generic/utils'
 
 interface LoginFormValues {
   usernameOrEmail: string
@@ -34,12 +35,7 @@ const LoginForm: React.FC = () => {
   const toast = useToast()
 
   if (Meteor.isClient && Meteor.userId()) {
-    toast({
-      title: '',
-      description: `Already logged in`,
-      status: 'info',
-      isClosable: true,
-    })
+    info(toast, `Already logged in`)
     navigate('/')
   }
 
@@ -51,13 +47,7 @@ const LoginForm: React.FC = () => {
 
     Meteor.loginWithPassword(usernameOrEmail, password, (error: any) => {
       if (error) {
-        toast({
-          title: 'Error',
-          description: `Failed to log in: ${error.message}`,
-          status: 'error',
-          duration: 5000,
-          isClosable: true,
-        })
+        error(toast, `Failed to log in: ${error.message}`)
       }
       setSubmitting(false)
     })

@@ -14,6 +14,7 @@ import {
 } from '@chakra-ui/react'
 import { AdminComment } from '/imports/api/adminComment'
 import moment from 'moment'
+import { error, success } from '../utils'
 
 const AdminComments: React.FC<{ collection: string; objectId: string }> = ({
   collection,
@@ -42,23 +43,11 @@ const AdminComments: React.FC<{ collection: string; objectId: string }> = ({
       Meteor.call(
         'admincomment.insertOrUpdate',
         comment,
-        (error: Meteor.Error) => {
-          if (error) {
-            toast({
-              title: 'Error',
-              description: `Failed to save comment: ${error.reason}`,
-              status: 'error',
-              duration: 5000,
-              isClosable: true,
-            })
+        (err: Meteor.Error) => {
+          if (err) {
+            error(toast, `Failed to save comment: ${err.reason}`)
           } else {
-            toast({
-              title: 'Success',
-              description: 'Comment saved successfully',
-              status: 'success',
-              duration: 5000,
-              isClosable: true,
-            })
+            success(toast, 'Comment saved successfully')
           }
           setNewComment('')
         },

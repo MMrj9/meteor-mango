@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import GenericForm, { FormField } from '../generic/form/Form'
+import GenericForm, { FormField } from '../../../components/generic/form/Form'
 import { Meteor } from 'meteor/meteor'
 import { useParams } from 'react-router-dom'
 import { Tracker } from 'meteor/tracker'
