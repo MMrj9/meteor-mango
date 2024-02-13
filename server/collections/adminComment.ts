@@ -2,13 +2,17 @@ import { Meteor } from 'meteor/meteor'
 import { validateObject } from '/imports/utils/object'
 import { validateUserPermissions } from '/imports/api/user'
 import { AdminComment } from '/imports/api/adminComment'
+import { sendNotificationToUsers } from './notification'
 
 function validateAdminComment(adminComment: AdminComment) {
   validateObject(adminComment)
 }
 
 Meteor.methods({
-  'admincomment.insertOrUpdate'(adminComment) {
+  'admincomment.insertOrUpdate'(
+    adminComment: AdminComment,
+    taggedUsers: string[],
+  ) {
     validateUserPermissions()
     validateAdminComment(adminComment)
 
@@ -22,6 +26,11 @@ Meteor.methods({
       console.log(adminComment)
       adminComment.createdOn = new Date()
       AdminComment.insert(adminComment)
+      sendNotificationToUsers(
+        taggedUsers,
+        `[Tagged In Comment] ${adminComment.text}`,
+        `/admin/${adminComment.collection}/edit/${adminComment._id}`,
+      )
     }
   },
 })

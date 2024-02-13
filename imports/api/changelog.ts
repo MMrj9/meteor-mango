@@ -76,7 +76,7 @@ Changelog.attachSchema(Schema.Changelog)
 
 const changelogIgnoreFields = [
   'created_on',
-  'updated_on',
+  'updatedOn',
   'createdAt',
   'services',
   'emails',

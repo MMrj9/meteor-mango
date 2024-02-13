@@ -10,7 +10,7 @@ Meteor.methods({
 
       logChanges(ticket._id, 'ticket', 'update', existingTicket, ticket)
 
-      ticket.updated_on = new Date()
+      ticket.updatedOn = new Date()
       Ticket.update(ticket._id, { $set: ticket })
     } else {
       ticket.createdOn = new Date()

@@ -27,7 +27,7 @@ Meteor.methods({
 
       logChanges(company._id, 'company', 'update', existingCompany, company)
 
-      company.updated_on = new Date()
+      company.updatedOn = new Date()
       Company.update(company._id, { $set: company })
     } else {
       company.createdOn = new Date()

@@ -85,11 +85,11 @@ Schema.User = new SimpleSchema({
 //@ts-ignore
 Meteor.users.attachSchema(Schema.User)
 
-const AllRoles = ['admin', 'manager', 'basic']
+export const AllRoles = ['admin', 'manager', 'basic']
 
-const DefaultRoles = ['admin']
+export const DefaultRoles = ['admin']
 
-const AdminRoles = ['admin']
+export const AdminRoles = ['admin']
 
 const validateUserIsAdmin = (user: Meteor.User) => {
   return Roles.userIsInRole(user, AdminRoles)
@@ -108,11 +108,4 @@ const getUserName = () => {
   return user?.username
 }
 
-export {
-  AllRoles,
-  DefaultRoles,
-  Profile,
-  validateUserIsAdmin,
-  validateUserPermissions,
-  getUserName,
-}
+export { Profile, validateUserIsAdmin, validateUserPermissions, getUserName }

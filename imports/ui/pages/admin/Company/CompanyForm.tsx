@@ -30,7 +30,7 @@ const formFields: Record<string, FormField> = {
     hideOnCreate: true,
     format: formatDate,
   },
-  updated_on: {
+  updatedOn: {
     label: 'Updated On',
     disabled: true,
     hideOnCreate: true,

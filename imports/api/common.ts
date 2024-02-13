@@ -1,6 +1,6 @@
 interface Timestamped {
   createdOn?: Date
-  updated_on?: Date
+  updatedOn?: Date
 }
 
 interface Disabled {

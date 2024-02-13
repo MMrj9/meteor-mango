@@ -5,6 +5,7 @@ import { Roles } from 'meteor/alanning:roles'
 import { validateEmail, validateString } from '/imports/utils/string'
 import { validateObject } from '/imports/utils/object'
 import {
+  AdminRoles,
   AllRoles,
   DefaultRoles,
   Profile,
@@ -75,6 +76,10 @@ Meteor.methods({
 
     const updatedUser = getUserById(data._id)
     logChanges(_id, 'user', 'update', user, updatedUser)
+  },
+  'user.get.admin.usernames': () => {
+    const admins = Roles.getUsersInRole(AdminRoles).fetch()
+    return admins.map((admin: Meteor.User) => admin.username)
   },
 })
 

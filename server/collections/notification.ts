@@ -16,6 +16,18 @@ export const sendNotificationToGroups = (
   })
 }
 
+export const sendNotificationToUsers = (
+  usernames: string[],
+  content: string,
+  path?: string,
+) => {
+  const baseNotification = { content, path, createdOn: new Date() }
+  usernames.forEach((username: string) => {
+    const notification = { ...baseNotification, user: username }
+    Notification.insert(notification)
+  })
+}
+
 Meteor.methods({})
 
 console.log(Notification.find().fetch())
