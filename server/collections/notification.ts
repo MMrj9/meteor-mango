@@ -1,7 +1,7 @@
 import { Meteor } from 'meteor/meteor'
 //@ts-ignore
 import { Roles } from 'meteor/alanning:roles'
-import { Notification } from '/imports/api/notifications'
+import { Notification } from '/imports/api/notification'
 
 export const sendNotificationToGroups = (
   roles: string[],
@@ -29,5 +29,3 @@ export const sendNotificationToUsers = (
 }
 
 Meteor.methods({})
-
-console.log(Notification.find().fetch())

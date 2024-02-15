@@ -9,6 +9,7 @@ import UserTable from './pages/admin/User/UserTable'
 import UserForm from './pages/admin/User/UserForm'
 import TicketForm from './pages/admin/Ticket/TicketForm'
 import TicketTable from './pages/admin/Ticket/TicketTable'
+import NotificationTable from './pages/admin/Notification/NotificationTable'
 
 const AdminRoutes = () => (
   <Routes>
@@ -18,6 +19,7 @@ const AdminRoutes = () => (
     <Route path="company/*" element={<CompanyRoutes />} />
     <Route path="user/*" element={<UserRoutes />} />
     <Route path="ticket/*" element={<TicketRoutes />} />
+    <Route path="notification/*" element={<NotificationRoutes />} />
   </Routes>
 )
 
@@ -41,6 +43,12 @@ const TicketRoutes = () => (
     <Route path="add" element={<TicketForm />} />
     <Route path="edit/:ticketId" element={<TicketForm />} />
     <Route path="" element={<TicketTable />} />
+  </Routes>
+)
+
+const NotificationRoutes = () => (
+  <Routes>
+    <Route path="" element={<NotificationTable />} />
   </Routes>
 )
 

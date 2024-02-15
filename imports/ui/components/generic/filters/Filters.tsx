@@ -14,6 +14,10 @@ interface TableFilter<T> {
   options?: TableFilterOption[]
 }
 
+export const NonDisabledFilter = {
+  $or: [{ disabled: false }, { disabled: { $exists: false } }],
+}
+
 const DisabledTableFilter: TableFilter<SelectedFilters> = {
   key: 'active',
   label: 'Active',
@@ -22,7 +26,7 @@ const DisabledTableFilter: TableFilter<SelectedFilters> = {
     { label: 'All', value: null },
     {
       label: 'Active',
-      value: { $or: [{ disabled: false }, { disabled: { $exists: false } }] },
+      value: NonDisabledFilter,
     },
     { label: 'Not Active', value: { disabled: true } },
   ],

@@ -180,7 +180,7 @@ const GenericTable = ({
           </Thead>
           <Tbody>
             {filteredData.map((item: Record<string, any>, index: number) => (
-              <Tr key={index}>
+              <Tr key={index} backgroundColor={item.disabled ? 'gray.50' : ''}>
                 {columns.map((column, columnIndex) => (
                   <Td key={column.key as string}>
                     {columnIndex === 0 ? (

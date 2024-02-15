@@ -50,7 +50,6 @@ const FloatingSelectionDropdown: React.FC<FloatingSelectionDropdownProps> = ({
           }
           _hover={{ backgroundColor: '#f0f0f0' }}
           onClick={(event) => handleSelect(event, option)}
-          onKeyDown={() => console.log(option)}
         >
           {option}
         </Box>

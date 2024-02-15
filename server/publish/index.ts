@@ -3,7 +3,7 @@ import { Company } from '/imports/api/company'
 import { Changelog } from '/imports/api/changelog'
 import { AdminComment } from '/imports/api/adminComment'
 import { Ticket } from '/imports/api/ticket'
-import { Notification } from '/imports/api/notifications'
+import { Notification } from '/imports/api/notification'
 
 Meteor.publish('company', function (companyId) {
   if (companyId) {

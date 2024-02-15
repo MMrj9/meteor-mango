@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Grid, GridItem, Button, Flex, Spacer, Text } from '@chakra-ui/react'
 import { HamburgerIcon } from '@chakra-ui/icons'
 import { Meteor } from 'meteor/meteor'
-import { useNavigate, Link as RouterLink } from 'react-router-dom'
+import { Link as RouterLink } from 'react-router-dom'
 import AdminNav from './components/Nav/AdminNav'
 import Notifications from './components/generic/notifications/Notifications'
 

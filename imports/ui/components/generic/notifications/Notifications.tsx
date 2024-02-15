@@ -1,16 +1,29 @@
 import React, { useState } from 'react'
-import { Box, Badge, IconButton, Stack, Collapse, Text } from '@chakra-ui/react'
-import { BellIcon } from '@chakra-ui/icons'
+import {
+  Box,
+  Badge,
+  IconButton,
+  Stack,
+  Collapse,
+  Text,
+  Flex,
+  useToast,
+} from '@chakra-ui/react'
+import { BellIcon, CheckIcon } from '@chakra-ui/icons'
 import { Meteor } from 'meteor/meteor'
 import { useTracker } from 'meteor/react-meteor-data'
-import { Notification } from '/imports/api/notifications'
+import { Notification } from '/imports/api/notification'
 import { useNavigate } from 'react-router-dom'
 import moment from 'moment'
 import { truncate } from '/imports/utils/string'
+import { DisableActionEffect } from '../actions/Actions'
+import { error } from '../utils'
+import { NonDisabledFilter } from '../filters/Filters'
 
 const Notifications = () => {
   const [isOpen, setIsOpen] = useState(false)
   const navigate = useNavigate()
+  const toast = useToast()
 
   const toggleNotifications = () => {
     setIsOpen(!isOpen)
@@ -18,8 +31,13 @@ const Notifications = () => {
 
   const notifications: Notification[] | undefined = useTracker(() => {
     if (Meteor.isClient) {
-      Meteor.subscribe('notification', Notification.find().fetch())
-      return Notification.find({}).fetch()
+      const subscription = Meteor.subscribe('notification')
+
+      if (subscription.ready()) {
+        return Notification.find(NonDisabledFilter, {
+          sort: { createdOn: -1 },
+        }).fetch()
+      }
     }
   })
 
@@ -27,6 +45,14 @@ const Notifications = () => {
 
   const handleNotificationClick = (path: string) => {
     navigate(path) // Navigate to the specified path
+  }
+
+  const markAsRead = async (id: string) => {
+    try {
+      await DisableActionEffect('notification', id)
+    } catch (err) {
+      error(toast, `Error while marking notification as read`)
+    }
   }
 
   return (
@@ -78,12 +104,42 @@ const Notifications = () => {
                   <Text fontSize="sm" color="gray.500">
                     {moment(notification.createdOn).format('YYYY-MM-DD HH:mm')}
                   </Text>
-                  <Text>{truncate(notification.content, 100)}</Text>
+                  <Flex>
+                    <Box flex={1}>
+                      <Text>{truncate(notification.content, 100)}</Text>
+                    </Box>
+                    <IconButton
+                      size="xs"
+                      variant="outline"
+                      colorScheme="teal"
+                      aria-label="Mark as Read"
+                      icon={<CheckIcon />}
+                      onClick={(e) => {
+                        e.stopPropagation() // Stop event propagation
+                        markAsRead(notification._id)
+                      }}
+                    />
+                  </Flex>
                 </Box>
               ))
             ) : (
               <Box>No notifications</Box>
             )}
+            {/* "View All" link */}
+            <Box
+              textAlign="center"
+              py={2}
+              borderTopWidth="1px"
+              borderTopColor="gray.200"
+            >
+              <Text
+                color="teal.500"
+                cursor="pointer"
+                onClick={() => navigate('/admin/notification')}
+              >
+                View All
+              </Text>
+            </Box>
           </Stack>
         </Box>
       </Collapse>

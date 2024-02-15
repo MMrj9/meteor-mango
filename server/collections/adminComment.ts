@@ -23,13 +23,12 @@ Meteor.methods({
       adminComment.updatedOn = new Date()
       AdminComment.update(adminComment._id, { $set: adminComment })
     } else {
-      console.log(adminComment)
       adminComment.createdOn = new Date()
       AdminComment.insert(adminComment)
       sendNotificationToUsers(
         taggedUsers,
         `[Tagged In Comment] ${adminComment.text}`,
-        `/admin/${adminComment.collection}/edit/${adminComment._id}`,
+        `/admin/${adminComment.collection}/edit/${adminComment.objectId}`,
       )
     }
   },
