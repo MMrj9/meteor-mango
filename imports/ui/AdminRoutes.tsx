@@ -14,8 +14,6 @@ import NotificationTable from './pages/admin/Notification/NotificationTable'
 const AdminRoutes = () => (
   <Routes>
     <Route path="/" element={<Main />} />
-    <Route path="/login" element={<LoginForm />} />
-    <Route path="/register" element={<RegistrationForm />} />
     <Route path="company/*" element={<CompanyRoutes />} />
     <Route path="user/*" element={<UserRoutes />} />
     <Route path="ticket/*" element={<TicketRoutes />} />

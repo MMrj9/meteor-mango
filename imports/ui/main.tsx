@@ -6,6 +6,7 @@ import { useTracker } from 'meteor/react-meteor-data'
 import { Meteor } from 'meteor/meteor'
 import AdminRoutes from './AdminRoutes'
 import LoginForm from './components/Authentication/LoginForm'
+import RegistrationForm from './components/Authentication/RegistrationForm'
 import DefaultRoutes from './DefaultRoutes'
 import thunk from 'redux-thunk'
 import { ChakraProvider, ColorModeScript, theme } from '@chakra-ui/react'
@@ -38,6 +39,11 @@ const App = () => {
         path="/login"
         element={user ? <Navigate to="/admin" /> : <LoginForm />}
       />
+        <Route
+        path="/register"
+        element={user ? <Navigate to="/admin" /> : <RegistrationForm />}
+      />
+
 
       {/* Default Routes */}
       <Route path="/" element={<DefaultRoutes />} />
