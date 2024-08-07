@@ -163,7 +163,7 @@ const GenericForm = <T extends Record<string, any>>({
               <Icon as={ArrowBackIcon} />
               <Text>Go Back</Text>
             </Button>
-            {hideSave && (
+            {!hideSave && (
               <Button colorScheme="teal" type="submit" size="sm">
                 <Flex align="center">
                   <Text>Save</Text>

@@ -75,7 +75,7 @@ const UserForm: React.FC<UserFormProps> = () => {
         error(toast, `Failed to save user: ${err.reason}`)
       } else {
         success(toast, 'User saved successfully')
-        navigate('/user')
+        navigate('/admin/user')
       }
     })
   }

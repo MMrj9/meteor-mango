@@ -2,7 +2,7 @@ import { Accounts } from 'meteor/accounts-base'
 import { Meteor } from 'meteor/meteor'
 //@ts-ignore
 import { Roles } from 'meteor/alanning:roles'
-import { validateEmail, validateString } from '/imports/utils/string'
+import { validateEmail } from '/imports/utils/string'
 import { validateObject } from '/imports/utils/object'
 import {
   AdminRoles,
@@ -12,6 +12,7 @@ import {
   validateUserPermissions,
 } from '/imports/api/user'
 import { logChanges } from '/imports/api/changelog'
+import { check } from 'meteor/check'
 
 function validateUser(user: any) {
   validateObject(user)
@@ -73,9 +74,31 @@ Meteor.methods({
           Roles.removeUsersFromRoles(user._id, [existingRole])
       })
     }
-
+    
     const updatedUser = getUserById(data._id)
     logChanges(_id, 'user', 'update', user, updatedUser)
+  },
+  'user.profile.update': (user_id: string, profileData: Profile) => {
+    check(user_id, String);
+    check(profileData, Object);
+
+    if (user_id !== Meteor.userId()) {
+      throw new Meteor.Error('invalid-permissions', 'Invalid Permissions');
+    }
+
+    const user = Meteor.users.findOne(user_id);
+    if (!user) {
+      throw new Meteor.Error('user-not-found', 'User not found');
+    }
+
+    Meteor.users.update(user_id, {
+      $set: {
+        profile: profileData,
+      },
+    });
+
+    const updatedUser = Meteor.users.findOne(user_id);
+    logChanges(user_id, 'user', 'update', user, updatedUser);
   },
   'user.get.admin.usernames': () => {
     const admins = Roles.getUsersInRole(AdminRoles).fetch()

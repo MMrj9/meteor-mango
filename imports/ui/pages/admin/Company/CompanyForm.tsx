@@ -83,7 +83,7 @@ const CompanyForm: React.FC<CompanyFormProps> = () => {
         error(toast, `Failed to save company: ${err.reason}`)
       } else {
         success(toast, 'Company saved successfully')
-        navigate('/company')
+        navigate('/admin/company')
       }
     })
   }

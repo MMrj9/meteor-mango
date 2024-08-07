@@ -1,14 +1,14 @@
 import React, { useState } from 'react'
-import { Grid, GridItem, Button, Flex, Spacer, Text } from '@chakra-ui/react'
+import { Grid, GridItem, Button, Flex, Spacer } from '@chakra-ui/react'
 import { HamburgerIcon } from '@chakra-ui/icons'
 import { Meteor } from 'meteor/meteor'
 import { Link as RouterLink } from 'react-router-dom'
 import AdminNav from './components/Nav/AdminNav'
 import Notifications from './components/generic/notifications/Notifications'
+import UserProfileLink from './components/generic/nav/UserProfileLink'
 
 const AdminLayout: React.FC = (props: any) => {
   const isLoggedIn = !!Meteor.userId()
-  const username = Meteor.user()?.username
   const [isSidebarOpen, setSidebarOpen] = useState(false)
 
   const handleLogout = () => {
@@ -46,7 +46,7 @@ const AdminLayout: React.FC = (props: any) => {
             {isLoggedIn ? (
               <>
                 <Notifications />
-                <Text ml="2">Welcome, {username}</Text>
+                <UserProfileLink />
                 <Button
                   onClick={handleLogout}
                   colorScheme="teal"

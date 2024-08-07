@@ -46,7 +46,7 @@ const App = () => {
 
 
       {/* Default Routes */}
-      <Route path="/" element={<DefaultRoutes />} />
+      <Route path="/*" element={<DefaultRoutes />} />
     </Routes>
   )
 }
