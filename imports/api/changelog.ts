@@ -93,38 +93,43 @@ function logChanges(
   const user = getUserName()
   const changes: FieldChange[] = []
 
-  Object.keys(updatedDocument).forEach((field) => {
-    const fullPath = parentField ? `${parentField}.${field}` : field
+  let keys = []
+  if (Array.isArray(updatedDocument))
+    keys = Array.from(Array(updatedDocument.length), (_, i) => i.toString())
+  else
+    keys = Object.keys(updatedDocument)
 
+  keys.forEach((key: string) => {
+    const fullPath = parentField ? `${parentField}.${key}` : key
     if (
-      updatedDocument[field] !== existingDocument[field] &&
+      (!existingDocument || updatedDocument[key] !== existingDocument[key] || updatedDocument.length !== existingDocument.length) &&
       !changelogIgnoreFields.includes(fullPath)
     ) {
       if (
-        typeof updatedDocument[field] === 'object' &&
-        updatedDocument[field] !== null
+        typeof updatedDocument[key] === 'object' &&
+        updatedDocument[key] !== null
       ) {
         // If the field is an object, recursively log changes for each nested field
         const nestedChanges = logChanges(
           objectId,
           collection,
           changeType,
-          existingDocument[field],
-          updatedDocument[field],
+          existingDocument[key],
+          updatedDocument[key],
           fullPath,
         )
         changes.push(...nestedChanges)
       } else {
         changes.push({
           field: fullPath,
-          oldValue: existingDocument[field],
-          newValue: updatedDocument[field],
+          oldValue: existingDocument ? existingDocument[key] : undefined,
+          newValue: updatedDocument[key],
         })
       }
     }
   })
 
-  if (changes.length > 0) {
+  if (changes.length > 0 && user) {
     Changelog.insert({
       objectId,
       collection,

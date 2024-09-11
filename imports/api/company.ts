@@ -9,6 +9,7 @@ export interface Company extends Timestamped, Disabled {
   name: string
   description: string
   numberOfEmployees: number
+  tags: string[]
 }
 
 Schema.Company = new SimpleSchema({
@@ -29,6 +30,13 @@ Schema.Company = new SimpleSchema({
     label: 'Number of Employees',
     min: 0,
     max: 999,
+  },
+  tags: {
+    type: Array,
+    label: 'Tags',
+  },
+  'tags.$': {
+    type: String,
   },
   ...TimestampedSchemaBase,
   ...DisabledSchemaBase,

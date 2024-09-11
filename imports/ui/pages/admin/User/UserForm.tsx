@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 //@ts-ignore
 import { Roles } from 'meteor/alanning:roles'
-import GenericForm, { FormField } from '../../../components/generic/form/Form'
+import GenericForm, { FormField, FormFieldType } from '../../../components/generic/form/Form'
 import { Meteor } from 'meteor/meteor'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useToast } from '@chakra-ui/react'
@@ -26,7 +26,7 @@ const UserFormFields: Record<string, FormField> = {
   },
   roles: {
     label: 'roles',
-    type: 'autocomplete',
+    type: FormFieldType.AUTOCOMPLETE,
     autocompleteOptions: [],
     autocompleteInitialValues: [],
   },

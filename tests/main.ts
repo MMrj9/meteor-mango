@@ -1,3 +1,4 @@
+import { FormFieldType } from '/imports/ui/components/generic/form/Form'
 import { processValues } from '/imports/ui/components/generic/form/utils'
 import { assert } from 'chai'
 
@@ -18,7 +19,7 @@ describe('processValues function', () => {
     },
     roles: {
       label: 'roles',
-      type: 'autocomplete',
+      type: FormFieldType.AUTOCOMPLETE,
       autocompleteOptions: [
         { value: 'admin', label: 'admin' },
         { value: 'manager', label: 'manager' },

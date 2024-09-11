@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Company } from '/imports/api/company'
-import GenericForm, { FormField } from '../../../components/generic/form/Form'
+import GenericForm, { FormField, FormFieldType } from '../../../components/generic/form/Form'
 import { Meteor } from 'meteor/meteor'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useToast } from '@chakra-ui/react'
@@ -21,7 +21,12 @@ const formFields: Record<string, FormField> = {
   },
   numberOfEmployees: {
     label: 'Number of Employees',
-    type: 'number',
+    type: FormFieldType.NUMBER,
+    disabled: false,
+  },
+  tags: {
+    label: 'Tags',
+    type: FormFieldType.ARRAY,
     disabled: false,
   },
   createdOn: {
@@ -38,7 +43,7 @@ const formFields: Record<string, FormField> = {
   },
 }
 
-const initialValues = { name: '', description: '', numberOfEmployees: 0 }
+const initialValues = { name: '', description: '', numberOfEmployees: 0, tags: ["1", "2"] }
 
 const CompanyForm: React.FC<CompanyFormProps> = () => {
   const navigate = useNavigate()
