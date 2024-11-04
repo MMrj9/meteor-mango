@@ -1,9 +1,9 @@
 import { FormFieldType } from '/imports/ui/components/generic/form/Form'
-import { processValues } from '/imports/ui/components/generic/form/utils'
+import { processFormFieldsValues } from '/imports/ui/components/generic/form/utils'
 import { assert } from 'chai'
 
 //@ts-ignore
-describe('processValues function', () => {
+describe('processFormFieldsValues function', () => {
   const UserFormFields = {
     username: {
       label: 'Username',
@@ -29,17 +29,17 @@ describe('processValues function', () => {
   }
 
   //@ts-ignore
-  it('processValues should correctly handle autocomplete fields', () => {
-    const inputValues = {
+  it('processFormFieldsValues should correctly handle autocomplete fields', () => {
+    const input = {
       _id: '2CZ77sxvPLDnBa3Ng',
       emails: [
         {
-          address: 'miguelmorujao@gmail.com',
+          address: 'joaobaiao@gmail.com',
           verified: false,
         },
       ],
       profile: {},
-      username: 'miguelmorujao',
+      username: 'joaobaiao',
       roles: [
         {
           value: 'admin',
@@ -56,16 +56,16 @@ describe('processValues function', () => {
       _id: '2CZ77sxvPLDnBa3Ng',
       emails: [
         {
-          address: 'miguelmorujao@gmail.com',
+          address: 'joaobaiao@gmail.com',
           verified: false,
         },
       ],
       profile: {},
-      username: 'miguelmorujao',
+      username: 'joaobaiao',
       roles: ['admin', 'manager'],
     }
 
-    const processedValues = processValues(UserFormFields, inputValues)
+    const processedValues = processFormFieldsValues(UserFormFields, input)
 
     assert.deepEqual(processedValues, expectedOutput)
   })

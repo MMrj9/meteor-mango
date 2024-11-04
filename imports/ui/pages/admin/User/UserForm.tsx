@@ -9,7 +9,7 @@ import { Tracker } from 'meteor/tracker'
 import { AllRoles } from '/imports/api/user'
 import {
   mapValuesToAutocompleteOptions,
-  processValues,
+  processFormFieldsValues,
 } from '../../../components/generic/form/utils'
 import { error, success } from '/imports/ui/components/generic/utils'
 
@@ -69,7 +69,7 @@ const UserForm: React.FC<UserFormProps> = () => {
   }, [userId])
 
   const handleSubmit = (values: Meteor.User) => {
-    processValues(UserFormFields, values)
+    processFormFieldsValues(UserFormFields, values)
     Meteor.call('user.update', values, Meteor.user(), (err: Meteor.Error) => {
       if (err) {
         error(toast, `Failed to save user: ${err.reason}`)

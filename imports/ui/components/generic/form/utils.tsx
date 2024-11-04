@@ -18,7 +18,7 @@ const mapValuesToAutocompleteOptions = (
   )
 }
 
-const processValues = (
+const processFormFieldsValues = (
   fields: Record<string, FormField>,
   values: Record<string, any>,
 ) => {
@@ -39,4 +39,4 @@ const processValues = (
   return values
 }
 
-export { mapValuesToAutocompleteOptions, processValues }
+export { mapValuesToAutocompleteOptions, processFormFieldsValues }

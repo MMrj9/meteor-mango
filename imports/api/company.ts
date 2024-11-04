@@ -2,7 +2,7 @@ import { Mongo } from 'meteor/mongo'
 //@ts-ignore
 import SimpleSchema from 'meteor/aldeed:simple-schema'
 import { Disabled, Timestamped } from './common'
-import Schema, { DisabledSchemaBase, TimestampedSchemaBase } from '.'
+import Schema, { DisabledSchemaBase, FieldProperties, TimestampedSchemaBase } from '.'
 
 export interface Company extends Timestamped, Disabled {
   _id?: string
@@ -12,7 +12,7 @@ export interface Company extends Timestamped, Disabled {
   tags: string[]
 }
 
-Schema.Company = new SimpleSchema({
+const CompanySchema: Record<string, FieldProperties> = {
   name: {
     type: String,
     label: 'Name',
@@ -40,11 +40,13 @@ Schema.Company = new SimpleSchema({
   },
   ...TimestampedSchemaBase,
   ...DisabledSchemaBase,
-})
+}
+
+Schema.Company = new SimpleSchema(CompanySchema)
 
 const Company = new Mongo.Collection<Company>('company')
 
 //@ts-ignore
 Company.attachSchema(Schema.Company)
 
-export { Company }
+export { Company, CompanySchema }

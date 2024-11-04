@@ -45,7 +45,6 @@
     "mainModule": {
       "client": "client/main.tsx",
       "server": "server/main.tsx"
-    },
-    "testModule": "tests/main.ts"
+    }
   }
 }

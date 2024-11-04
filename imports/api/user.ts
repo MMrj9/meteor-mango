@@ -4,6 +4,7 @@ import { Meteor } from 'meteor/meteor'
 //@ts-ignore
 import SimpleSchema from 'meteor/aldeed:simple-schema'
 import Schema from '.'
+import { FormFieldType } from '../ui/components/generic/form/Form'
 
 interface Profile {
   firstName?: string
@@ -71,6 +72,7 @@ Schema.User = new SimpleSchema({
   },
   roles: {
     type: Array,
+    formFieldType: FormFieldType.AUTOCOMPLETE,
     optional: true,
   },
   'roles.$': {
