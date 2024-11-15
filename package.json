@@ -1,5 +1,5 @@
 {
-  "name": "continente-watcher",
+  "name": "meteor-mango",
   "private": true,
   "scripts": {
     "fresh-start": "meteor reset && meteor",
@@ -45,6 +45,9 @@
     "mainModule": {
       "client": "client/main.tsx",
       "server": "server/main.tsx"
+    },
+    "testModule": {
+      "server": "tests/main.ts"
     }
   }
 }

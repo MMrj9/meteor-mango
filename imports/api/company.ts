@@ -3,6 +3,7 @@ import { Mongo } from 'meteor/mongo'
 import SimpleSchema from 'meteor/aldeed:simple-schema'
 import { Disabled, Timestamped } from './common'
 import Schema, { DisabledSchemaBase, FieldProperties, TimestampedSchemaBase } from '.'
+import { stripMetadata } from './utils/simpleSchema'
 
 export interface Company extends Timestamped, Disabled {
   _id?: string
@@ -42,7 +43,7 @@ const CompanySchema: Record<string, FieldProperties> = {
   ...DisabledSchemaBase,
 }
 
-Schema.Company = new SimpleSchema(CompanySchema)
+Schema.Company = new SimpleSchema(stripMetadata(CompanySchema))
 
 const Company = new Mongo.Collection<Company>('company')
 

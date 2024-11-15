@@ -1,8 +1,9 @@
 import { Mongo } from 'meteor/mongo'
 //@ts-ignore
 import SimpleSchema from 'meteor/aldeed:simple-schema'
-import Schema, { DisabledSchemaBase, TimestampedSchemaBase } from '.'
+import Schema, { DisabledSchemaBase, FieldProperties, TimestampedSchemaBase } from '.'
 import { Disabled, Timestamped } from './common'
+import { stripMetadata } from './utils/simpleSchema'
 
 interface AdminComment extends Timestamped, Disabled {
   _id: string
@@ -12,7 +13,7 @@ interface AdminComment extends Timestamped, Disabled {
   text: string
 }
 
-Schema.AdminComment = new SimpleSchema({
+const AdminCommentSchema: Record<string, FieldProperties> = {
   _id: {
     type: String,
     optional: true,
@@ -35,7 +36,10 @@ Schema.AdminComment = new SimpleSchema({
   },
   ...TimestampedSchemaBase,
   ...DisabledSchemaBase,
-})
+}
+
+
+Schema.AdminComment = new SimpleSchema(stripMetadata(AdminCommentSchema))
 
 const AdminComment = new Mongo.Collection<AdminComment>('admincomment')
 

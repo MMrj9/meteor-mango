@@ -33,3 +33,5 @@ const generateFormFields = (schema: Record<string, FieldProperties>): Record<str
     })
     return formFields
 }
+
+export { getDisabledProperty, getTypeProperty, generateFormFields }

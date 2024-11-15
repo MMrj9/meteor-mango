@@ -1,8 +1,9 @@
 import { Mongo } from 'meteor/mongo'
 //@ts-ignore
 import SimpleSchema from 'meteor/aldeed:simple-schema'
-import Schema, { DisabledSchemaBase, TimestampedSchemaBase } from '.'
+import Schema, { DisabledSchemaBase, FieldProperties, TimestampedSchemaBase } from '.'
 import { Timestamped, Disabled } from './common'
+import { stripMetadata } from './utils/simpleSchema'
 
 interface Notification extends Timestamped, Disabled {
   _id: string
@@ -11,7 +12,7 @@ interface Notification extends Timestamped, Disabled {
   path?: string
 }
 
-Schema.Notification = new SimpleSchema({
+const NotificationSchema: Record<string, FieldProperties> = {
   _id: {
     type: String,
     optional: true,
@@ -32,7 +33,9 @@ Schema.Notification = new SimpleSchema({
   },
   ...TimestampedSchemaBase,
   ...DisabledSchemaBase,
-})
+}
+
+Schema.Notification = new SimpleSchema(stripMetadata(NotificationSchema))
 
 const Notification = new Mongo.Collection<Notification>('notification')
 

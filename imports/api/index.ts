@@ -4,17 +4,27 @@ import { FormFieldType } from '../ui/components/generic/form/Form'
 //@ts-ignore
 Collection2.load()
 
-const Schema: any = {
-  Company: null,
-  User: null,
+const Schema: any = {}
+
+interface SimpleSchemaField {
+  type: any;
+  label?: string;
+  optional?: boolean;
+  min?: number;
+  max?: number;
+  defaultValue?: any;
+  allowedValues?: any[];
+  autoValue?: () => any;
+  custom?: (value: any, obj: any) => string | undefined;
+  blackbox?: boolean;
+  decimal?: boolean;
+  exclusiveMin?: number;
+  exclusiveMax?: number;
+  regEx?: RegExp | RegExp[];
+  [key: string]: any; // Allow additional nested fields
 }
 
-interface FieldProperties {
-  type: any
-  label?: string
-  min?: number
-  max?: number
-  optional?: boolean 
+interface FieldProperties extends SimpleSchemaField {
   editable?: boolean
   formFieldType?: FormFieldType
 }
@@ -40,5 +50,5 @@ const DisabledSchemaBase = {
   },
 }
 
-export { TimestampedSchemaBase, DisabledSchemaBase, FieldProperties }
+export { TimestampedSchemaBase, DisabledSchemaBase, FieldProperties, SimpleSchemaField }
 export default Schema

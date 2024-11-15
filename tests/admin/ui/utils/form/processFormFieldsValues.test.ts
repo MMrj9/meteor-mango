@@ -1,13 +1,36 @@
 import { FormFieldType } from '/imports/ui/components/generic/form/Form'
 import { processFormFieldsValues } from '/imports/ui/components/generic/form/utils'
 import { assert } from 'chai'
-import { UserFormFields } from '/imports/ui/pages/admin/User/UserForm'
 
 //@ts-ignore
-describe('generateFormFields function', () => {
+describe('processFormFieldsValues function', () => {
+  const UserFormFields = {
+    username: {
+      label: 'Username',
+      disabled: true,
+      min: 5,
+      max: 20,
+    },
+    'emails[0].address': {
+      label: 'Email',
+      disabled: true,
+      min: 5,
+      max: 50,
+    },
+    roles: {
+      label: 'roles',
+      type: FormFieldType.AUTOCOMPLETE,
+      autocompleteOptions: [
+        { value: 'admin', label: 'admin' },
+        { value: 'manager', label: 'manager' },
+        { value: 'basic', label: 'basic' },
+      ],
+    },
+  }
 
-  it('generateFormFields Company', () => {
-    const inputValues = {
+  //@ts-ignore
+  it('processFormFieldsValues should correctly handle autocomplete fields', () => {
+    const input = {
       _id: '2CZ77sxvPLDnBa3Ng',
       emails: [
         {
@@ -42,10 +65,9 @@ describe('generateFormFields function', () => {
       roles: ['admin', 'manager'],
     }
 
-    const processedValues = processFormFieldsValues(UserFormFields, inputValues)
+    const processedValues = processFormFieldsValues(UserFormFields, input)
 
     assert.deepEqual(processedValues, expectedOutput)
   })
 
-  // Add more tests as needed
 })

@@ -3,8 +3,8 @@ import { Roles } from 'meteor/alanning:roles'
 import { Meteor } from 'meteor/meteor'
 //@ts-ignore
 import SimpleSchema from 'meteor/aldeed:simple-schema'
-import Schema from '.'
-import { FormFieldType } from '../ui/components/generic/form/Form'
+import Schema, { FieldProperties } from '.'
+import { stripMetadata } from './utils/simpleSchema'
 
 interface Profile {
   firstName?: string
@@ -27,7 +27,7 @@ Schema.UserProfile = new SimpleSchema({
   },
 })
 
-Schema.User = new SimpleSchema({
+const UserSchema: Record<string, FieldProperties> = {
   username: {
     type: String,
     optional: true,
@@ -72,7 +72,6 @@ Schema.User = new SimpleSchema({
   },
   roles: {
     type: Array,
-    formFieldType: FormFieldType.AUTOCOMPLETE,
     optional: true,
   },
   'roles.$': {
@@ -82,7 +81,10 @@ Schema.User = new SimpleSchema({
     type: Date,
     optional: true,
   },
-})
+}
+
+Schema.Company = new SimpleSchema(stripMetadata(UserSchema))
+
 
 //@ts-ignore
 Meteor.users.attachSchema(Schema.User)

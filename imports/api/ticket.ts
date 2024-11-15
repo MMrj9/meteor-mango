@@ -1,8 +1,9 @@
 import { Mongo } from 'meteor/mongo'
 //@ts-ignore
 import SimpleSchema from 'meteor/aldeed:simple-schema'
-import Schema, { DisabledSchemaBase, TimestampedSchemaBase } from '.'
+import Schema, { DisabledSchemaBase, FieldProperties, TimestampedSchemaBase } from '.'
 import { Timestamped, Disabled } from './common'
+import { stripMetadata } from './utils/simpleSchema'
 
 enum TicketType {
   Issue = 'Issue',
@@ -20,7 +21,7 @@ interface Ticket extends Timestamped, Disabled {
   user?: string
 }
 
-Schema.Ticket = new SimpleSchema({
+const TicketSchema: Record<string, FieldProperties> = {
   _id: {
     type: String,
     optional: true,
@@ -54,7 +55,9 @@ Schema.Ticket = new SimpleSchema({
   },
   ...TimestampedSchemaBase,
   ...DisabledSchemaBase,
-})
+}
+
+Schema.Ticket = new SimpleSchema(stripMetadata(TicketSchema))
 
 const Ticket = new Mongo.Collection<Ticket>('ticket')
 
