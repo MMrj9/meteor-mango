@@ -9,7 +9,7 @@ function validateAdminComment(adminComment: AdminComment) {
 }
 
 Meteor.methods({
-  'admincomment.insertOrUpdate'(
+  'AdminComment.insertOrUpdate'(
     adminComment: AdminComment,
     taggedUsers: string[],
   ) {

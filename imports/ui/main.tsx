@@ -39,11 +39,10 @@ const App = () => {
         path="/login"
         element={user ? <Navigate to="/admin" /> : <LoginForm />}
       />
-        <Route
+      <Route
         path="/register"
         element={user ? <Navigate to="/admin" /> : <RegistrationForm />}
       />
-
 
       {/* Default Routes */}
       <Route path="/*" element={<DefaultRoutes />} />

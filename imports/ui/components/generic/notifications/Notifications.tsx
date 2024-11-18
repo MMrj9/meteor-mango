@@ -31,7 +31,7 @@ const Notifications = () => {
 
   const notifications: Notification[] | undefined = useTracker(() => {
     if (Meteor.isClient) {
-      const subscription = Meteor.subscribe('notification')
+      const subscription = Meteor.subscribe('Notification')
 
       if (subscription.ready()) {
         return Notification.find(NonDisabledFilter, {

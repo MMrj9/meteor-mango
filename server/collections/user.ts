@@ -42,7 +42,7 @@ const getUserById = (_id: string) => {
 }
 
 Meteor.methods({
-  'user.register': async (data) => {
+  'User.register': async (data) => {
     validateUser(data)
 
     const profile: Profile = {}
@@ -54,7 +54,7 @@ Meteor.methods({
 
     return id
   },
-  'user.update': (data: any) => {
+  'User.insertOrUpdate': (data: any) => {
     validateUserPermissions()
 
     const _id = data._id
@@ -74,33 +74,33 @@ Meteor.methods({
           Roles.removeUsersFromRoles(user._id, [existingRole])
       })
     }
-    
+
     const updatedUser = getUserById(data._id)
     logChanges(_id, 'user', 'update', user, updatedUser)
   },
-  'user.profile.update': (user_id: string, profileData: Profile) => {
-    check(user_id, String);
-    check(profileData, Object);
+  'User.profile.update': (user_id: string, profileData: Profile) => {
+    check(user_id, String)
+    check(profileData, Object)
 
     if (user_id !== Meteor.userId()) {
-      throw new Meteor.Error('invalid-permissions', 'Invalid Permissions');
+      throw new Meteor.Error('invalid-permissions', 'Invalid Permissions')
     }
 
-    const user = Meteor.users.findOne(user_id);
+    const user = Meteor.users.findOne(user_id)
     if (!user) {
-      throw new Meteor.Error('user-not-found', 'User not found');
+      throw new Meteor.Error('user-not-found', 'User not found')
     }
 
     Meteor.users.update(user_id, {
       $set: {
         profile: profileData,
       },
-    });
+    })
 
-    const updatedUser = Meteor.users.findOne(user_id);
-    logChanges(user_id, 'user', 'update', user, updatedUser);
+    const updatedUser = Meteor.users.findOne(user_id)
+    logChanges(user_id, 'user', 'update', user, updatedUser as Meteor.User)
   },
-  'user.get.admin.usernames': () => {
+  'User.get.admin.usernames': () => {
     const admins = Roles.getUsersInRole(AdminRoles).fetch()
     return admins.map((admin: Meteor.User) => admin.username)
   },

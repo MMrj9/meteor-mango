@@ -1,42 +1,42 @@
-import { Mongo } from 'meteor/mongo';
+import { Mongo } from 'meteor/mongo'
 //@ts-ignore
-import SimpleSchema from 'meteor/aldeed:simple-schema';
-import Schema, { FieldProperties } from '.';
-import { getUserName } from './user';
-import { stripMetadata } from './utils/simpleSchema';
+import SimpleSchema from 'meteor/aldeed:simple-schema'
+import { Collections, CustomSchemaTypes, FieldProperties, Schemas } from '.'
+import { getUserName } from './user'
+import { formatSimpleSchema } from './utils/simpleSchema'
+import _ from 'lodash'
 
 interface FieldChange {
-  field: string;
-  oldValue: any;
-  newValue: any;
+  field: string
+  oldValue: any
+  newValue: any
 }
 
 interface Changelog {
-  _id?: string;
-  objectId: string;
-  collection: string;
-  user: string;
-  changeType: string;
-  timestamp: Date;
-  changes: FieldChange[];
+  _id?: string
+  objectId: string
+  collection: string
+  user: string
+  changeType: string
+  timestamp: Date
+  changes: FieldChange[]
 }
 
-const FieldChangeSchema = new SimpleSchema({
+const FieldChangeSchema = {
   field: {
     type: String,
     label: 'Field Name',
   },
   oldValue: {
-    type: SimpleSchema.oneOf(String, Number, Boolean, Date),
+    type: CustomSchemaTypes.ANY,
     label: 'Old Value',
     optional: true,
   },
   newValue: {
-    type: SimpleSchema.oneOf(String, Number, Boolean, Date),
+    type: CustomSchemaTypes.ANY,
     label: 'New Value',
   },
-});
-
+}
 
 const ChangelogSchema: Record<string, FieldProperties> = {
   _id: {
@@ -66,21 +66,20 @@ const ChangelogSchema: Record<string, FieldProperties> = {
   changes: {
     type: Array,
     label: 'Changes',
-    optional: true,
+    schema: FieldChangeSchema,
   },
-  'changes.$': {
-    type: FieldChangeSchema,
-    label: 'Field Change',
-  },
-};
+}
 
+const Changelog = new Mongo.Collection<Changelog>('changelog')
 
-Schema.Changelog = new SimpleSchema(stripMetadata(ChangelogSchema));
+Schemas.Changelog = ChangelogSchema
+Collections.Changelog = Changelog
 
-const Changelog = new Mongo.Collection<Changelog>('changelog');
-
+const simpleSchema: SimpleSchema = new SimpleSchema(
+  formatSimpleSchema(ChangelogSchema),
+)
 //@ts-ignore
-Changelog.attachSchema(Schema.Changelog);
+Changelog.attachSchema(simpleSchema)
 
 const changelogIgnoreFields = new Set([
   'created_on',
@@ -88,26 +87,42 @@ const changelogIgnoreFields = new Set([
   'createdAt',
   'services',
   'emails',
-]);
+])
 
 function compareAndLogChanges(
   objectId: string,
   collection: string,
   changeType: string,
-  existingDocument: Record<string, any> | null,
+  existingDocument: Record<string, any> | undefined,
   updatedDocument: Record<string, any>,
   parentField = '',
 ): FieldChange[] {
-  const changes: FieldChange[] = [];
+  const changes: FieldChange[] = []
+
   for (const key in updatedDocument) {
-    const fullPath = parentField ? `${parentField}.${key}` : key;
+    const fullPath = parentField ? `${parentField}.${key}` : key
 
-    if (changelogIgnoreFields.has(fullPath)) continue;
+    if (changelogIgnoreFields.has(fullPath)) continue
 
-    const oldValue = existingDocument ? existingDocument[key] : undefined;
-    const newValue = updatedDocument[key];
+    const oldValue = existingDocument ? existingDocument[key] : undefined
+    const newValue = updatedDocument[key]
 
-    if (typeof newValue === 'object' && newValue !== null && !Array.isArray(newValue)) {
+    if (Array.isArray(oldValue) && Array.isArray(newValue)) {
+      // Treat empty arrays as equivalent
+      if (oldValue.length === 0 && newValue.length === 0) {
+        continue
+      }
+
+      // Compare sorted arrays to account for order-independent equality
+      if (!_.isEqual(_.sortBy(oldValue), _.sortBy(newValue))) {
+        changes.push({ field: fullPath, oldValue, newValue })
+      }
+    } else if (
+      typeof newValue === 'object' &&
+      newValue !== null &&
+      !Array.isArray(newValue)
+    ) {
+      // Recursively compare nested objects
       changes.push(
         ...compareAndLogChanges(
           objectId,
@@ -117,41 +132,51 @@ function compareAndLogChanges(
           newValue,
           fullPath,
         ),
-      );
+      )
     } else if (oldValue !== newValue) {
-      changes.push({ field: fullPath, oldValue, newValue });
+      changes.push({ field: fullPath, oldValue, newValue })
     }
   }
-  return changes;
+
+  return changes
 }
 
 function logChanges(
   objectId: string,
   collection: string,
   changeType: string,
-  existingDocument: Record<string, any> | null,
+  existingDocument: Record<string, any> | undefined,
   updatedDocument: Record<string, any>,
   parentField = '',
 ): FieldChange[] {
-  const user = getUserName();
-  const changes = compareAndLogChanges(objectId, collection, changeType, existingDocument, updatedDocument, parentField);
-
+  const user = getUserName()
+  const changes = compareAndLogChanges(
+    objectId,
+    collection,
+    changeType,
+    existingDocument,
+    updatedDocument,
+    parentField,
+  )
   if (changes.length > 0 && user) {
     try {
-      Changelog.insert({
+      const changelogEntry = {
         objectId,
         collection,
         user,
         changeType,
         timestamp: new Date(),
         changes,
-      });
+      }
+      Changelog.insert(changelogEntry)
     } catch (error) {
-      console.error('Failed to insert changelog:', error);
+      console.error(`Failed to insert changelog for ${collection}:`, error)
     }
+  } else {
+    console.info(`No changes detected for ${objectId} in ${collection}.`)
   }
 
-  return changes;
+  return changes
 }
 
-export { Changelog, FieldChange, logChanges };
+export { Changelog, FieldChange, logChanges }

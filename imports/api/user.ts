@@ -3,8 +3,8 @@ import { Roles } from 'meteor/alanning:roles'
 import { Meteor } from 'meteor/meteor'
 //@ts-ignore
 import SimpleSchema from 'meteor/aldeed:simple-schema'
-import Schema, { FieldProperties } from '.'
-import { stripMetadata } from './utils/simpleSchema'
+import { Collections, FieldProperties, Schemas } from '.'
+import { formatSimpleSchema } from './utils/simpleSchema'
 
 interface Profile {
   firstName?: string
@@ -12,7 +12,7 @@ interface Profile {
   birthday?: Date
 }
 
-Schema.UserProfile = new SimpleSchema({
+const UserProfile: Record<string, FieldProperties> = {
   firstName: {
     type: String,
     optional: true,
@@ -25,7 +25,7 @@ Schema.UserProfile = new SimpleSchema({
     type: Date,
     optional: true,
   },
-})
+}
 
 const UserSchema: Record<string, FieldProperties> = {
   username: {
@@ -62,7 +62,7 @@ const UserSchema: Record<string, FieldProperties> = {
     type: Date,
   },
   profile: {
-    type: Schema.UserProfile,
+    type: new SimpleSchema(formatSimpleSchema(UserProfile)),
     optional: true,
   },
   services: {
@@ -83,11 +83,15 @@ const UserSchema: Record<string, FieldProperties> = {
   },
 }
 
-Schema.Company = new SimpleSchema(stripMetadata(UserSchema))
+Schemas.UserProfile = UserProfile
+Schemas.User = UserSchema
+Collections.User = Meteor.users
 
-
+const simpleSchema: SimpleSchema = new SimpleSchema(
+  formatSimpleSchema(UserSchema),
+)
 //@ts-ignore
-Meteor.users.attachSchema(Schema.User)
+Meteor.users.attachSchema(simpleSchema)
 
 export const AllRoles = ['admin', 'manager', 'basic']
 

@@ -20,7 +20,6 @@ import { CUIAutoComplete } from 'chakra-ui-autocomplete'
 import _ from 'lodash'
 import ObjectTabs from './Tabs'
 
-
 export enum FormFieldType {
   TEXT = 'text',
   TEXTAREA = 'textarea',
@@ -49,17 +48,16 @@ interface FormField {
   autocompleteAllowNewOptions?: boolean
   autocompleteInitialValues?: any[]
   arrayType?: ArrayFieldType
-  convertObject?: { labelKey: string, valueKey: string}
+  convertObject?: { labelKey: string; valueKey: string }
 }
 
 interface GenericFormProps<T> {
   initialValues: T
-  onSubmit: (values: T) => void
+  onSubmit: (values: T, redirect: boolean) => void
   formFields: Record<string, FormField>
   collectionName: string
   hideSave?: boolean
 }
-
 
 const GenericForm = <T extends Record<string, any>>({
   initialValues,
@@ -70,26 +68,40 @@ const GenericForm = <T extends Record<string, any>>({
 }: GenericFormProps<T>) => {
   const formik = useFormik({
     initialValues,
-    onSubmit,
+    onSubmit: (values) => onSubmit(values, true),
     enableReinitialize: true,
   })
+  const isCreate = !formik.values['_id']
+
+  const handleSaveAndContinueEditing = async (event: React.MouseEvent) => {
+    event.preventDefault()
+    await formik.validateForm()
+    if (!formik.isValid) return
+    onSubmit(formik.values, false)
+  }
+
+  const handleSaveAndNavigate = async (event: React.MouseEvent) => {
+    event.preventDefault()
+    await formik.handleSubmit()
+  }
 
   const renderAutoCompleteField = (
-    fieldName: string, fieldConfig: FormField
+    fieldName: string,
+    fieldConfig: FormField,
   ) => {
     let {
       label,
       autocompleteOptions,
       autocompleteAllowNewOptions = false,
-      autocompleteInitialValues = []
+      autocompleteInitialValues = [],
     } = fieldConfig
 
     if (!autocompleteOptions) return
 
     return (
       <FormControl key={fieldName} mt={4}>
-      {/* @ts-ignore */}
-      <CUIAutoComplete
+        {/* @ts-ignore */}
+        <CUIAutoComplete
           label={label}
           placeholder={`Type ${label}`}
           disableCreateItem={!autocompleteAllowNewOptions}
@@ -100,151 +112,123 @@ const GenericForm = <T extends Record<string, any>>({
             ])
           }}
           items={autocompleteOptions as any}
-          selectedItems={
-            formik.values[fieldName] || autocompleteInitialValues
-          }
+          selectedItems={formik.values[fieldName] || autocompleteInitialValues}
           onSelectedItemsChange={(changes) =>
             formik.setFieldValue(fieldName, changes.selectedItems)
           }
         />
-    </FormControl>
+      </FormControl>
     )
   }
 
-  const renderTextAreaField = (
-    fieldName: string, fieldConfig: FormField
-  ) => {
-    const {
-      disabled,
-      format,
-      min, 
-      max
-    } = fieldConfig
+  const renderTextAreaField = (fieldName: string, fieldConfig: FormField) => {
+    const { disabled, format, min, max } = fieldConfig
 
     let fieldValue = _.get(formik.values, fieldName)
     const formattedValue = format ? format(fieldValue) : fieldValue
 
     return (
       <Textarea
-      name={fieldName}
-      value={formattedValue}
-      onChange={formik.handleChange}
-      disabled={disabled}
-      minLength={min}
-      maxLength={max}
-    />
+        name={fieldName}
+        value={formattedValue}
+        onChange={formik.handleChange}
+        disabled={disabled}
+        minLength={min}
+        maxLength={max}
+      />
     )
   }
 
-  const renderNumberField = (
-    fieldName: string, fieldConfig: FormField
-  ) => {
-    const {
-      disabled,
-      format,
-      min, 
-      max
-    } = fieldConfig
+  const renderNumberField = (fieldName: string, fieldConfig: FormField) => {
+    const { disabled, format, min, max } = fieldConfig
 
     let fieldValue = _.get(formik.values, fieldName)
     const formattedValue = format ? format(fieldValue) : fieldValue
 
     return (
       <Input
-      type={FormFieldType.NUMBER}
-      name={fieldName}
-      value={formattedValue}
-      onChange={formik.handleChange}
-      disabled={disabled}
-      min={min}
-      max={max}
-    />
+        type={FormFieldType.NUMBER}
+        name={fieldName}
+        value={formattedValue}
+        onChange={formik.handleChange}
+        disabled={disabled}
+        min={min}
+        max={max}
+      />
     )
   }
 
-  const renderCheckboxField = (
-    fieldName: string, fieldConfig: FormField
-  ) => {
-    const {
-      disabled,
-      format,
-      label, 
-    } = fieldConfig
+  const renderCheckboxField = (fieldName: string, fieldConfig: FormField) => {
+    const { disabled, format, label } = fieldConfig
 
     let fieldValue = _.get(formik.values, fieldName)
     const formattedValue = format ? format(fieldValue) : fieldValue
 
     return (
       <Checkbox
-      name={fieldName}
-      isChecked={formattedValue}
-      onChange={formik.handleChange}
-      isDisabled={disabled}
+        name={fieldName}
+        isChecked={formattedValue}
+        onChange={formik.handleChange}
+        isDisabled={disabled}
       >
         {label}
       </Checkbox>
     )
   }
 
-  const renderTextField = (
-    fieldName: string, fieldConfig: FormField
-  ) => {
-    const {
-      disabled,
-      format,
-      type,
-      min,
-      max
-    } = fieldConfig
+  const renderTextField = (fieldName: string, fieldConfig: FormField) => {
+    const { disabled, format, type, min, max } = fieldConfig
 
     let fieldValue = _.get(formik.values, fieldName)
     const formattedValue = format ? format(fieldValue) : fieldValue
 
     return (
       <Input
-      type={type}
-      name={fieldName}
-      value={formattedValue}
-      onChange={formik.handleChange}
-      disabled={disabled}
-      minLength={min}
-      maxLength={max}
-    />
+        type={type}
+        name={fieldName}
+        value={formattedValue}
+        onChange={formik.handleChange}
+        disabled={disabled}
+        minLength={min}
+        maxLength={max}
+      />
     )
   }
 
-  const renderList = (
-    fieldName: string, fieldConfig: FormField
-  ) => {
-    const {
-      arrayType,
-      convertObject,
-      label
-    } = fieldConfig
+  const renderList = (fieldName: string, fieldConfig: FormField) => {
+    const { arrayType, convertObject, label } = fieldConfig
 
     let fieldValue = _.get(formik.values, fieldName)
     let items = null
     if (fieldValue) {
       items = fieldValue.map((item: any, index: number) => {
-        let field = null 
+        let field = null
         if (arrayType && arrayType == ArrayFieldType.OBJECT && convertObject) {
           const valueKey = convertObject?.valueKey
-          const subFieldCOnfig = {...fieldConfig, type: FormFieldType.OBJECT, label: ''}
+          const subFieldCOnfig = {
+            ...fieldConfig,
+            type: FormFieldType.OBJECT,
+            label: '',
+          }
           const subFieldName = `${fieldName}[${index}].${valueKey}`
           field = renderField(subFieldName, subFieldCOnfig)
         } else {
           const subFieldName = `${fieldName}[${index}]`
-          const subFieldCOnfig = {...fieldConfig, type: FormFieldType.TEXT, label: ''}
-          field = renderField(subFieldName, subFieldCOnfig) 
+          const subFieldCOnfig = {
+            ...fieldConfig,
+            type: FormFieldType.TEXT,
+            label: '',
+          }
+          field = renderField(subFieldName, subFieldCOnfig)
         }
         return (
           <Flex alignItems={'center'}>
             {field}
             <IconButton
-              variant='outline'
-              colorScheme='teal'
-              aria-label='Call Sage'
-              fontSize='20px'
+              variant="outline"
+              colorScheme="teal"
+              aria-label="Call Sage"
+              fontSize="20px"
               marginLeft={2}
               marginTop={4}
               icon={<DeleteIcon />}
@@ -253,7 +237,7 @@ const GenericForm = <T extends Record<string, any>>({
                 formik.setFieldValue(fieldName, [...fieldValue])
               }}
             />
-            </Flex>
+          </Flex>
         )
       })
     }
@@ -261,15 +245,20 @@ const GenericForm = <T extends Record<string, any>>({
     return (
       <Box mt={4}>
         <Flex>
-          <FormLabel flex={1}>{label}</FormLabel> 
-          <ButtonGroup size='sm' isAttached variant='outline' onClick={() => {
-            formik.setFieldValue(fieldName, [
-              ...(formik.values[fieldName] || []),
-              '',
-            ])
-          }}>
+          <FormLabel flex={1}>{label}</FormLabel>
+          <ButtonGroup
+            size="sm"
+            isAttached
+            variant="outline"
+            onClick={() => {
+              formik.setFieldValue(fieldName, [
+                ...(formik.values[fieldName] || []),
+                '',
+              ])
+            }}
+          >
             <Button>Add</Button>
-            <IconButton aria-label='Add' icon={<AddIcon />} />
+            <IconButton aria-label="Add" icon={<AddIcon />} />
           </ButtonGroup>
         </Flex>
         {items}
@@ -278,38 +267,32 @@ const GenericForm = <T extends Record<string, any>>({
   }
 
   const renderField = (fieldName: string, fieldConfig: FormField) => {
-    let {
-      type = FormFieldType.TEXT,
-      label,
-    } = fieldConfig
-    console.log(fieldName, type, formik.values)
+    let { type = FormFieldType.TEXT, label } = fieldConfig
 
     let fieldValue = _.get(formik.values, fieldName)
 
     if (type === FormFieldType.AUTOCOMPLETE) {
       return renderAutoCompleteField(fieldName, fieldConfig)
     }
-    
+
     if (type == FormFieldType.ARRAY) {
       return renderList(fieldName, fieldConfig)
     }
 
     if (type == FormFieldType.OBJECT) {
-      console.log("fieldValue", fieldValue)
+      console.log('fieldValue', fieldValue)
     }
 
     return (
       <FormControl key={fieldName} mt={4}>
         {label && <FormLabel>{label}</FormLabel>}
-        {type === FormFieldType.TEXTAREA ? (
-          renderTextAreaField(fieldName, fieldConfig)
-        ) : type === FormFieldType.NUMBER ? (
-          renderNumberField(fieldName, fieldConfig)
-        ) : type === FormFieldType.CHECKBOX ? (
-          renderCheckboxField(fieldName, fieldConfig)
-        ) : (
-          renderTextField(fieldName, fieldConfig)
-        )}
+        {type === FormFieldType.TEXTAREA
+          ? renderTextAreaField(fieldName, fieldConfig)
+          : type === FormFieldType.NUMBER
+            ? renderNumberField(fieldName, fieldConfig)
+            : type === FormFieldType.CHECKBOX
+              ? renderCheckboxField(fieldName, fieldConfig)
+              : renderTextField(fieldName, fieldConfig)}
       </FormControl>
     )
   }
@@ -320,7 +303,7 @@ const GenericForm = <T extends Record<string, any>>({
         <form onSubmit={formik.handleSubmit}>
           {Object.entries(formFields).map(([fieldName, fieldConfig]) => {
             const { hideOnCreate, key } = fieldConfig
-            if (!formik.values['_id'] && hideOnCreate) return null
+            if (isCreate && hideOnCreate) return null
             return renderField(key || fieldName, fieldConfig)
           })}
 
@@ -336,11 +319,28 @@ const GenericForm = <T extends Record<string, any>>({
               <Text>Go Back</Text>
             </Button>
             {!hideSave && (
-              <Button colorScheme="teal" type="submit" size="sm">
-                <Flex align="center">
-                  <Text>Save</Text>
-                </Flex>
-              </Button>
+              <ButtonGroup>
+                {!isCreate && (
+                  <Button
+                    colorScheme="teal"
+                    size="sm"
+                    onClick={handleSaveAndContinueEditing}
+                  >
+                    <Flex align="center">
+                      <Text>Save and Continue Editing</Text>
+                    </Flex>
+                  </Button>
+                )}
+                <Button
+                  colorScheme="teal"
+                  size="sm"
+                  onClick={handleSaveAndNavigate}
+                >
+                  <Flex align="center">
+                    <Text>Save</Text>
+                  </Flex>
+                </Button>
+              </ButtonGroup>
             )}
           </Flex>
         </form>

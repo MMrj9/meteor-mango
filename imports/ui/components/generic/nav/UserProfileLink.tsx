@@ -4,18 +4,14 @@ import { Link as RouterLink } from 'react-router-dom'
 import { Link } from '@chakra-ui/react'
 
 const UserProfileLink = () => {
-    const user = Meteor.user()
-    if (!user) return null
+  const user = Meteor.user()
+  if (!user) return null
 
-    return (
-        <Link
-            as={RouterLink}
-            to={`/me`}
-            color="teal.500"
-        >
-            {user.username}
-        </Link>
-    )
+  return (
+    <Link as={RouterLink} to={`/me`} color="teal.500">
+      {user.username}
+    </Link>
+  )
 }
 
 export default UserProfileLink

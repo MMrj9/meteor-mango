@@ -12,7 +12,7 @@ export const sendNotificationToGroups = (
   const baseNotification = { content, path, createdOn: new Date() }
   users.forEach((user: Meteor.User) => {
     const notification = { ...baseNotification, user: user.username }
-    Notification.insert(notification)
+    Notification.insert(notification as Notification)
   })
 }
 

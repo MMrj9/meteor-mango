@@ -19,7 +19,7 @@ import {
 } from '../../../components/generic/actions/Actions'
 import { Ticket } from '/imports/api/ticket'
 
-const CollectionName = 'ticket'
+const CollectionName = 'Ticket'
 
 const Columns = [
   { key: 'type', label: 'Type' },

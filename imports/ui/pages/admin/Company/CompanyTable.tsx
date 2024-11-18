@@ -19,7 +19,7 @@ import {
   EnableActionEffect,
 } from '../../../components/generic/actions/Actions'
 
-const CollectionName = 'company'
+const CollectionName = 'Company'
 
 const Columns = [
   { key: 'name', label: 'Name' },

@@ -33,7 +33,7 @@ const AdminComments: React.FC<{ collection: string; objectId: string }> = ({
   const toast = useToast()
 
   const adminComments: AdminComment[] = useTracker(() => {
-    const subscription = Meteor.subscribe('admincomment', collection, objectId)
+    const subscription = Meteor.subscribe('AdminComment', collection, objectId)
 
     if (subscription.ready()) {
       return AdminComment.find({ collection, objectId }).fetch()
@@ -44,7 +44,7 @@ const AdminComments: React.FC<{ collection: string; objectId: string }> = ({
 
   useEffect(() => {
     Meteor.call(
-      'user.get.admin.usernames',
+      'User.get.admin.usernames',
       (err: Meteor.Error, res: string[]) => {
         if (!err) setAllAdminUsers(res)
       },
@@ -63,7 +63,7 @@ const AdminComments: React.FC<{ collection: string; objectId: string }> = ({
         newComment.includes(`@${username}`),
       )
       Meteor.call(
-        'admincomment.insertOrUpdate',
+        'AdminComment.insertOrUpdate',
         comment,
         filteredTaggedusers,
         (err: Meteor.Error) => {

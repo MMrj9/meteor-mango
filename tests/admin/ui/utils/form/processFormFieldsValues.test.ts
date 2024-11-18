@@ -1,4 +1,4 @@
-import { FormFieldType } from '/imports/ui/components/generic/form/Form'
+import { FormFieldType } from '../../../../../imports/ui/components/generic/form/GenericForm'
 import { processFormFieldsValues } from '/imports/ui/components/generic/form/utils'
 import { assert } from 'chai'
 
@@ -69,5 +69,4 @@ describe('processFormFieldsValues function', () => {
 
     assert.deepEqual(processedValues, expectedOutput)
   })
-
 })

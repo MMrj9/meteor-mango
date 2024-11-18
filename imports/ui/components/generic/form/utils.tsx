@@ -1,7 +1,7 @@
 // @ts-ignore
 import { Roles } from 'meteor/alanning:roles'
 import _ from 'lodash'
-import { FormField } from './Form'
+import { FormField } from './GenericForm'
 
 const mapValuesToAutocompleteOptions = (
   values: string[],

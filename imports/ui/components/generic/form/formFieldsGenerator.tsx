@@ -1,37 +1,135 @@
-import { FormField, FormFieldType } from "./Form";
-import { FieldProperties } from "/imports/api";
+import { FormField, FormFieldType } from './GenericForm'
+import { FieldProperties } from '/imports/api'
 //@ts-ignore
 import SimpleSchema from 'meteor/aldeed:simple-schema'
 
-const getDisabledProperty = (fieldProperties: FieldProperties): boolean => fieldProperties.hasOwnProperty('editable') && fieldProperties['editable'] === false
+// Generalized function to extract specific properties with better type inference
+const extractFieldProperty = <K extends keyof FieldProperties>(
+  fieldProperties: FieldProperties,
+  propertyName: K,
+  defaultValue: FieldProperties[K],
+): FieldProperties[K] => {
+  return fieldProperties.hasOwnProperty(propertyName)
+    ? fieldProperties[propertyName]
+    : defaultValue
+}
 
+// Utility functions
 const getTypeProperty = (fieldProperties: FieldProperties): FormFieldType => {
-    if (fieldProperties.formFieldType) return fieldProperties.formFieldType
-    switch (fieldProperties.type) {
-        case String:
-            return FormFieldType.TEXT
-        case SimpleSchema.Integer:
-            return FormFieldType.NUMBER
-        case Array:
-            return FormFieldType.ARRAY
-        default:
-            return FormFieldType.TEXT
+  if (fieldProperties.formFieldType) return fieldProperties.formFieldType
+
+  switch (fieldProperties.type) {
+    case String:
+      return FormFieldType.TEXT
+    case SimpleSchema.Integer:
+    case Number:
+      return FormFieldType.NUMBER
+    case Boolean:
+      return FormFieldType.CHECKBOX
+    case Array:
+      return FormFieldType.ARRAY
+    default:
+      return FormFieldType.TEXT
+  }
+}
+
+const getDisabledProperty = (fieldProperties: FieldProperties): boolean =>
+  extractFieldProperty(fieldProperties, 'editable', true) === false
+
+const getMinProperty = (fieldProperties: FieldProperties): number | undefined =>
+  extractFieldProperty(fieldProperties, 'min', undefined)
+
+const getMaxProperty = (fieldProperties: FieldProperties): number | undefined =>
+  extractFieldProperty(fieldProperties, 'max', undefined)
+
+const getFormatProperty = (
+  fieldProperties: FieldProperties,
+): ((value: any) => any) | undefined =>
+  extractFieldProperty(fieldProperties, 'format', undefined)
+
+const getAutocompleteOptions = (
+  fieldProperties: FieldProperties,
+): { value: string; label: string }[] | undefined =>
+  extractFieldProperty(fieldProperties, 'autocompleteOptions', undefined)
+
+// Generate form fields from schema
+const generateFormFields = (
+  schema: Record<string, FieldProperties>,
+): Record<string, FormField> => {
+  const formFields: Record<string, FormField> = {}
+
+  Object.keys(schema).forEach((fieldName: string) => {
+    const fieldProperties = schema[fieldName]
+
+    if (!fieldProperties.label) return
+
+    const field: FormField = {
+      label: fieldProperties.label,
+      disabled: getDisabledProperty(fieldProperties),
+      type: getTypeProperty(fieldProperties),
+      min: getMinProperty(fieldProperties),
+      max: getMaxProperty(fieldProperties),
+      format: getFormatProperty(fieldProperties),
+      autocompleteOptions: getAutocompleteOptions(fieldProperties),
     }
+
+    // Remove keys with undefined values
+    formFields[fieldName] = Object.fromEntries(
+      Object.entries(field).filter(([_, value]) => value !== undefined),
+    ) as FormField
+  })
+
+  return formFields
 }
 
-const generateFormFields = (schema: Record<string, FieldProperties>): Record<string, FormField> => {
-    const formFields: Record<string, FormField> = {}
-    Object.keys(schema).forEach((fieldName: string) => {
-        const fieldProperties: FieldProperties = schema[fieldName]
-        if (!fieldProperties.label) return
-        formFields[fieldName] = {
-            label: fieldProperties.label,
-            disabled: getDisabledProperty(fieldProperties),
-            type: getTypeProperty(fieldProperties)
-        }
+// Generate default values based on schema
+const generateDefaultValues = (
+  schema: Record<string, FieldProperties>,
+): Record<string, any> => {
+  const defaultValues: Record<string, any> = {}
 
-    })
-    return formFields
+  Object.keys(schema).forEach((fieldName) => {
+    const fieldProperties = schema[fieldName]
+    if (fieldProperties.defaultValue !== undefined) {
+      defaultValues[fieldName] = fieldProperties.defaultValue
+    } else {
+      switch (fieldProperties.type) {
+        case String:
+          defaultValues[fieldName] = ''
+          break
+        case SimpleSchema.Integer:
+        case Number:
+          defaultValues[fieldName] = 0
+          break
+        case Boolean:
+          defaultValues[fieldName] = false
+          break
+        case Array:
+          defaultValues[fieldName] = []
+          break
+        case Object:
+          defaultValues[fieldName] = {}
+          break
+        case Date:
+          defaultValues[fieldName] = new Date()
+          break
+        default:
+          defaultValues[fieldName] = null
+      }
+    }
+  })
+
+  return defaultValues
 }
 
-export { getDisabledProperty, getTypeProperty, generateFormFields }
+export {
+  extractFieldProperty,
+  getTypeProperty,
+  getDisabledProperty,
+  getMinProperty,
+  getMaxProperty,
+  getFormatProperty,
+  getAutocompleteOptions,
+  generateFormFields,
+  generateDefaultValues,
+}

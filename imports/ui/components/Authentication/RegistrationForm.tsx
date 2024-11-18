@@ -69,7 +69,7 @@ const RegistrationForm: React.FC = () => {
       username: values.username,
       password: values.password,
     }
-    Meteor.call('user.register', user, (err: Meteor.Error) => {
+    Meteor.call('User.register', user, (err: Meteor.Error) => {
       if (err) {
         error(toast, `Failed to register user: ${err.message}`)
         setSubmitting(false)

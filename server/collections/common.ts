@@ -3,6 +3,41 @@ import { Mongo } from 'meteor/mongo'
 import { check } from 'meteor/check'
 import { validateUserPermissions } from '/imports/api/user'
 import { logChanges } from '/imports/api/changelog'
+import { Collections } from '/imports/api'
+
+export const insertOrUpdate = (
+  collectionName: string,
+  object: any,
+): [string, boolean] => {
+  try {
+    const collection = Collections[collectionName]
+
+    if (!collection) {
+      throw new Error(`Collection ${collectionName} does not exist.`)
+    }
+
+    if (object._id) {
+      const existingObject = collection.findOne(object._id)
+      if (!existingObject) {
+        throw new Error(
+          `Object with _id ${object._id} not found in ${collectionName}.`,
+        )
+      }
+      logChanges(object._id, collectionName, 'update', existingObject, object)
+      object.updatedOn = new Date()
+      collection.update(object._id, { $set: object })
+      return [object._id, false] // Update operation
+    } else {
+      object.createdOn = new Date()
+      const _id = collection.insert(object)
+      logChanges(_id, collectionName, 'create', {}, object)
+      return [_id, true] // Insert operation
+    }
+  } catch (error) {
+    console.error(`Error in insertOrUpdate for ${collectionName}:`, error)
+    throw error
+  }
+}
 
 Meteor.methods({
   setField(

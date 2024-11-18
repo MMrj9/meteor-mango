@@ -12,7 +12,7 @@ const columns = [
 const UserTable: React.FC = () => {
   const data = useTracker(() => {
     if (Meteor.isClient) {
-      const handle = Meteor.subscribe('user')
+      const handle = Meteor.subscribe('User')
       if (handle.ready()) {
         return Meteor.users.find({}).fetch()
       }

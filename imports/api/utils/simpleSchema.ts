@@ -1,9 +1,7 @@
-import { pick } from 'lodash';
-import { FieldProperties, SimpleSchemaField } from '..'; // Adjust to your project structure
-
-interface SimpleSchemaCompatible {
-  [key: string]: SimpleSchemaField | SimpleSchemaCompatible;
-}
+import { pick } from 'lodash'
+//@ts-ignore
+import SimpleSchema from 'meteor/aldeed:simple-schema'
+import { CustomSchemaTypes, FieldProperties } from '..'
 
 const SUPPORTED_SIMPLESCHEMA_FIELDS = [
   'type',
@@ -20,25 +18,33 @@ const SUPPORTED_SIMPLESCHEMA_FIELDS = [
   'exclusiveMin',
   'exclusiveMax',
   'regEx',
-];
+]
 
-// Utility function to strip metadata for SimpleSchema
-const stripMetadata = (schema: Record<string, FieldProperties>): SimpleSchemaCompatible => {
-  const simpleSchemaCompatible: SimpleSchemaCompatible = {};
-
+const formatSimpleSchema = (
+  schema: Record<string, FieldProperties>,
+): Record<string, any> => {
+  const simpleSchemaCompatible: Record<string, any> = {}
   for (const key in schema) {
-    const field = schema[key];
+    const field = schema[key]
 
-    if (field && typeof field === 'object' && field.type && typeof field.type === 'object') {
-      // Recursively handle nested fields
-      // @ts-ignore
-      simpleSchemaCompatible[key] = stripMetadata(field as Record<string, FieldProperties>);
+    if (field.type === Array && field.schema) {
+      simpleSchemaCompatible[key] = {
+        type: Array,
+        ...pick(field, SUPPORTED_SIMPLESCHEMA_FIELDS),
+      }
+      simpleSchemaCompatible[`${key}.$`] = new SimpleSchema(
+        formatSimpleSchema(field.schema),
+      )
+    } else if (field.type === CustomSchemaTypes.ANY) {
+      simpleSchemaCompatible[key] = {
+        ...pick(field, SUPPORTED_SIMPLESCHEMA_FIELDS),
+        type: SimpleSchema.oneOf(String, Number, Boolean, Date),
+      }
     } else {
-      simpleSchemaCompatible[key] = pick(field, SUPPORTED_SIMPLESCHEMA_FIELDS) as SimpleSchemaField;
+      simpleSchemaCompatible[key] = pick(field, SUPPORTED_SIMPLESCHEMA_FIELDS)
     }
   }
+  return simpleSchemaCompatible
+}
 
-  return simpleSchemaCompatible;
-};
-
-export { SimpleSchemaField, stripMetadata };
+export { formatSimpleSchema }

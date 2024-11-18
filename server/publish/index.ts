@@ -5,7 +5,7 @@ import { AdminComment } from '/imports/api/adminComment'
 import { Ticket } from '/imports/api/ticket'
 import { Notification } from '/imports/api/notification'
 
-Meteor.publish('company', function (companyId) {
+Meteor.publish('Company', function (companyId) {
   if (companyId) {
     return Company.find({ _id: companyId })
   } else {
@@ -13,7 +13,7 @@ Meteor.publish('company', function (companyId) {
   }
 })
 
-Meteor.publish('user', function () {
+Meteor.publish('User', function () {
   if (this.userId) {
     // Only publish data for the logged-in user
     return Meteor.users.find(
@@ -41,23 +41,23 @@ Meteor.publish(null, function () {
   }
 })
 
-Meteor.publish('role', function (user_id: string) {
+Meteor.publish('Role', function (user_id: string) {
   //@ts-ignore
   return Meteor.roleAssignment.find({ 'user._id': user_id })
 })
 
-Meteor.publish('changelog', function (collection, objectId) {
+Meteor.publish('Changelog', function (collection, objectId) {
   return Changelog.find({ collection, objectId }, { sort: { timestamp: -1 } })
 })
 
-Meteor.publish('admincomment', function (collection, objectId) {
+Meteor.publish('AdminComment', function (collection, objectId) {
   return AdminComment.find(
     { collection, objectId },
     { sort: { createdOn: -1 } },
   )
 })
 
-Meteor.publish('ticket', function (ticketId) {
+Meteor.publish('Ticket', function (ticketId) {
   if (ticketId) {
     return Ticket.find({ _id: ticketId })
   } else {
@@ -65,7 +65,7 @@ Meteor.publish('ticket', function (ticketId) {
   }
 })
 
-Meteor.publish('notification', function () {
+Meteor.publish('Notification', function () {
   const user = Meteor.user()
   if (user) {
     return Notification.find(

@@ -44,8 +44,8 @@ const MainTable = ({ changelogs }: { changelogs: Changelog[] }) => {
               <Td>{entry.user}</Td>
               <Td>{new Date(entry.timestamp).toLocaleString()}</Td>
               <Td>
-                <button onClick={() => onExpandCollapse(entry._id)}>
-                  {expandedChangelogs.includes(entry._id) ? (
+                <button onClick={() => onExpandCollapse(entry._id as string)}>
+                  {expandedChangelogs.includes(entry._id as string) ? (
                     <ChevronUpIcon boxSize={4} />
                   ) : (
                     <ChevronDownIcon boxSize={4} />
@@ -53,7 +53,7 @@ const MainTable = ({ changelogs }: { changelogs: Changelog[] }) => {
                 </button>
               </Td>
             </Tr>
-            {expandedChangelogs.includes(entry._id) && (
+            {expandedChangelogs.includes(entry._id as string) && (
               <Tr>
                 <Td colSpan={3}>
                   <NestedTable changes={entry.changes} />
@@ -95,7 +95,7 @@ const NestedTable = ({ changes }: { changes: FieldChange[] }) => {
 const ChangelogTable = ({ collection, objectId }: ChangelogTableProps) => {
   const changelogs = useTracker(() => {
     if (Meteor.isClient) {
-      Meteor.subscribe('changelog', collection, objectId)
+      Meteor.subscribe('Changelog', collection, objectId)
       return Changelog.find({ collection, objectId }).fetch()
     }
   })
