@@ -20,7 +20,7 @@ import {
   EnableActionEffect,
 } from '../../../components/generic/actions/Actions'
 
-const CollectionName = 'notification'
+const CollectionName = 'Notification'
 
 const Columns = [
   { key: 'content', label: 'Content' },
