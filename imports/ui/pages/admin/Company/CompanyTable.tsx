@@ -2,8 +2,7 @@ import React, { useState } from 'react'
 import { Box, useToast } from '@chakra-ui/react'
 import GenericTable from '../../../components/generic/table/Table'
 import { Meteor } from 'meteor/meteor'
-import { useTracker } from 'meteor/react-meteor-data' // Import useTracker
-import { Company } from '/imports/api/company'
+import { useTracker } from 'meteor/react-meteor-data'
 import {
   DisabledTableFilter,
   SelectedFilters,
@@ -18,28 +17,30 @@ import {
   DisableActionEffect,
   EnableActionEffect,
 } from '../../../components/generic/actions/Actions'
+import { generateTableFields } from '/imports/ui/components/generic/table/tableFieldsGenerator'
+import { Collections, Schemas } from '/imports/api'
 
-const CollectionName = 'Company'
-
-const Columns = [
-  { key: 'name', label: 'Name' },
-  { key: 'description', label: 'Description' },
-  { key: 'numberOfEmployees', label: 'Number of Employees' },
-  { key: 'createdOn', label: 'Created On' },
-] as { key: keyof Company; label: string }[]
+interface FormProps {
+  collectionName: string
+}
 
 const Filters: TableFilter<SelectedFilters>[] = [DisabledTableFilter]
 
-const CompanyTable: React.FC = () => {
+const CompanyTable: React.FC<FormProps> = ({ collectionName }) => {
   const toast = useToast()
   const [selectedFilters, setSelectedFilters] = useState({})
+  console.log(Schemas, collectionName)
+  const schema = Schemas[collectionName]
+  const collection = Collections[collectionName]
+  const TableFields = generateTableFields(schema)
 
   const data = useTracker(() => {
     if (Meteor.isClient) {
-      const handle = Meteor.subscribe(CollectionName)
+      const handle = Meteor.subscribe(collectionName)
       if (handle.ready()) {
         const query = buildQueryFromSelectedFilters(Filters, selectedFilters)
-        return Company.find(query).fetch()
+        console.log(collectionName, collection, query)
+        return collection.find(query).fetch()
       }
     }
 
@@ -48,7 +49,7 @@ const CompanyTable: React.FC = () => {
 
   const handleDisableAction = async (id: string) => {
     try {
-      await DisableActionEffect(CollectionName, id)
+      await DisableActionEffect(collectionName, id)
       toast(ActionSuccessToastData)
     } catch (error) {
       toast(ActionFailedToastData)
@@ -57,7 +58,7 @@ const CompanyTable: React.FC = () => {
 
   const handleEnableAction = async (id: string) => {
     try {
-      await EnableActionEffect(CollectionName, id)
+      await EnableActionEffect(collectionName, id)
       toast(ActionSuccessToastData)
     } catch (error) {
       toast(ActionFailedToastData)
@@ -78,9 +79,9 @@ const CompanyTable: React.FC = () => {
   return (
     <Box p={4}>
       <GenericTable
-        collectionName={CollectionName}
+        collectionName={collectionName}
         data={data}
-        columns={Columns}
+        columns={TableFields}
         filters={Filters}
         //@ts-ignore
         selectedFilters={selectedFilters}

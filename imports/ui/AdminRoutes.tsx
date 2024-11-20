@@ -22,7 +22,7 @@ const CompanyRoutes = () => (
   <Routes>
     <Route path="add" element={<Form collectionName="Company" />} />
     <Route path="edit/:objectId" element={<Form collectionName="Company" />} />
-    <Route path="" element={<CompanyTable />} />
+    <Route path="" element={<CompanyTable collectionName='Company'/>} />
   </Routes>
 )
 

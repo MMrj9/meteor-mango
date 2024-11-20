@@ -39,6 +39,7 @@ const TimestampedSchemaBase: Record<string, FieldProperties> = {
     type: Date,
     label: 'Created On',
     editable: false,
+    tableView: true
   },
   updatedOn: {
     type: Date,

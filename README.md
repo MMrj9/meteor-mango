@@ -119,6 +119,7 @@ meteor npm run format-check
 | **Custom Properties**                                                                                                                   |
 | `editable`          | `Boolean`                | Indicates if the field can be edited by users.                                                    | Yes          | Default is `true`.                               |
 | `formFieldType`     | `FormFieldType`          | Defines the type of form field. Possible values:                                                  | Yes          | Used to generate form UI components.             |
+| `tableView`         | `Boolean`                | Indicates if the field will be shown in table view.                                               | Yes          | Default is `false`             |
 
 ---
 

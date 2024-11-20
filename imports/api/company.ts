@@ -25,12 +25,14 @@ const CompanySchema: Record<string, FieldProperties> = {
     label: 'Name',
     min: 1,
     max: 50,
+    tableView: true
   },
   description: {
     type: String,
     label: 'Description',
     min: 0,
     max: 300,
+    tableView: true
   },
   numberOfEmployees: {
     type: SimpleSchema.Integer,
