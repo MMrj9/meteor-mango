@@ -72,16 +72,13 @@ Meteor.methods({
       )
     }
 
-    // Construct the update query
+    const existingDocument = collection.findOne({ _id: documentId })
+
     const updateQuery = {
       $set: {
         [fieldName]: value,
       },
     }
-
-    const existingDocument = collection.findOne({ _id: documentId })
-
-    // Perform the update operation
     const result = collection.update({ _id: documentId }, updateQuery)
 
     if (result === 0) {
@@ -98,7 +95,6 @@ Meteor.methods({
       updatedDocument,
     )
 
-    // You can return additional information if needed
     return { success: true }
   },
 })

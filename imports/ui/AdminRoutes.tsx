@@ -1,12 +1,13 @@
 import React from 'react'
 import { Routes, Route } from 'react-router-dom'
 import Main from './components/Main'
-import CompanyTable from './pages/admin/Company/CompanyTable'
 import UserTable from './pages/admin/User/UserTable'
 import TicketTable from './pages/admin/Ticket/TicketTable'
 import NotificationTable from './pages/admin/Notification/NotificationTable'
 import Form from './pages/admin/Form/Form'
 import UserForm from './pages/admin/Form/custom/UserForm'
+import Table from './pages/admin/Table/Table'
+
 
 const AdminRoutes = () => (
   <Routes>
@@ -22,7 +23,7 @@ const CompanyRoutes = () => (
   <Routes>
     <Route path="add" element={<Form collectionName="Company" />} />
     <Route path="edit/:objectId" element={<Form collectionName="Company" />} />
-    <Route path="" element={<CompanyTable collectionName='Company'/>} />
+    <Route path="" element={<Table collectionName='Company' filters={[]} />} />
   </Routes>
 )
 

@@ -6,6 +6,7 @@ Collection2.load()
 
 const Schemas: any = {}
 const Collections: any = {}
+const Actions: any = {}
 
 enum CustomSchemaTypes {
   ANY = 'ANY',
@@ -63,5 +64,6 @@ export {
   SimpleSchemaField,
   Schemas,
   Collections,
+  Actions,
   CustomSchemaTypes,
 }

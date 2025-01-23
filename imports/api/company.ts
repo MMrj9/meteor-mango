@@ -3,6 +3,7 @@ import { Mongo } from 'meteor/mongo'
 import SimpleSchema from 'meteor/aldeed:simple-schema'
 import { Disabled, Timestamped } from './common'
 import {
+  Actions,
   Collections,
   DisabledSchemaBase,
   FieldProperties,
@@ -10,6 +11,7 @@ import {
   TimestampedSchemaBase,
 } from '.'
 import { formatSimpleSchema } from './utils/simpleSchema'
+import { BaseDisableAction, BaseEnableAction } from '../ui/components/generic/actions/Actions'
 
 export interface Company extends Timestamped, Disabled {
   _id?: string
@@ -51,15 +53,19 @@ const CompanySchema: Record<string, FieldProperties> = {
   ...DisabledSchemaBase,
 }
 
-const Company = new Mongo.Collection<Company>('company')
+const collectionName = 'Company'
+const Company = new Mongo.Collection<Company>(collectionName)
 
-Schemas.Company = CompanySchema
-Collections.Company = Company
+Schemas[collectionName] = CompanySchema
+Collections[collectionName] = Company
 
 const simpleSchema: SimpleSchema = new SimpleSchema(
   formatSimpleSchema(CompanySchema),
 )
 //@ts-ignore
 Company.attachSchema(simpleSchema)
+
+
+Actions[collectionName] = [BaseDisableAction, BaseEnableAction]
 
 export { Company, CompanySchema }

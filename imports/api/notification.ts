@@ -41,10 +41,11 @@ const NotificationSchema: Record<string, FieldProperties> = {
   ...DisabledSchemaBase,
 }
 
-const Notification = new Mongo.Collection<Notification>('notification')
+const collectionName = 'Notification'
+const Notification = new Mongo.Collection<Notification>(collectionName)
 
-Schemas.Notification = NotificationSchema
-Collections.Notification = Notification
+Schemas[collectionName] = NotificationSchema
+Collections[collectionName] = Notification
 
 const simpleSchema: SimpleSchema = new SimpleSchema(
   formatSimpleSchema(NotificationSchema),

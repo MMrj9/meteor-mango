@@ -15,6 +15,7 @@ import {
   Heading,
   Input,
   Select,
+  CreateToastFnReturn,
 } from '@chakra-ui/react'
 import { Link as RouterLink } from 'react-router-dom'
 import {
@@ -37,6 +38,7 @@ interface GenericTableProps {
   selectedFilters?: { [key: string]: any }
   setSelectedFilters?: (prevFilters: { [key: string]: any }) => void
   actions?: Action[]
+  toast: CreateToastFnReturn
 }
 
 const GenericTable = ({
@@ -48,6 +50,7 @@ const GenericTable = ({
   selectedFilters,
   setSelectedFilters,
   actions,
+  toast
 }: GenericTableProps) => {
   const [searchTerm, setSearchTerm] = useState('')
   const [sortConfig, setSortConfig] = useState<{
@@ -208,7 +211,7 @@ const GenericTable = ({
                           <Button
                             key={actionIndex}
                             size="sm"
-                            onClick={() => action.effect(item._id)}
+                            onClick={() => action.effect(collectionName, item._id, toast)}
                             bgColor={action.bgColor}
                           >
                             {action.label}

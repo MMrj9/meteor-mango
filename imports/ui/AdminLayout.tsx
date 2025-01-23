@@ -6,6 +6,7 @@ import { Link as RouterLink } from 'react-router-dom'
 import AdminNav from './components/Nav/AdminNav'
 import Notifications from './components/generic/notifications/Notifications'
 import UserProfileLink from './components/generic/nav/UserProfileLink'
+import '../api/forceImport'
 
 const AdminLayout: React.FC = (props: any) => {
   const isLoggedIn = !!Meteor.userId()

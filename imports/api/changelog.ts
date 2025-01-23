@@ -70,10 +70,11 @@ const ChangelogSchema: Record<string, FieldProperties> = {
   },
 };
 
-const Changelog = new Mongo.Collection<Changelog>('changelog');
+const collectionName = 'Changelog'
+const Changelog = new Mongo.Collection<Changelog>(collectionName);
 
-Schemas.Changelog = ChangelogSchema;
-Collections.Changelog = Changelog;
+Schemas[collectionName] = ChangelogSchema;
+Collections[collectionName] = Changelog;
 
 const simpleSchema: SimpleSchema = new SimpleSchema(
   formatSimpleSchema(ChangelogSchema)

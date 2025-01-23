@@ -63,10 +63,11 @@ const TicketSchema: Record<string, FieldProperties> = {
   ...DisabledSchemaBase,
 }
 
-const Ticket = new Mongo.Collection<Ticket>('ticket')
+const collectionName = 'Ticket'
+const Ticket = new Mongo.Collection<Ticket>('Ticket')
 
-Schemas.Ticket = TicketSchema
-Collections.Ticket = Ticket
+Schemas[collectionName] = TicketSchema
+Collections[collectionName] = Ticket
 
 const simpleSchema: SimpleSchema = new SimpleSchema(
   formatSimpleSchema(TicketSchema),
