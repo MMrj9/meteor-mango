@@ -12,7 +12,10 @@ import {
 } from '.'
 import { Timestamped, Disabled } from './common'
 import { formatSimpleSchema } from './utils/simpleSchema'
-import { BaseDisableAction, BaseEnableAction } from '../ui/components/generic/actions/Actions'
+import {
+  BaseDisableAction,
+  BaseEnableAction,
+} from '../ui/components/generic/actions/Actions'
 import { NonDisabledFilter } from '../ui/components/generic/filters/Filters'
 
 interface Notification extends Timestamped, Disabled {
@@ -80,7 +83,7 @@ Filters[collectionName] = [
       },
       { label: 'Read', value: { disabled: true } },
     ],
-  }
+  },
 ]
 
 export { Notification }

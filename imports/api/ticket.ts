@@ -12,7 +12,10 @@ import {
 } from '.'
 import { Timestamped, Disabled } from './common'
 import { formatSimpleSchema } from './utils/simpleSchema'
-import { BaseDisableAction, BaseEnableAction } from '../ui/components/generic/actions/Actions'
+import {
+  BaseDisableAction,
+  BaseEnableAction,
+} from '../ui/components/generic/actions/Actions'
 import { DisabledTableFilter } from '../ui/components/generic/filters/Filters'
 
 enum TicketType {
@@ -40,23 +43,23 @@ const TicketSchema: Record<string, FieldProperties> = {
     type: String,
     allowedValues: Object.values(TicketType),
     label: 'Type',
-    tableView: true
+    tableView: true,
   },
   name: {
     type: String,
     label: 'Name',
-    tableView: true
+    tableView: true,
   },
   email: {
     type: String,
     regEx: SimpleSchema.RegEx.Email,
     label: 'Email',
-    tableView: true
+    tableView: true,
   },
   subject: {
     type: String,
     label: 'Subject',
-    tableView: true
+    tableView: true,
   },
   content: {
     type: String,

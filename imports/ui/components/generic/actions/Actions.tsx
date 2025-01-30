@@ -52,28 +52,27 @@ export const BaseDisableAction: Action = {
   label: 'Disable',
   bgColor: 'red.500',
   isApplicable: (item: any) => !item.disabled,
-  effect: async (collection: string, id: string, toast=null) => {
+  effect: async (collection: string, id: string, toast = null) => {
     try {
       await BaseActionEffect('setField', collection, id, 'disabled', true)
-      if (toast) toast(ActionSuccessToastData);
+      if (toast) toast(ActionSuccessToastData)
     } catch (error) {
-      if (toast) toast(ActionFailedToastData);
+      if (toast) toast(ActionFailedToastData)
     }
-  }
+  },
 }
-
 
 export const BaseEnableAction: Action = {
   name: 'enable',
   label: 'Enable',
   bgColor: 'green.500',
   isApplicable: (item: any) => item.disabled,
-  effect: async (collection: string, id: string, toast=null) => {
+  effect: async (collection: string, id: string, toast = null) => {
     try {
       await BaseActionEffect('setField', collection, id, 'disabled', false)
-      if (toast) toast(ActionSuccessToastData);
+      if (toast) toast(ActionSuccessToastData)
     } catch (error) {
-      if (toast) toast(ActionFailedToastData);
+      if (toast) toast(ActionFailedToastData)
     }
-  }
+  },
 }

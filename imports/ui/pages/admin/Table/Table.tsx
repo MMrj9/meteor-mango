@@ -1,33 +1,34 @@
-import React, { useEffect, useState } from 'react';
-import { Box, useToast } from '@chakra-ui/react';
-import GenericTable from '../../../components/generic/table/Table';
-import {
-  SelectedFilters,
-} from '../../../components/generic/filters/Filters';
-import { generateTableFields } from '/imports/ui/components/generic/table/tableFieldsGenerator';
-import { Actions, Filters, Schemas } from '/imports/api';
-import { useReactiveCollectionData } from '/imports/ui/components/generic/table/data';
+import React, { useEffect, useState } from 'react'
+import { Box, useToast } from '@chakra-ui/react'
+import GenericTable from '../../../components/generic/table/Table'
+import { SelectedFilters } from '../../../components/generic/filters/Filters'
+import { generateTableFields } from '/imports/ui/components/generic/table/tableFieldsGenerator'
+import { Actions, Filters, Schemas } from '/imports/api'
+import { useReactiveCollectionData } from '/imports/ui/components/generic/table/data'
 
 interface FormProps {
-  collectionName: string;
+  collectionName: string
 }
 
-
 const Table: React.FC<FormProps> = ({ collectionName }) => {
-  const toast = useToast();
-  const [selectedFilters, setSelectedFilters] = useState<SelectedFilters>({});
-  const [tableFields, setTableFields] = useState([]);
-  const schema = Schemas[collectionName];
-  const actions = Actions[collectionName];
-  const filters = Filters[collectionName];
+  const toast = useToast()
+  const [selectedFilters, setSelectedFilters] = useState<SelectedFilters>({})
+  const [tableFields, setTableFields] = useState([])
+  const schema = Schemas[collectionName]
+  const actions = Actions[collectionName]
+  const filters = Filters[collectionName]
 
-  const data = useReactiveCollectionData(collectionName, filters, selectedFilters);
+  const data = useReactiveCollectionData(
+    collectionName,
+    filters,
+    selectedFilters,
+  )
 
   useEffect(() => {
     if (schema) {
-      setTableFields(generateTableFields(schema) as any);
+      setTableFields(generateTableFields(schema) as any)
     }
-  }, [schema]);
+  }, [schema])
 
   return (
     <Box p={4}>
@@ -43,7 +44,7 @@ const Table: React.FC<FormProps> = ({ collectionName }) => {
         toast={toast}
       />
     </Box>
-  );
-};
+  )
+}
 
-export default Table;
+export default Table

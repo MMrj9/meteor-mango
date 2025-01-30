@@ -12,7 +12,10 @@ import {
   TimestampedSchemaBase,
 } from '.'
 import { formatSimpleSchema } from './utils/simpleSchema'
-import { BaseDisableAction, BaseEnableAction } from '../ui/components/generic/actions/Actions'
+import {
+  BaseDisableAction,
+  BaseEnableAction,
+} from '../ui/components/generic/actions/Actions'
 import { DisabledTableFilter } from '../ui/components/generic/filters/Filters'
 
 export interface Company extends Timestamped, Disabled {
@@ -29,14 +32,14 @@ const CompanySchema: Record<string, FieldProperties> = {
     label: 'Name',
     min: 1,
     max: 50,
-    tableView: true
+    tableView: true,
   },
   description: {
     type: String,
     label: 'Description',
     min: 0,
     max: 300,
-    tableView: true
+    tableView: true,
   },
   numberOfEmployees: {
     type: SimpleSchema.Integer,
@@ -67,9 +70,7 @@ const simpleSchema: SimpleSchema = new SimpleSchema(
 //@ts-ignore
 Company.attachSchema(simpleSchema)
 
-
 Actions[collectionName] = [BaseDisableAction, BaseEnableAction]
 Filters[collectionName] = [DisabledTableFilter]
-
 
 export { Company, CompanySchema }

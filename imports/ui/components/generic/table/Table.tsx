@@ -50,7 +50,7 @@ const GenericTable = ({
   selectedFilters,
   setSelectedFilters,
   actions,
-  toast
+  toast,
 }: GenericTableProps) => {
   const [searchTerm, setSearchTerm] = useState('')
   const [sortConfig, setSortConfig] = useState<{
@@ -211,7 +211,9 @@ const GenericTable = ({
                           <Button
                             key={actionIndex}
                             size="sm"
-                            onClick={() => action.effect(collectionName, item._id, toast)}
+                            onClick={() =>
+                              action.effect(collectionName, item._id, toast)
+                            }
                             bgColor={action.bgColor}
                           >
                             {action.label}

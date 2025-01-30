@@ -6,7 +6,6 @@ import Form from './pages/admin/Form/Form'
 import UserForm from './pages/admin/Form/custom/UserForm'
 import Table from './pages/admin/Table/Table'
 
-
 const AdminRoutes = () => (
   <Routes>
     <Route path="/" element={<Main />} />
@@ -21,7 +20,7 @@ const CompanyRoutes = () => (
   <Routes>
     <Route path="add" element={<Form collectionName="Company" />} />
     <Route path="edit/:objectId" element={<Form collectionName="Company" />} />
-    <Route path="" element={<Table collectionName='Company' />} />
+    <Route path="" element={<Table collectionName="Company" />} />
   </Routes>
 )
 
@@ -36,13 +35,13 @@ const TicketRoutes = () => (
   <Routes>
     <Route path="add" element={<Form collectionName="Ticket" />} />
     <Route path="edit/:objectId" element={<Form collectionName="Ticket" />} />
-    <Route path="" element={<Table collectionName='Ticket' />} />
+    <Route path="" element={<Table collectionName="Ticket" />} />
   </Routes>
 )
 
 const NotificationRoutes = () => (
   <Routes>
-    <Route path="" element={<Table collectionName='Notification' />} />
+    <Route path="" element={<Table collectionName="Notification" />} />
   </Routes>
 )
 
