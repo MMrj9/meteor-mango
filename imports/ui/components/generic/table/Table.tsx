@@ -34,7 +34,7 @@ interface GenericTableProps {
   columns: { key: string; label: string }[]
   collectionName: string
   add?: boolean
-  filters?: TableFilter<Record<string, any>>[]
+  filters?: TableFilter[]
   selectedFilters?: { [key: string]: any }
   setSelectedFilters?: (prevFilters: { [key: string]: any }) => void
   actions?: Action[]
@@ -192,7 +192,7 @@ const GenericTable = ({
                         to={`edit/${item._id}`}
                         color="teal.500"
                       >
-                        {_.get(item, column.key)}
+                        {_.get(item, column.key).toString()}
                       </Link>
                     ) : (
                       formatTableData(_.get(item, column.key))

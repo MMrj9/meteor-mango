@@ -1,12 +1,15 @@
 import 'meteor/aldeed:collection2/dynamic'
 import { FormFieldType } from '../ui/components/generic/form/GenericForm'
+import { TableFilter } from '../ui/components/generic/filters/Filters'
+import { Action } from '../ui/components/generic/actions/Actions'
 
 //@ts-ignore
 Collection2.load()
 
-const Schemas: any = {}
-const Collections: any = {}
-const Actions: any = {}
+const Schemas: Record<string, any> = {}
+const Collections: Record<string, any> = {}
+const Actions: Record<string, Action[]> = {}
+const Filters: Record<string, TableFilter[]> = {}
 
 enum CustomSchemaTypes {
   ANY = 'ANY',
@@ -33,6 +36,7 @@ interface SimpleSchemaField {
 interface FieldProperties extends SimpleSchemaField {
   editable?: boolean
   formFieldType?: FormFieldType
+  tableView?: boolean
 }
 
 const TimestampedSchemaBase: Record<string, FieldProperties> = {
@@ -65,5 +69,6 @@ export {
   Schemas,
   Collections,
   Actions,
+  Filters,
   CustomSchemaTypes,
 }

@@ -2,20 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { Box, useToast } from '@chakra-ui/react';
 import GenericTable from '../../../components/generic/table/Table';
 import {
-  DisabledTableFilter,
   SelectedFilters,
-  TableFilter,
 } from '../../../components/generic/filters/Filters';
 import { generateTableFields } from '/imports/ui/components/generic/table/tableFieldsGenerator';
-import { Actions, Schemas } from '/imports/api';
+import { Actions, Filters, Schemas } from '/imports/api';
 import { useReactiveCollectionData } from '/imports/ui/components/generic/table/data';
 
 interface FormProps {
   collectionName: string;
-  filters: TableFilter<SelectedFilters>[]
 }
-
-const filters: TableFilter<SelectedFilters>[] = [DisabledTableFilter];
 
 
 const Table: React.FC<FormProps> = ({ collectionName }) => {
@@ -24,6 +19,7 @@ const Table: React.FC<FormProps> = ({ collectionName }) => {
   const [tableFields, setTableFields] = useState([]);
   const schema = Schemas[collectionName];
   const actions = Actions[collectionName];
+  const filters = Filters[collectionName];
 
   const data = useReactiveCollectionData(collectionName, filters, selectedFilters);
 

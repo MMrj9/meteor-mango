@@ -7,8 +7,8 @@ interface TableFilterOption {
   value: any
 }
 
-interface TableFilter<T> {
-  key: keyof T
+interface TableFilter {
+  key: string
   label: string
   type: 'text' | 'dropdown' | 'date'
   options?: TableFilterOption[]
@@ -18,7 +18,7 @@ export const NonDisabledFilter = {
   $or: [{ disabled: false }, { disabled: { $exists: false } }],
 }
 
-const DisabledTableFilter: TableFilter<SelectedFilters> = {
+const DisabledTableFilter: TableFilter = {
   key: 'active',
   label: 'Active',
   type: 'dropdown',
@@ -33,7 +33,7 @@ const DisabledTableFilter: TableFilter<SelectedFilters> = {
 }
 
 const buildQueryFromSelectedFilters = (
-  filters: TableFilter<SelectedFilters>[],
+  filters: TableFilter[],
   selectedFilters: SelectedFilters,
 ) => {
   let query: { [key: string]: any } = {}

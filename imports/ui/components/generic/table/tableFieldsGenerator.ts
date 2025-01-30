@@ -12,7 +12,7 @@ interface TableField {
       .filter(([_, fieldProperties]) => fieldProperties.tableView)
       .map(([key, fieldProperties]) => ({
         key,
-        label: fieldProperties.label || key,
+        label: fieldProperties.label || key
       }));
   };
 

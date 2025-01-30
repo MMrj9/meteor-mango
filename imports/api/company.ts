@@ -7,11 +7,13 @@ import {
   Collections,
   DisabledSchemaBase,
   FieldProperties,
+  Filters,
   Schemas,
   TimestampedSchemaBase,
 } from '.'
 import { formatSimpleSchema } from './utils/simpleSchema'
 import { BaseDisableAction, BaseEnableAction } from '../ui/components/generic/actions/Actions'
+import { DisabledTableFilter } from '../ui/components/generic/filters/Filters'
 
 export interface Company extends Timestamped, Disabled {
   _id?: string
@@ -67,5 +69,7 @@ Company.attachSchema(simpleSchema)
 
 
 Actions[collectionName] = [BaseDisableAction, BaseEnableAction]
+Filters[collectionName] = [DisabledTableFilter]
+
 
 export { Company, CompanySchema }
