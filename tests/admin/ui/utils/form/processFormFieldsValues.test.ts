@@ -1,5 +1,5 @@
 import { FormFieldType } from '../../../../../imports/ui/components/generic/form/GenericForm'
-import { processFormFieldsValues } from '/imports/ui/components/generic/form/utils'
+import { processFormFieldsValues } from '../../../../../imports/ui/components/generic/form/utils/utils'
 import { assert } from 'chai'
 
 //@ts-ignore

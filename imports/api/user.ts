@@ -83,7 +83,7 @@ const UserSchema: Record<string, FieldProperties> = {
   },
 }
 
-const collectionName = 'users'
+const collectionName = 'User'
 
 Schemas.UserProfile = UserProfile
 Schemas[collectionName] = UserSchema

@@ -28,13 +28,21 @@ const FieldChangeSchema = {
     label: 'Field Name',
   },
   oldValue: {
-    type: CustomSchemaTypes.ANY,
+    type: SimpleSchema.oneOf(String, Number, Boolean, Object, Array),
     label: 'Old Value',
     optional: true,
   },
+  'oldValue.$': {
+    type: SimpleSchema.oneOf(String, Number, Boolean, Object),
+    optional: true,
+  },
   newValue: {
-    type: CustomSchemaTypes.ANY,
+    type: SimpleSchema.oneOf(String, Number, Boolean, Object, Array),
     label: 'New Value',
+  },
+  'newValue.$': {
+    type: SimpleSchema.oneOf(String, Number, Boolean, Object),
+    optional: true,
   },
 }
 

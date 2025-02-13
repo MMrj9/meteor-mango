@@ -4,6 +4,7 @@ import { check } from 'meteor/check'
 import { validateUserPermissions } from '/imports/api/user'
 import { logChanges } from '/imports/api/changelog'
 import { Collections } from '/imports/api'
+import _ from 'lodash'
 
 export const insertOrUpdate = (
   collectionName: string,
@@ -23,7 +24,13 @@ export const insertOrUpdate = (
           `Object with _id ${object._id} not found in ${collectionName}.`,
         )
       }
-      logChanges(object._id, collectionName, 'update', existingObject, object)
+      logChanges(
+        object._id,
+        collectionName,
+        'update',
+        existingObject,
+        _.cloneDeep(object),
+      )
       object.updatedOn = new Date()
       collection.update(object._id, { $set: object })
       return [object._id, false] // Update operation

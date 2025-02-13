@@ -10,7 +10,7 @@ import { useEffect, useState } from 'react'
 
 export const useReactiveCollectionData = (
   collectionName: string,
-  availableFilters: TableFilter<SelectedFilters>[],
+  availableFilters: TableFilter[],
   selectedFilters: SelectedFilters,
 ) => {
   const [data, setData] = useState([])

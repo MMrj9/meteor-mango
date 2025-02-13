@@ -1,9 +1,9 @@
 // @ts-ignore
 import { Roles } from 'meteor/alanning:roles'
 import _ from 'lodash'
-import { FormField } from './GenericForm'
+import { FormField } from '../GenericForm'
 
-const mapValuesToAutocompleteOptions = (
+const mapValuesToOptions = (
   values: string[],
   path: string,
   formFields: Record<string, FormField>,
@@ -27,16 +27,16 @@ const processFormFieldsValues = (
 
     if (field.type === 'autocomplete' && Array.isArray(values[key])) {
       // Process autocomplete field options to only contain the value
-      const processedAutocompleteOptions = values[key].map(
+      const processedOptions = values[key].map(
         //@ts-ignore
         ({ value }) => value,
       )
 
-      values[key] = processedAutocompleteOptions
+      values[key] = processedOptions
     }
   }
 
   return values
 }
 
-export { mapValuesToAutocompleteOptions, processFormFieldsValues }
+export { mapValuesToOptions, processFormFieldsValues }

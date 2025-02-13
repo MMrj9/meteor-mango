@@ -9,18 +9,18 @@ import Table from './pages/admin/Table/Table'
 const AdminRoutes = () => (
   <Routes>
     <Route path="/" element={<Main />} />
-    <Route path="company/*" element={<CompanyRoutes />} />
+    <Route path="brand/*" element={<BrandRoutes />} />
     <Route path="user/*" element={<UserRoutes />} />
     <Route path="ticket/*" element={<TicketRoutes />} />
     <Route path="notification/*" element={<NotificationRoutes />} />
   </Routes>
 )
 
-const CompanyRoutes = () => (
+const BrandRoutes = () => (
   <Routes>
-    <Route path="add" element={<Form collectionName="Company" />} />
-    <Route path="edit/:objectId" element={<Form collectionName="Company" />} />
-    <Route path="" element={<Table collectionName="Company" />} />
+    <Route path="add" element={<Form collectionName="Brand" />} />
+    <Route path="edit/:objectId" element={<Form collectionName="Brand" />} />
+    <Route path="" element={<Table collectionName="Brand" />} />
   </Routes>
 )
 

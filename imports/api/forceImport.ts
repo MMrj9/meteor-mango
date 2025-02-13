@@ -1,3 +1,3 @@
-import { Company } from './company'
+import { Brand } from './brand'
 
-Company
+Brand

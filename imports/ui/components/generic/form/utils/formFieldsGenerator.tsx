@@ -1,4 +1,4 @@
-import { FormField, FormFieldType } from './GenericForm'
+import { ArrayFieldType, FormField, FormFieldType } from './types'
 import { FieldProperties } from '/imports/api'
 //@ts-ignore
 import SimpleSchema from 'meteor/aldeed:simple-schema'
@@ -47,20 +47,39 @@ const getFormatProperty = (
 ): ((value: any) => any) | undefined =>
   extractFieldProperty(fieldProperties, 'format', undefined)
 
-const getAutocompleteOptions = (
+const getOptions = (
   fieldProperties: FieldProperties,
 ): { value: string; label: string }[] | undefined =>
-  extractFieldProperty(fieldProperties, 'autocompleteOptions', undefined)
+  extractFieldProperty(fieldProperties, 'options', undefined)
 
-// Generate form fields from schema
+const generateSubSchema = (
+  schema: Record<string, FieldProperties>,
+  baseKey: string,
+): Record<string, FieldProperties> => {
+  const subSchema: Record<string, FieldProperties> = {}
+
+  for (const key in schema) {
+    if (key.startsWith(baseKey)) {
+      const subKey = key.slice(baseKey.length + 1)
+      if (subKey) {
+        subSchema[subKey] = { ...schema[key] }
+        delete schema[`${baseKey}.${subKey}`]
+      }
+    }
+  }
+
+  return subSchema
+}
+
 const generateFormFields = (
   schema: Record<string, FieldProperties>,
 ): Record<string, FormField> => {
   const formFields: Record<string, FormField> = {}
 
-  Object.keys(schema).forEach((fieldName: string) => {
-    const fieldProperties = schema[fieldName]
-
+  const processField = (
+    fieldName: string,
+    fieldProperties: FieldProperties,
+  ) => {
     if (!fieldProperties.label) return
 
     const field: FormField = {
@@ -70,13 +89,37 @@ const generateFormFields = (
       min: getMinProperty(fieldProperties),
       max: getMaxProperty(fieldProperties),
       format: getFormatProperty(fieldProperties),
-      autocompleteOptions: getAutocompleteOptions(fieldProperties),
+      options: getOptions(fieldProperties),
     }
 
-    // Remove keys with undefined values
-    formFields[fieldName] = Object.fromEntries(
+    const cleanedField = Object.fromEntries(
       Object.entries(field).filter(([_, value]) => value !== undefined),
     ) as FormField
+
+    if (fieldProperties.type === Array) {
+      cleanedField.type = FormFieldType.ARRAY
+      const baseFielPath = `${fieldName}.$`
+      const objectSchema = generateSubSchema(schema, baseFielPath)
+      const arrayType = schema[baseFielPath]?.formFieldType
+      if (Object.keys(objectSchema).length > 0) {
+        cleanedField.objectFields = generateFormFields(objectSchema)
+        cleanedField.arrayType = ArrayFieldType.OBJECT
+      } else if (arrayType) {
+        cleanedField.arrayType = arrayType as any
+      }
+    } else if (fieldProperties.allowedValues) {
+      cleanedField.options = fieldProperties.allowedValues.map(
+        (value: string | number) => ({ value, label: value }),
+      )
+      cleanedField.type = FormFieldType.SELECT
+    }
+
+    formFields[fieldName] = cleanedField
+  }
+
+  Object.keys(schema).forEach((fieldName) => {
+    const fieldProperties = schema[fieldName]
+    if (schema[fieldName]) processField(fieldName, fieldProperties)
   })
 
   return formFields
@@ -129,7 +172,7 @@ export {
   getMinProperty,
   getMaxProperty,
   getFormatProperty,
-  getAutocompleteOptions,
+  getOptions,
   generateFormFields,
   generateDefaultValues,
 }

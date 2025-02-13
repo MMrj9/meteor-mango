@@ -30,8 +30,8 @@ const DefaultMenuItems: MenuItem[] = [
     path: '/',
   },
   {
-    label: 'Company',
-    path: '/admin/company',
+    label: 'Brand',
+    path: '/admin/brand',
   },
   {
     label: 'User',
