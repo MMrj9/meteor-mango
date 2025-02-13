@@ -13,22 +13,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: 'lts/*'
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 'lts/*'
 
-    - name: Install Meteor
-      run: |
-        curl https://install.meteor.com/ | sh
+      - name: Install Meteor
+        run: |
+          curl https://install.meteor.com/ | sh
 
-    - name: Install dependencies
-      run: meteor npm install
+      - name: Install dependencies
+        run: meteor npm install
 
-    - name: Run Tests
-      env:
-        PROJECT_ROOT: ${{ github.workspace }}
-      run: meteor npm run test
+      - name: Run Tests
+        env:
+          PROJECT_ROOT: ${{ github.workspace }}
+        run: meteor npm run test

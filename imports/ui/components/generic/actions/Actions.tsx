@@ -1,14 +1,10 @@
 import { Meteor } from 'meteor/meteor'
 
-interface BaseAction {
+export interface Action {
   name: string
   label: string
   bgColor: string
-  effect?: (...args: any[]) => void
   isApplicable?: (item: any) => boolean
-}
-
-export interface Action extends BaseAction {
   effect: (...args: any[]) => void
 }
 
@@ -51,38 +47,32 @@ const BaseActionEffect = (
   })
 }
 
-export const DisableActionEffect = async (
-  collection: string,
-  id: string,
-): Promise<void> => {
-  try {
-    await BaseActionEffect('setField', collection, id, 'disabled', true)
-  } catch (error) {
-    throw error // Re-throw the error to be caught in the higher-level catch block
-  }
-}
-
-export const BaseDisableAction: BaseAction = {
+export const BaseDisableAction: Action = {
   name: 'disable',
   label: 'Disable',
   bgColor: 'red.500',
   isApplicable: (item: any) => !item.disabled,
+  effect: async (collection: string, id: string, toast = null) => {
+    try {
+      await BaseActionEffect('setField', collection, id, 'disabled', true)
+      if (toast) toast(ActionSuccessToastData)
+    } catch (error) {
+      if (toast) toast(ActionFailedToastData)
+    }
+  },
 }
 
-export const EnableActionEffect = async (
-  collection: string,
-  id: string,
-): Promise<void> => {
-  try {
-    await BaseActionEffect('setField', collection, id, 'disabled', false)
-  } catch (error) {
-    throw error // Re-throw the error to be caught in the higher-level catch block
-  }
-}
-
-export const BaseEnableAction: BaseAction = {
+export const BaseEnableAction: Action = {
   name: 'enable',
   label: 'Enable',
   bgColor: 'green.500',
   isApplicable: (item: any) => item.disabled,
+  effect: async (collection: string, id: string, toast = null) => {
+    try {
+      await BaseActionEffect('setField', collection, id, 'disabled', false)
+      if (toast) toast(ActionSuccessToastData)
+    } catch (error) {
+      if (toast) toast(ActionFailedToastData)
+    }
+  },
 }

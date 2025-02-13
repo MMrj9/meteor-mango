@@ -7,16 +7,17 @@ import { useToast } from '@chakra-ui/react'
 import { Tracker } from 'meteor/tracker'
 import { AllRoles } from '/imports/api/user'
 import { error, success } from '/imports/ui/components/generic/utils'
-import GenericForm, {
+import {
+  mapValuesToOptions,
+  processFormFieldsValues,
+} from '../../../../components/generic/form/utils/utils'
+import { Collections, Schemas } from '/imports/api'
+import { generateDefaultValues } from '/imports/ui/components/generic/form/utils/formFieldsGenerator'
+import {
   FormField,
   FormFieldType,
-} from '/imports/ui/components/generic/form/GenericForm'
-import {
-  mapValuesToAutocompleteOptions,
-  processFormFieldsValues,
-} from '/imports/ui/components/generic/form/utils'
-import { Collections, Schemas } from '/imports/api'
-import { generateDefaultValues } from '/imports/ui/components/generic/form/formFieldsGenerator'
+} from '/imports/ui/components/generic/form/utils/types'
+import GenericForm from '/imports/ui/components/generic/form/GenericForm'
 
 interface FormProps {
   collectionName: string
@@ -34,8 +35,8 @@ const UserFormFields: Record<string, FormField> = {
   roles: {
     label: 'roles',
     type: FormFieldType.AUTOCOMPLETE,
-    autocompleteOptions: [],
-    autocompleteInitialValues: [],
+    options: [],
+    optionsInitialValues: [],
   },
 }
 
@@ -106,16 +107,12 @@ const UserForm: React.FC<FormProps> = ({ collectionName }) => {
 
   if (!object) return
 
-  mapValuesToAutocompleteOptions(
+  mapValuesToOptions(
     Roles.getRolesForUser(object),
-    'roles.autocompleteInitialValues',
+    'roles.optionsInitialValues',
     formFields,
   )
-  mapValuesToAutocompleteOptions(
-    AllRoles,
-    'roles.autocompleteOptions',
-    formFields,
-  )
+  mapValuesToOptions(AllRoles, 'roles.options', formFields)
 
   return (
     <GenericForm

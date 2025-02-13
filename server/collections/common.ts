@@ -4,6 +4,7 @@ import { check } from 'meteor/check'
 import { validateUserPermissions } from '/imports/api/user'
 import { logChanges } from '/imports/api/changelog'
 import { Collections } from '/imports/api'
+import _ from 'lodash'
 
 export const insertOrUpdate = (
   collectionName: string,
@@ -23,7 +24,13 @@ export const insertOrUpdate = (
           `Object with _id ${object._id} not found in ${collectionName}.`,
         )
       }
-      logChanges(object._id, collectionName, 'update', existingObject, object)
+      logChanges(
+        object._id,
+        collectionName,
+        'update',
+        existingObject,
+        _.cloneDeep(object),
+      )
       object.updatedOn = new Date()
       collection.update(object._id, { $set: object })
       return [object._id, false] // Update operation
@@ -72,16 +79,13 @@ Meteor.methods({
       )
     }
 
-    // Construct the update query
+    const existingDocument = collection.findOne({ _id: documentId })
+
     const updateQuery = {
       $set: {
         [fieldName]: value,
       },
     }
-
-    const existingDocument = collection.findOne({ _id: documentId })
-
-    // Perform the update operation
     const result = collection.update({ _id: documentId }, updateQuery)
 
     if (result === 0) {
@@ -98,7 +102,6 @@ Meteor.methods({
       updatedDocument,
     )
 
-    // You can return additional information if needed
     return { success: true }
   },
 })

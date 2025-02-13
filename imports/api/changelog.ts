@@ -1,25 +1,25 @@
-import { Mongo } from 'meteor/mongo';
+import { Mongo } from 'meteor/mongo'
 //@ts-ignore
-import SimpleSchema from 'meteor/aldeed:simple-schema';
-import { Collections, CustomSchemaTypes, FieldProperties, Schemas } from '.';
-import { getUserName } from './user';
-import { formatSimpleSchema } from './utils/simpleSchema';
-import _ from 'lodash';
+import SimpleSchema from 'meteor/aldeed:simple-schema'
+import { Collections, CustomSchemaTypes, FieldProperties, Schemas } from '.'
+import { getUserName } from './user'
+import { formatSimpleSchema } from './utils/simpleSchema'
+import _ from 'lodash'
 
 interface FieldChange {
-  field: string;
-  oldValue: any;
-  newValue: any;
+  field: string
+  oldValue: any
+  newValue: any
 }
 
 interface Changelog {
-  _id?: string;
-  objectId: string;
-  collection: string;
-  user: string;
-  changeType: string;
-  timestamp: Date;
-  changes: FieldChange[];
+  _id?: string
+  objectId: string
+  collection: string
+  user: string
+  changeType: string
+  timestamp: Date
+  changes: FieldChange[]
 }
 
 const FieldChangeSchema = {
@@ -28,15 +28,23 @@ const FieldChangeSchema = {
     label: 'Field Name',
   },
   oldValue: {
-    type: CustomSchemaTypes.ANY,
+    type: SimpleSchema.oneOf(String, Number, Boolean, Object, Array),
     label: 'Old Value',
     optional: true,
   },
+  'oldValue.$': {
+    type: SimpleSchema.oneOf(String, Number, Boolean, Object),
+    optional: true,
+  },
   newValue: {
-    type: CustomSchemaTypes.ANY,
+    type: SimpleSchema.oneOf(String, Number, Boolean, Object, Array),
     label: 'New Value',
   },
-};
+  'newValue.$': {
+    type: SimpleSchema.oneOf(String, Number, Boolean, Object),
+    optional: true,
+  },
+}
 
 const ChangelogSchema: Record<string, FieldProperties> = {
   _id: {
@@ -68,18 +76,19 @@ const ChangelogSchema: Record<string, FieldProperties> = {
     label: 'Changes',
     schema: FieldChangeSchema,
   },
-};
+}
 
-const Changelog = new Mongo.Collection<Changelog>('changelog');
+const collectionName = 'Changelog'
+const Changelog = new Mongo.Collection<Changelog>(collectionName)
 
-Schemas.Changelog = ChangelogSchema;
-Collections.Changelog = Changelog;
+Schemas[collectionName] = ChangelogSchema
+Collections[collectionName] = Changelog
 
 const simpleSchema: SimpleSchema = new SimpleSchema(
-  formatSimpleSchema(ChangelogSchema)
-);
+  formatSimpleSchema(ChangelogSchema),
+)
 //@ts-ignore
-Changelog.attachSchema(simpleSchema);
+Changelog.attachSchema(simpleSchema)
 
 const changelogIgnoreFields = new Set([
   'created_on',
@@ -87,7 +96,7 @@ const changelogIgnoreFields = new Set([
   'createdAt',
   'services',
   'emails',
-]);
+])
 
 function compareAndLogChanges(
   objectId: string,
@@ -95,37 +104,37 @@ function compareAndLogChanges(
   changeType: string,
   existingDocument: Record<string, any> | undefined,
   updatedDocument: Record<string, any> | null,
-  parentField = ''
+  parentField = '',
 ): FieldChange[] {
-  const changes: FieldChange[] = [];
+  const changes: FieldChange[] = []
 
   if (!existingDocument && !updatedDocument) {
-    return changes; // Both documents are invalid, no changes to log
+    return changes // Both documents are invalid, no changes to log
   }
 
   if (!updatedDocument) {
     // Updated document is completely invalid or null
-    return changes; // Log no changes for invalid input
+    return changes // Log no changes for invalid input
   }
 
   const allKeys = new Set([
     ...Object.keys(existingDocument || {}),
     ...Object.keys(updatedDocument || {}),
-  ]);
+  ])
 
   allKeys.forEach((key) => {
-    const fullPath = parentField ? `${parentField}.${key}` : key;
+    const fullPath = parentField ? `${parentField}.${key}` : key
 
-    if (changelogIgnoreFields.has(fullPath)) return;
+    if (changelogIgnoreFields.has(fullPath)) return
 
-    const oldValue = existingDocument ? existingDocument[key] : undefined;
-    const newValue = updatedDocument ? updatedDocument[key] : undefined;
+    const oldValue = existingDocument ? existingDocument[key] : undefined
+    const newValue = updatedDocument ? updatedDocument[key] : undefined
 
     if (Array.isArray(oldValue) && Array.isArray(newValue)) {
-      if (oldValue.length === 0 && newValue.length === 0) return;
+      if (oldValue.length === 0 && newValue.length === 0) return
 
       if (!_.isEqual(_.sortBy(oldValue), _.sortBy(newValue))) {
-        changes.push({ field: fullPath, oldValue, newValue });
+        changes.push({ field: fullPath, oldValue, newValue })
       }
     } else if (
       typeof oldValue === 'object' &&
@@ -141,15 +150,15 @@ function compareAndLogChanges(
           changeType,
           oldValue as Record<string, any>,
           newValue as Record<string, any>,
-          fullPath
-        )
-      );
+          fullPath,
+        ),
+      )
     } else if (oldValue !== newValue) {
-      changes.push({ field: fullPath, oldValue, newValue });
+      changes.push({ field: fullPath, oldValue, newValue })
     }
-  });
+  })
 
-  return changes;
+  return changes
 }
 
 function logChanges(
@@ -158,17 +167,17 @@ function logChanges(
   changeType: string,
   existingDocument: Record<string, any> | undefined,
   updatedDocument: Record<string, any> | null,
-  parentField = ''
+  parentField = '',
 ): FieldChange[] {
-  const user = getUserName();
+  const user = getUserName()
   const changes = compareAndLogChanges(
     objectId,
     collection,
     changeType,
     existingDocument,
     updatedDocument,
-    parentField
-  );
+    parentField,
+  )
   if (changes.length > 0 && user) {
     try {
       const changelogEntry = {
@@ -178,16 +187,16 @@ function logChanges(
         changeType,
         timestamp: new Date(),
         changes,
-      };
-      Changelog.insert(changelogEntry);
+      }
+      Changelog.insert(changelogEntry)
     } catch (error) {
-      console.error(`Failed to insert changelog for ${collection}:`, error);
+      console.error(`Failed to insert changelog for ${collection}:`, error)
     }
   } else {
-    console.info(`No changes detected for ${objectId} in ${collection}.`);
+    console.info(`No changes detected for ${objectId} in ${collection}.`)
   }
 
-  return changes;
+  return changes
 }
 
-export { Changelog, FieldChange, logChanges };
+export { Changelog, FieldChange, logChanges }

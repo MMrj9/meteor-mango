@@ -1,15 +1,15 @@
 import { Meteor } from 'meteor/meteor'
-import { Company } from '/imports/api/company'
+import { Brand } from '../../imports/api/brand'
 import { Changelog } from '/imports/api/changelog'
 import { AdminComment } from '/imports/api/adminComment'
 import { Ticket } from '/imports/api/ticket'
 import { Notification } from '/imports/api/notification'
 
-Meteor.publish('Company', function (companyId) {
-  if (companyId) {
-    return Company.find({ _id: companyId })
+Meteor.publish('Brand', function (brandId) {
+  if (brandId) {
+    return Brand.find({ _id: brandId })
   } else {
-    return Company.find({})
+    return Brand.find({})
   }
 })
 

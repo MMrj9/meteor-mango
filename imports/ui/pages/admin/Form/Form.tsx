@@ -4,15 +4,16 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { useToast } from '@chakra-ui/react'
 import { Tracker } from 'meteor/tracker'
 import { error, success } from '/imports/ui/components/generic/utils'
-import {
-  generateDefaultValues,
-  generateFormFields,
-} from '/imports/ui/components/generic/form/formFieldsGenerator'
 import GenericForm, {
   FormField,
 } from '../../../components/generic/form/GenericForm'
 import { Collections, Schemas } from '/imports/api'
-import { processFormFieldsValues } from '/imports/ui/components/generic/form/utils'
+import { processFormFieldsValues } from '../../../components/generic/form/utils/utils'
+import _ from 'lodash'
+import {
+  generateDefaultValues,
+  generateFormFields,
+} from '/imports/ui/components/generic/form/utils/formFieldsGenerator'
 
 interface FormProps {
   collectionName: string
@@ -24,7 +25,7 @@ const Form: React.FC<FormProps> = ({ collectionName }) => {
   const { objectId } = useParams()
   const [object, setObject] = useState<object | null>(null)
 
-  const schema = Schemas[collectionName]
+  const schema = _.cloneDeep(Schemas[collectionName])
   const collection = Collections[collectionName]
 
   if (!schema || !collection) {

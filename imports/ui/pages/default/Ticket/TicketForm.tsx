@@ -1,5 +1,5 @@
 import React from 'react'
-import { Formik, Form, Field } from 'formik'
+import { Formik, Form, Field, FormikHelpers } from 'formik'
 import {
   FormControl,
   FormLabel,
@@ -30,7 +30,10 @@ const TicketForm = () => {
     values: Ticket,
     { resetForm }: FormikHelpers<Ticket>,
   ) => {
-    Meteor.call('ticket.insertOrUpdate', values, (err: Meteor.Error) => {
+    const user = Meteor.user()
+    if (user) values.user = user.username
+
+    Meteor.call('Ticket.insertOrUpdate', values, (err: Meteor.Error) => {
       if (err) error(toast, `Error submitting ticket: ${err.message}`)
       else {
         success(toast, 'Ticket submitted successfully!')

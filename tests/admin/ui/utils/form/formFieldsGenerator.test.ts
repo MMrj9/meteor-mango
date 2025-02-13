@@ -1,5 +1,4 @@
 import { expect } from 'chai'
-import { FormFieldType } from '../../../../../imports/ui/components/generic/form/GenericForm'
 import {
   generateFormFields,
   generateDefaultValues,
@@ -8,10 +7,11 @@ import {
   getMinProperty,
   getMaxProperty,
   getFormatProperty,
-  getAutocompleteOptions,
-} from '/imports/ui/components/generic/form/formFieldsGenerator'
+  getOptions,
+} from '/imports/ui/components/generic/form/utils/formFieldsGenerator'
 // @ts-ignore
 import SimpleSchema from 'meteor/aldeed:simple-schema'
+import { FormFieldType } from '/imports/ui/components/generic/form/utils/types'
 
 describe('generateFormFields', () => {
   const mockSchema = {
@@ -226,11 +226,11 @@ describe('getAutocompleteOptions', () => {
   it('should return autocomplete options if defined', () => {
     const options = [{ value: '1', label: 'Option 1' }]
     const fieldProperties = { type: Array, autocompleteOptions: options }
-    expect(getAutocompleteOptions(fieldProperties)).to.deep.equal(options)
+    expect(getOptions(fieldProperties)).to.deep.equal(options)
   })
 
   it('should return undefined if autocompleteOptions is not defined', () => {
     const fieldProperties = { type: Array }
-    expect(getAutocompleteOptions(fieldProperties)).to.be.undefined
+    expect(getOptions(fieldProperties)).to.be.undefined
   })
 })

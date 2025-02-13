@@ -83,9 +83,11 @@ const UserSchema: Record<string, FieldProperties> = {
   },
 }
 
+const collectionName = 'User'
+
 Schemas.UserProfile = UserProfile
-Schemas.User = UserSchema
-Collections.User = Meteor.users
+Schemas[collectionName] = UserSchema
+Collections[collectionName] = Meteor.users
 
 const simpleSchema: SimpleSchema = new SimpleSchema(
   formatSimpleSchema(UserSchema),
