@@ -79,8 +79,8 @@ export function renderList(
       }
 
       return (
-        <Box key={index} mb={4}>
-          {item && (
+        <Flex key={index} mb={4}>
+          {item ? (
             <Image
               src={item}
               alt={`preview-${index}`}
@@ -88,8 +88,9 @@ export function renderList(
               objectFit="cover"
               mb={2}
             />
+          ) : (
+            <Input type="file" accept="image/*" onChange={handleImageChange} />
           )}
-          <Input type="file" accept="image/*" onChange={handleImageChange} />
           <IconButton
             variant="outline"
             colorScheme="red"
@@ -103,7 +104,7 @@ export function renderList(
               formik.setFieldValue(fieldName, [...fieldValue])
             }}
           />
-        </Box>
+        </Flex>
       )
     } else {
       // Array of text or fallback

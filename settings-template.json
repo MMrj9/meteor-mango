@@ -1,0 +1,15 @@
+{
+    "public": {
+        "minio": {
+        "publicUrl": "http://172.17.0.2:9000/brands"
+        }
+    },
+    "private": {
+        "minio": {
+        "endpoint": "http://172.17.0.2:9000",
+        "accessKey": "",
+        "secretKey": "",
+        "bucket": "brands"
+        }
+    }
+}

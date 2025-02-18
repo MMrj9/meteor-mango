@@ -7,7 +7,9 @@ import '/server/collections/user'
 import '/server/collections/adminComment'
 import '/server/collections/ticket'
 import '/server/collections/notification'
+import '/server/utils/images'
 
 import '/imports/ui/main'
 
 onPageLoad(async (sink) => {})
+

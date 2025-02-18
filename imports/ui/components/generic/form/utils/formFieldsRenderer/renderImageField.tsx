@@ -2,18 +2,34 @@ import React from 'react'
 import { Box, FormControl, FormLabel, Image, Input } from '@chakra-ui/react'
 import { FormField } from '../types'
 import _ from 'lodash'
+import { Meteor } from 'meteor/meteor'
+import { PresignedUrlResponse } from '/server/utils/images'
 
-/**
- * For demonstration, I'm including this placeholder.
- * In practice, you might keep `uploadImage` in a separate file.
- */
 export async function uploadImage(file: File): Promise<string> {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      // Return a mock URL for demonstration
-      resolve(URL.createObjectURL(file))
-    }, 1500)
-  })
+  try {
+    // Step 1: Get pre-signed URL
+    const { url, filePath }: PresignedUrlResponse = await new Promise((resolve, reject) => {
+      Meteor.call('upload.getPresignedUrl', file.name, file.type, (err: Meteor.Error, res: PresignedUrlResponse) => {
+        if (err) reject(err)
+        else resolve(res)
+      })
+    })
+
+    // Step 2: Upload file directly to MinIO
+    await fetch(url, {
+      method: 'PUT',
+      body: file,
+      headers: {
+        'Content-Type': file.type,
+      },
+    })
+
+    // Step 3: Return MinIO file path (can be used to retrieve the image)
+    return `${Meteor.settings.public.minio.publicUrl}/${filePath}`
+  } catch (error) {
+    console.error('Image upload failed:', error)
+    throw error
+  }
 }
 
 /**
