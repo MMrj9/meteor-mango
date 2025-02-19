@@ -1,7 +1,7 @@
 import 'meteor/aldeed:collection2/dynamic'
-import { FormFieldType } from '../ui/components/generic/form/GenericForm'
 import { TableFilter } from '../ui/components/generic/filters/Filters'
 import { Action } from '../ui/components/generic/actions/Actions'
+import { FormFieldType } from '../ui/components/generic/form/utils/types'
 
 //@ts-ignore
 Collection2.load()
@@ -10,6 +10,7 @@ const Schemas: Record<string, any> = {}
 const Collections: Record<string, any> = {}
 const Actions: Record<string, Action[]> = {}
 const Filters: Record<string, TableFilter[]> = {}
+const AdminRoutes: Record<string, String> = {}
 
 enum CustomSchemaTypes {
   ANY = 'ANY',
@@ -70,5 +71,6 @@ export {
   Collections,
   Actions,
   Filters,
+  AdminRoutes,
   CustomSchemaTypes,
 }

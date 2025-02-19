@@ -18,30 +18,34 @@ import {
   IconButton,
   Divider, // Added Divider
 } from '@chakra-ui/react'
+import { AdminRoutes } from '/imports/api'
 
 interface MenuItem {
   label: string
   path: string
 }
 
-const DefaultMenuItems: MenuItem[] = [
+let MenuItems: MenuItem[] = [
   {
     label: 'Main',
     path: '/',
   },
   {
-    label: 'Brand',
-    path: '/admin/brand',
-  },
-  {
     label: 'User',
     path: '/admin/user',
   },
-  {
-    label: 'Ticket',
-    path: '/admin/ticket',
-  },
 ]
+
+const AdditonalMenuItems: MenuItem[] = Object.keys(AdminRoutes).map(
+  (menuItemKey: string) => {
+    return {
+      label: AdminRoutes[menuItemKey] as string,
+      path: `/admin/${menuItemKey}`,
+    }
+  },
+)
+
+MenuItems = MenuItems.concat(AdditonalMenuItems)
 
 interface AdminNavProps {
   isSidebarOpen: boolean
@@ -50,14 +54,14 @@ interface AdminNavProps {
 
 const AdminNav = ({ isSidebarOpen, setSidebarOpen }: AdminNavProps) => {
   const [searchTerm, setSearchTerm] = useState('')
-  const [menuItems, setMenuItems] = useState(DefaultMenuItems)
+  const [menuItems, setMenuItems] = useState(MenuItems)
 
   useEffect(() => {
     const delaySearch = setTimeout(() => {
       if (!searchTerm) {
-        setMenuItems(DefaultMenuItems)
+        setMenuItems(MenuItems)
       } else {
-        const filteredMenuItems = DefaultMenuItems.filter((item) =>
+        const filteredMenuItems = MenuItems.filter((item) =>
           item.label.toLowerCase().includes(searchTerm.toLowerCase()),
         )
         setMenuItems(filteredMenuItems)
@@ -66,6 +70,13 @@ const AdminNav = ({ isSidebarOpen, setSidebarOpen }: AdminNavProps) => {
 
     return () => clearTimeout(delaySearch)
   }, [searchTerm])
+
+  useEffect(() => {
+    if (!isSidebarOpen) {
+      setSearchTerm('')
+    }
+    setMenuItems(MenuItems)
+  }, [isSidebarOpen])
 
   const handleClearSearch = () => {
     setSearchTerm('')

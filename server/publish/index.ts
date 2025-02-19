@@ -1,15 +1,25 @@
 import { Meteor } from 'meteor/meteor'
-import { Brand } from '../../imports/api/brand'
+import { BrandCollectionName } from '../../imports/api/brand'
+import { BrandCategoryCollectionName } from '../../imports/api/brandCategory'
 import { Changelog } from '/imports/api/changelog'
 import { AdminComment } from '/imports/api/adminComment'
 import { Ticket } from '/imports/api/ticket'
 import { Notification } from '/imports/api/notification'
+import { Collections } from '/imports/api'
 
-Meteor.publish('Brand', function (brandId) {
-  if (brandId) {
-    return Brand.find({ _id: brandId })
+Meteor.publish(BrandCollectionName, function (_id) {
+  if (_id) {
+    return Collections[BrandCollectionName].find({ _id })
   } else {
-    return Brand.find({})
+    return Collections[BrandCollectionName].find({})
+  }
+})
+
+Meteor.publish(BrandCategoryCollectionName, function (_id) {
+  if (_id) {
+    return Collections[BrandCategoryCollectionName].find({ _id })
+  } else {
+    return Collections[BrandCategoryCollectionName].find({})
   }
 })
 

@@ -3,6 +3,7 @@ import { Mongo } from 'meteor/mongo'
 import SimpleSchema from 'meteor/aldeed:simple-schema'
 import {
   Actions,
+  AdminRoutes,
   Collections,
   DisabledSchemaBase,
   FieldProperties,
@@ -74,11 +75,11 @@ const TicketSchema: Record<string, FieldProperties> = {
   ...DisabledSchemaBase,
 }
 
-const collectionName = 'Ticket'
+const TicketCollectionName = 'Ticket'
 const Ticket = new Mongo.Collection<Ticket>('Ticket')
 
-Schemas[collectionName] = TicketSchema
-Collections[collectionName] = Ticket
+Schemas[TicketCollectionName] = TicketSchema
+Collections[TicketCollectionName] = Ticket
 
 const simpleSchema: SimpleSchema = new SimpleSchema(
   formatSimpleSchema(TicketSchema),
@@ -86,7 +87,8 @@ const simpleSchema: SimpleSchema = new SimpleSchema(
 //@ts-ignore
 Ticket.attachSchema(simpleSchema)
 
-Actions[collectionName] = [BaseDisableAction, BaseEnableAction]
-Filters[collectionName] = [DisabledTableFilter]
+Actions[TicketCollectionName] = [BaseDisableAction, BaseEnableAction]
+Filters[TicketCollectionName] = [DisabledTableFilter]
+AdminRoutes[TicketCollectionName] = 'Tickets'
 
 export { Ticket, TicketType }

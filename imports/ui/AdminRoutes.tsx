@@ -5,22 +5,30 @@ import UserTable from './pages/admin/User/UserTable'
 import Form from './pages/admin/Form/Form'
 import UserForm from './pages/admin/Form/custom/UserForm'
 import Table from './pages/admin/Table/Table'
+import { AdminRoutes as adminRoutes } from '../api'
 
 const AdminRoutes = () => (
   <Routes>
     <Route path="/" element={<Main />} />
-    <Route path="brand/*" element={<BrandRoutes />} />
     <Route path="user/*" element={<UserRoutes />} />
-    <Route path="ticket/*" element={<TicketRoutes />} />
     <Route path="notification/*" element={<NotificationRoutes />} />
+    {Object.keys(adminRoutes).map((collectionName: string) => (
+      <Route
+        path={collectionName + '/*'}
+        element={renderAdminRoutes(collectionName)}
+      />
+    ))}
   </Routes>
 )
 
-const BrandRoutes = () => (
+const renderAdminRoutes = (collectionName: string) => (
   <Routes>
-    <Route path="add" element={<Form collectionName="Brand" />} />
-    <Route path="edit/:objectId" element={<Form collectionName="Brand" />} />
-    <Route path="" element={<Table collectionName="Brand" />} />
+    <Route path="add" element={<Form collectionName={collectionName} />} />
+    <Route
+      path="edit/:objectId"
+      element={<Form collectionName={collectionName} />}
+    />
+    <Route path="" element={<Table collectionName={collectionName} />} />
   </Routes>
 )
 
@@ -28,14 +36,6 @@ const UserRoutes = () => (
   <Routes>
     <Route path="edit/:objectId" element={<UserForm collectionName="User" />} />
     <Route path="" element={<UserTable />} />
-  </Routes>
-)
-
-const TicketRoutes = () => (
-  <Routes>
-    <Route path="add" element={<Form collectionName="Ticket" />} />
-    <Route path="edit/:objectId" element={<Form collectionName="Ticket" />} />
-    <Route path="" element={<Table collectionName="Ticket" />} />
   </Routes>
 )
 

@@ -8,12 +8,19 @@ import { PresignedUrlResponse } from '/server/utils/images'
 export async function uploadImage(file: File): Promise<string> {
   try {
     // Step 1: Get pre-signed URL
-    const { url, filePath }: PresignedUrlResponse = await new Promise((resolve, reject) => {
-      Meteor.call('upload.getPresignedUrl', file.name, file.type, (err: Meteor.Error, res: PresignedUrlResponse) => {
-        if (err) reject(err)
-        else resolve(res)
-      })
-    })
+    const { url, filePath }: PresignedUrlResponse = await new Promise(
+      (resolve, reject) => {
+        Meteor.call(
+          'upload.getPresignedUrl',
+          file.name,
+          file.type,
+          (err: Meteor.Error, res: PresignedUrlResponse) => {
+            if (err) reject(err)
+            else resolve(res)
+          },
+        )
+      },
+    )
 
     // Step 2: Upload file directly to MinIO
     await fetch(url, {

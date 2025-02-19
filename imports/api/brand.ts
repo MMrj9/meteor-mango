@@ -4,6 +4,7 @@ import SimpleSchema from 'meteor/aldeed:simple-schema'
 import { Disabled, Timestamped } from './common'
 import {
   Actions,
+  AdminRoutes,
   Collections,
   DisabledSchemaBase,
   FieldProperties,
@@ -95,11 +96,11 @@ const BrandSchema: Record<string, FieldProperties> = {
   ...DisabledSchemaBase,
 }
 
-const collectionName = 'Brand'
-const Brand = new Mongo.Collection<BrandInterface>(collectionName)
+const BrandCollectionName = 'Brand'
+const Brand = new Mongo.Collection<BrandInterface>(BrandCollectionName)
 
-Schemas[collectionName] = BrandSchema
-Collections[collectionName] = Brand
+Schemas[BrandCollectionName] = BrandSchema
+Collections[BrandCollectionName] = Brand
 
 const simpleSchema: SimpleSchema = new SimpleSchema(
   formatSimpleSchema(BrandSchema),
@@ -107,7 +108,8 @@ const simpleSchema: SimpleSchema = new SimpleSchema(
 // @ts-ignore
 Brand.attachSchema(simpleSchema)
 
-Actions[collectionName] = [BaseDisableAction, BaseEnableAction]
-Filters[collectionName] = [DisabledTableFilter]
+Actions[BrandCollectionName] = [BaseDisableAction, BaseEnableAction]
+Filters[BrandCollectionName] = [DisabledTableFilter]
+AdminRoutes[BrandCollectionName] = 'Brand'
 
-export { Brand, BrandSchema }
+export { Brand, BrandSchema, BrandCollectionName }

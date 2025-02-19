@@ -44,11 +44,13 @@ const AdminCommentSchema: Record<string, FieldProperties> = {
   ...DisabledSchemaBase,
 }
 
-const collectionName = 'AdminComment'
-const AdminComment = new Mongo.Collection<AdminComment>(collectionName)
+const AdminCommentCollectionName = 'AdminComment'
+const AdminComment = new Mongo.Collection<AdminComment>(
+  AdminCommentCollectionName,
+)
 
-Schemas[collectionName] = AdminCommentSchema
-Collections[collectionName] = AdminComment
+Schemas[AdminCommentCollectionName] = AdminCommentSchema
+Collections[AdminCommentCollectionName] = AdminComment
 
 const simpleSchema: SimpleSchema = new SimpleSchema(
   formatSimpleSchema(AdminCommentSchema),
