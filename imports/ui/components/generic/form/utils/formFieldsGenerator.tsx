@@ -104,8 +104,18 @@ const generateFormFields = (
       if (Object.keys(objectSchema).length > 0) {
         cleanedField.objectFields = generateFormFields(objectSchema)
         cleanedField.arrayType = ArrayFieldType.OBJECT
+      } else if (fieldProperties.formFieldType === FormFieldType.AUTOCOMPLETE) {
+        cleanedField.type = FormFieldType.AUTOCOMPLETE
       } else if (arrayType) {
         cleanedField.arrayType = arrayType as any
+      }
+      if (fieldProperties.options) {
+        cleanedField.options = fieldProperties.options
+      }
+      else if (fieldProperties.optionsCollection && fieldProperties.optionsCollectionKey) {
+        const key = fieldProperties.optionsCollectionKey
+        cleanedField.options = fieldProperties.optionsCollection.find().map(
+          (doc: any) => ({ value: doc[key], label: doc[key] }))
       }
     } else if (fieldProperties.allowedValues) {
       cleanedField.options = fieldProperties.allowedValues.map(

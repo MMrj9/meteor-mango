@@ -9,6 +9,7 @@ interface ObjectTabs {
 }
 
 const ObjectTabs = ({ collectionName, objectId }: ObjectTabs) => {
+
   return (
     <Box flex={1} paddingLeft={4}>
       <Tabs>

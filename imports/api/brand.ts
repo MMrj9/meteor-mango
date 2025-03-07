@@ -9,6 +9,7 @@ import {
   DisabledSchemaBase,
   FieldProperties,
   Filters,
+  RelatedCollections,
   Schemas,
   TimestampedSchemaBase,
 } from '.'
@@ -19,6 +20,7 @@ import {
 } from '../ui/components/generic/actions/Actions'
 import { DisabledTableFilter } from '../ui/components/generic/filters/Filters'
 import { FormFieldType } from '../ui/components/generic/form/utils/types'
+import { BrandCategory } from './brandCategory'
 
 export interface BrandInterface extends Timestamped, Disabled {
   _id?: string
@@ -43,21 +45,21 @@ const BrandSchema: Record<string, FieldProperties> = {
     type: String,
     label: 'Description',
     min: 0,
-    max: 2000,
-    tableView: true,
+    max: 5000,
+    optional: true,
     formFieldType: FormFieldType.TEXTAREA,
   },
   website: {
     type: String,
     label: 'Website',
     optional: true,
-    regEx: SimpleSchema.RegEx.Url,
+    // regEx: SimpleSchema.RegEx.Url,
   },
   email: {
     type: String,
     label: 'Email',
     optional: true,
-    regEx: SimpleSchema.RegEx.Email,
+    // regEx: SimpleSchema.RegEx.Email,
   },
   socialNetworks: {
     type: Array,
@@ -75,11 +77,14 @@ const BrandSchema: Record<string, FieldProperties> = {
   'socialNetworks.$.link': {
     type: String,
     label: 'Link',
-    regEx: SimpleSchema.RegEx.Url,
+    // regEx: SimpleSchema.RegEx.Url,
   },
   categories: {
     type: Array,
     label: 'Categories',
+    optionsCollection: BrandCategory,
+    optionsCollectionKey: 'name',
+    formFieldType: FormFieldType.AUTOCOMPLETE,
   },
   'categories.$': {
     type: String,
@@ -111,5 +116,7 @@ Brand.attachSchema(simpleSchema)
 Actions[BrandCollectionName] = [BaseDisableAction, BaseEnableAction]
 Filters[BrandCollectionName] = [DisabledTableFilter]
 AdminRoutes[BrandCollectionName] = 'Brand'
+RelatedCollections[BrandCollectionName] = ['BrandCategory']
+
 
 export { Brand, BrandSchema, BrandCollectionName }

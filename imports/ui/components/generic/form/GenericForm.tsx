@@ -41,7 +41,7 @@ const GenericForm = <T extends Record<string, any>>({
     event.preventDefault()
     await formik.handleSubmit()
   }
-
+  
   return (
     <Flex>
       <Box flex={1}>
