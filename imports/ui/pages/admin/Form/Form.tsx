@@ -5,7 +5,7 @@ import { useToast } from '@chakra-ui/react';
 import { Tracker } from 'meteor/tracker';
 import { error, success } from '/imports/ui/components/generic/utils';
 import GenericForm from '../../../components/generic/form/GenericForm';
-import { Collections, FieldProperties, RelatedCollections, Schemas } from '/imports/api';
+import { Collections, RelatedCollections, Schemas } from '/imports/api';
 import { processFormFieldsValues } from '../../../components/generic/form/utils/utils';
 import _ from 'lodash';
 import {
@@ -13,7 +13,6 @@ import {
   generateFormFields,
 } from '/imports/ui/components/generic/form/utils/formFieldsGenerator';
 import { FormField } from '/imports/ui/components/generic/form/utils/types';
-import { BrandCategory } from '/imports/api/brandCategory';
 
 interface FormProps {
   collectionName: string;
@@ -29,7 +28,7 @@ const Form: React.FC<FormProps> = ({ collectionName }) => {
     throw new Error(`Invalid collection name: ${collectionName}`);
   }
   const [object, setObject] = useState<object | null>(null);
-  const [formFields, setFormFields] = useState<Record<string, FormField>>(generateFormFields(schema));
+  const [formFields, setFormFields] = useState<Record<string, FormField>>(generateFormFields(_.cloneDeep(schema)));
 
   const initialValues = generateDefaultValues(schema);
   const collectionNameLower = collectionName.toLowerCase();
@@ -53,7 +52,7 @@ const Form: React.FC<FormProps> = ({ collectionName }) => {
 
         trackerHandler =  Tracker.autorun(() => {
           if (areRelatedSubscriptionsReady() && objectId) {
-            setFormFields(generateFormFields(schema));
+            setFormFields(generateFormFields(_.cloneDeep(schema)));
             objectSubscription = Meteor.subscribe(collectionName, objectId);
             if (objectSubscription.ready()) {
               const _object = collection.findOne({ _id: objectId }) as object;
