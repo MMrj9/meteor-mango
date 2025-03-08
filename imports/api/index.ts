@@ -12,7 +12,7 @@ const Collections: Record<string, any> = {}
 const Actions: Record<string, Action[]> = {}
 const Filters: Record<string, TableFilter[]> = {}
 const AdminRoutes: Record<string, string> = {}
-const RelatedCollections: Record<string, string[]> = {}
+const RelatedCollections: Record<string, RelatedCollectionConfig[]> = {}
 
 enum CustomSchemaTypes {
   ANY = 'ANY',
@@ -42,7 +42,14 @@ interface FieldProperties extends SimpleSchemaField {
   tableView?: boolean
   options?: { value: string; label: string }[]
   optionsCollection?: Mongo.Collection<any>
-  optionsCollectionKey?: string,
+  optionsCollectionKey?: string
+}
+
+export interface RelatedCollectionConfig {
+  collectionName: string
+  relatedCollectionField?: string
+  relateField?: string
+  relateFieldQuery?: string
 }
 
 const TimestampedSchemaBase: Record<string, FieldProperties> = {

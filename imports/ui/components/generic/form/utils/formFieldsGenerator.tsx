@@ -111,11 +111,14 @@ const generateFormFields = (
       }
       if (fieldProperties.options) {
         cleanedField.options = fieldProperties.options
-      }
-      else if (fieldProperties.optionsCollection && fieldProperties.optionsCollectionKey) {
+      } else if (
+        fieldProperties.optionsCollection &&
+        fieldProperties.optionsCollectionKey
+      ) {
         const key = fieldProperties.optionsCollectionKey
-        cleanedField.options = fieldProperties.optionsCollection.find().map(
-          (doc: any) => ({ value: doc[key], label: doc[key] }))
+        cleanedField.options = fieldProperties.optionsCollection
+          .find()
+          .map((doc: any) => ({ value: doc[key], label: doc[key] }))
       }
     } else if (fieldProperties.allowedValues) {
       cleanedField.options = fieldProperties.allowedValues.map(

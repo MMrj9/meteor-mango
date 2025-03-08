@@ -14,6 +14,7 @@ const AdminRoutes = () => (
     <Route path="notification/*" element={<NotificationRoutes />} />
     {Object.keys(adminRoutes).map((collectionName: string) => (
       <Route
+        key={collectionName}
         path={collectionName + '/*'}
         element={renderAdminRoutes(collectionName)}
       />

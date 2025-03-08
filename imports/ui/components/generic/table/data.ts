@@ -12,6 +12,7 @@ export const useReactiveCollectionData = (
   collectionName: string,
   availableFilters: TableFilter[],
   selectedFilters: SelectedFilters,
+  defaultQuery: Record<string, any> = {},
 ) => {
   const [data, setData] = useState([])
   const [isReady, setIsReady] = useState(false)
@@ -30,7 +31,7 @@ export const useReactiveCollectionData = (
           availableFilters,
           selectedFilters,
         )
-        setData(collection.find(query).fetch())
+        setData(collection.find({ ...query, ...defaultQuery }).fetch())
       }
     })
 

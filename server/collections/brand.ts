@@ -1,5 +1,5 @@
 import { Meteor } from 'meteor/meteor'
-import { WebApp } from 'meteor/webapp';
+import { WebApp } from 'meteor/webapp'
 import { BrandInterface, Brand } from '../../imports/api/brand'
 import { validateObject } from '/imports/utils/object'
 import { validateUserPermissions } from '/imports/api/user'
@@ -22,14 +22,13 @@ Meteor.methods({
     insertOrUpdate('Brand', brand)
   },
   'Brand.getActive': function () {
-    const activeBrands = Brand.find({ disabled: false }).fetch();
-    console.log(activeBrands)
-    return activeBrands;
-  }
+    const activeBrands = Brand.find({ disabled: false }).fetch()
+    return activeBrands
+  },
 })
 
 WebApp.connectHandlers.use('/api/brands', (req, res, next) => {
-  const activeBrands = Meteor.call('Brand.getActive');
-  res.writeHead(200, { 'Content-Type': 'application/json' });
-  res.end(JSON.stringify(activeBrands));
-});
+  const activeBrands = Meteor.call('Brand.getActive')
+  res.writeHead(200, { 'Content-Type': 'application/json' })
+  res.end(JSON.stringify(activeBrands))
+})

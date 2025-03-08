@@ -9,6 +9,7 @@ import {
   DisabledSchemaBase,
   FieldProperties,
   Filters,
+  RelatedCollections,
   Schemas,
   TimestampedSchemaBase,
 } from '.'
@@ -24,7 +25,6 @@ export interface BrandCategoryInterface extends Timestamped, Disabled {
   _id?: string
   name: string
   description?: string
-  brands?: string[]
   image?: string
 }
 
@@ -70,6 +70,9 @@ BrandCategory.attachSchema(simpleSchema)
 
 Actions[BrandCategoryCollectionName] = [BaseDisableAction, BaseEnableAction]
 Filters[BrandCategoryCollectionName] = [DisabledTableFilter]
-AdminRoutes[BrandCategoryCollectionName] = 'Brand Categories'
+AdminRoutes[BrandCategoryCollectionName] = BrandCategoryCollectionName
+RelatedCollections[BrandCategoryCollectionName] = [
+  { collectionName: 'Brand', relatedCollectionField: 'categories', relateField: 'name' },
+]
 
 export { BrandCategory, BrandCategorySchema, BrandCategoryCollectionName }

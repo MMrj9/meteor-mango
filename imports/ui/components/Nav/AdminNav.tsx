@@ -36,7 +36,6 @@ let baseMenuItems: MenuItem[] = [
   },
 ]
 
-
 interface AdminNavProps {
   isSidebarOpen: boolean
   setSidebarOpen: (isOpen: boolean) => void
@@ -55,10 +54,10 @@ const AdminNav = ({ isSidebarOpen, setSidebarOpen }: AdminNavProps) => {
         }
       },
     )
-    return  [...baseMenuItems, ...additonalMenuItems]
+    return [...baseMenuItems, ...additonalMenuItems]
   }
 
-  useEffect(() => { 
+  useEffect(() => {
     setMenuItems(getAdminMenuItems())
   }, [])
 

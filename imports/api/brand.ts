@@ -20,7 +20,7 @@ import {
 } from '../ui/components/generic/actions/Actions'
 import { DisabledTableFilter } from '../ui/components/generic/filters/Filters'
 import { FormFieldType } from '../ui/components/generic/form/utils/types'
-import { BrandCategory } from './brandCategory'
+import { BrandCategory, BrandCategoryCollectionName } from './brandCategory'
 
 export interface BrandInterface extends Timestamped, Disabled {
   _id?: string
@@ -115,8 +115,14 @@ Brand.attachSchema(simpleSchema)
 
 Actions[BrandCollectionName] = [BaseDisableAction, BaseEnableAction]
 Filters[BrandCollectionName] = [DisabledTableFilter]
-AdminRoutes[BrandCollectionName] = 'Brand'
-RelatedCollections[BrandCollectionName] = ['BrandCategory']
-
+AdminRoutes[BrandCollectionName] = BrandCollectionName
+RelatedCollections[BrandCollectionName] = [
+  { 
+    collectionName: 'BrandCategory', 
+    relatedCollectionField: 'name', 
+    relateField: 'categories',
+    relateFieldQuery: '$in'
+  }
+]
 
 export { Brand, BrandSchema, BrandCollectionName }

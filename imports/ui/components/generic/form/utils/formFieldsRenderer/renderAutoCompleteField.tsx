@@ -21,10 +21,11 @@ export function renderAutoCompleteField(
 
   if (!options) return null
 
-  const selectedItems = formik.values[fieldName].map((item: string) => ({
-    value: item,
-    label: item
-  })) || optionsInitialValues
+  const selectedItems =
+    formik.values[fieldName].map((item: string) => ({
+      value: item,
+      label: item,
+    })) || optionsInitialValues
   return (
     <FormControl key={fieldName} mt={4}>
       {/* @ts-ignore */}

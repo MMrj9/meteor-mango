@@ -41,7 +41,7 @@ const GenericForm = <T extends Record<string, any>>({
     event.preventDefault()
     await formik.handleSubmit()
   }
-  
+
   return (
     <Flex>
       <Box flex={1}>
@@ -99,6 +99,7 @@ const GenericForm = <T extends Record<string, any>>({
         <ObjectTabs
           collectionName={collectionName}
           objectId={formik.values._id}
+          object={formik.values}
         />
       )}
     </Flex>
