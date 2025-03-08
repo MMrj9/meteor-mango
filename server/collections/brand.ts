@@ -4,7 +4,6 @@ import { BrandInterface, Brand } from '../../imports/api/brand'
 import { validateObject } from '/imports/utils/object'
 import { validateUserPermissions } from '/imports/api/user'
 import { insertOrUpdate } from './common'
-import { WebApp } from 'meteor/webapp'
 
 function validateBrand(brand: BrandInterface) {
   validateObject(brand)
