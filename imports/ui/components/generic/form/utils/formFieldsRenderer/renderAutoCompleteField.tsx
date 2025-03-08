@@ -1,6 +1,7 @@
 import React from 'react'
 import { FormControl } from '@chakra-ui/react'
 import { FormField, FormOption } from '../types'
+import { CUIAutoComplete } from 'chakra-ui-autocomplete'
 
 /**
  * Render an autocomplete field.
@@ -20,6 +21,11 @@ export function renderAutoCompleteField(
 
   if (!options) return null
 
+  const selectedItems =
+    formik.values[fieldName].map((item: string) => ({
+      value: item,
+      label: item,
+    })) || optionsInitialValues
   return (
     <FormControl key={fieldName} mt={4}>
       {/* @ts-ignore */}
@@ -34,7 +40,7 @@ export function renderAutoCompleteField(
           ])
         }}
         items={options as any}
-        selectedItems={formik.values[fieldName] || optionsInitialValues}
+        selectedItems={selectedItems || optionsInitialValues}
         onSelectedItemsChange={(changes: any) =>
           formik.setFieldValue(fieldName, changes.selectedItems)
         }

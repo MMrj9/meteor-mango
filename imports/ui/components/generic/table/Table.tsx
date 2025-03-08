@@ -39,18 +39,21 @@ interface GenericTableProps {
   setSelectedFilters?: (prevFilters: { [key: string]: any }) => void
   actions?: Action[]
   toast: CreateToastFnReturn
+  basicView?: boolean
+  allowCreate?: boolean
 }
 
 const GenericTable = ({
   data,
   columns,
   collectionName,
-  add = true,
   filters = [],
   selectedFilters,
   setSelectedFilters,
   actions,
   toast,
+  allowCreate = true,
+  basicView = false,
 }: GenericTableProps) => {
   const [searchTerm, setSearchTerm] = useState('')
   const [sortConfig, setSortConfig] = useState<{
@@ -106,12 +109,14 @@ const GenericTable = ({
   })
 
   return (
-    <Box p={4}>
-      <Heading variant="" textTransform="uppercase" mb={4}>
-        {collectionName}
-      </Heading>
+    <Box p={!basicView ? 4 : 0}>
+      {!basicView && (
+        <Heading variant="" textTransform="uppercase" mb={4}>
+          {collectionName}
+        </Heading>
+      )}
 
-      <Flex justify="space-between" mb={4} align="flex-end">
+      <Flex justify="space-between" mb={!basicView ? 4 : 0} align="flex-end">
         <Flex align="flex-end" maxWidth={'400'} mr={4}>
           <Input
             placeholder="Search..."
@@ -154,14 +159,15 @@ const GenericTable = ({
           </Flex>
         )}
 
-        {add && (
-          <Button as={RouterLink} to={`add`} colorScheme="teal" size="sm">
-            <Flex align="center">
-              <Icon as={AddIcon} boxSize={4} mr={2} />
-              <Text>Add</Text>
-            </Flex>
-          </Button>
-        )}
+        {allowCreate ||
+          (!basicView && (
+            <Button as={RouterLink} to={`add`} colorScheme="teal" size="sm">
+              <Flex align="center">
+                <Icon as={AddIcon} boxSize={4} mr={2} />
+                <Text>Add</Text>
+              </Flex>
+            </Button>
+          ))}
       </Flex>
 
       {filteredData.length > 0 ? (

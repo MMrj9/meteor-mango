@@ -1,4 +1,5 @@
 import { Meteor } from 'meteor/meteor'
+import { WebApp } from 'meteor/webapp'
 import { BrandInterface, Brand } from '../../imports/api/brand'
 import { validateObject } from '/imports/utils/object'
 import { validateUserPermissions } from '/imports/api/user'

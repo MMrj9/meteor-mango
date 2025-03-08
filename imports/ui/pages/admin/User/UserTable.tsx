@@ -27,7 +27,8 @@ const UserTable: React.FC = () => {
         collectionName="user"
         data={data}
         columns={columns}
-        add={false}
+        allowCreate={false}
+        toast={{} as any}
       />
     </Box>
   )

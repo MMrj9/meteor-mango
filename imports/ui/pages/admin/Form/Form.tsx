@@ -4,16 +4,15 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { useToast } from '@chakra-ui/react'
 import { Tracker } from 'meteor/tracker'
 import { error, success } from '/imports/ui/components/generic/utils'
-import GenericForm, {
-  FormField,
-} from '../../../components/generic/form/GenericForm'
-import { Collections, Schemas } from '/imports/api'
+import GenericForm from '../../../components/generic/form/GenericForm'
+import { Collections, RelatedCollections, Schemas } from '/imports/api'
 import { processFormFieldsValues } from '../../../components/generic/form/utils/utils'
 import _ from 'lodash'
 import {
   generateDefaultValues,
   generateFormFields,
 } from '/imports/ui/components/generic/form/utils/formFieldsGenerator'
+import { FormField } from '/imports/ui/components/generic/form/utils/types'
 
 interface FormProps {
   collectionName: string
@@ -23,30 +22,46 @@ const Form: React.FC<FormProps> = ({ collectionName }) => {
   const navigate = useNavigate()
   const toast = useToast()
   const { objectId } = useParams()
-  const [object, setObject] = useState<object | null>(null)
-
-  const schema = _.cloneDeep(Schemas[collectionName])
   const collection = Collections[collectionName]
-
+  const schema = Schemas[collectionName]
   if (!schema || !collection) {
     throw new Error(`Invalid collection name: ${collectionName}`)
   }
+  const [object, setObject] = useState<object | null>(null)
+  const [formFields, setFormFields] = useState<Record<string, FormField>>(
+    generateFormFields(_.cloneDeep(schema)),
+  )
 
-  const formFields: Record<string, FormField> = generateFormFields(schema)
   const initialValues = generateDefaultValues(schema)
   const collectionNameLower = collectionName.toLowerCase()
 
   useEffect(() => {
     let objectSubscription: Meteor.SubscriptionHandle | null = null
     let trackerHandler: Tracker.Computation | null = null
+    let relatedSubscriptions: Meteor.SubscriptionHandle[] = []
 
     const fetchData = () => {
-      if (Meteor.isClient && objectId) {
-        objectSubscription = Meteor.subscribe(collectionName, objectId)
+      if (Meteor.isClient) {
+        if (RelatedCollections[collectionName]) {
+          RelatedCollections[collectionName].forEach((relatedCollection) => {
+            console.log(relatedCollection)
+            const subscription = Meteor.subscribe(relatedCollection.collectionName)
+            relatedSubscriptions.push(subscription)
+          })
+        }
+        const areRelatedSubscriptionsReady = () => {
+          return relatedSubscriptions.every((sub) => sub.ready())
+        }
 
         trackerHandler = Tracker.autorun(() => {
-          const _object = collection.findOne({ _id: objectId }) as object
-          setObject(_object)
+          if (areRelatedSubscriptionsReady() && objectId) {
+            setFormFields(generateFormFields(_.cloneDeep(schema)))
+            objectSubscription = Meteor.subscribe(collectionName, objectId)
+            if (objectSubscription.ready()) {
+              const _object = collection.findOne({ _id: objectId }) as object
+              setObject(_object)
+            }
+          }
         })
       }
     }
@@ -60,8 +75,9 @@ const Form: React.FC<FormProps> = ({ collectionName }) => {
       if (trackerHandler) {
         trackerHandler.stop()
       }
+      relatedSubscriptions.forEach((sub) => sub.stop())
     }
-  }, [objectId])
+  }, [objectId, collectionName])
 
   const handleSubmit = (values: object, shouldNavigate: boolean = true) => {
     processFormFieldsValues(formFields, values)
