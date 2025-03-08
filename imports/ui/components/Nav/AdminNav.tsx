@@ -25,7 +25,7 @@ interface MenuItem {
   path: string
 }
 
-let MenuItems: MenuItem[] = [
+let baseMenuItems: MenuItem[] = [
   {
     label: 'Main',
     path: '/',
@@ -36,17 +36,6 @@ let MenuItems: MenuItem[] = [
   },
 ]
 
-const AdditonalMenuItems: MenuItem[] = Object.keys(AdminRoutes).map(
-  (menuItemKey: string) => {
-    return {
-      label: AdminRoutes[menuItemKey] as string,
-      path: `/admin/${menuItemKey}`,
-    }
-  },
-)
-
-MenuItems = MenuItems.concat(AdditonalMenuItems)
-
 interface AdminNavProps {
   isSidebarOpen: boolean
   setSidebarOpen: (isOpen: boolean) => void
@@ -54,14 +43,30 @@ interface AdminNavProps {
 
 const AdminNav = ({ isSidebarOpen, setSidebarOpen }: AdminNavProps) => {
   const [searchTerm, setSearchTerm] = useState('')
-  const [menuItems, setMenuItems] = useState(MenuItems)
+  const [menuItems, setMenuItems] = useState(baseMenuItems)
+
+  const getAdminMenuItems = () => {
+    const additonalMenuItems: MenuItem[] = Object.keys(AdminRoutes).map(
+      (menuItemKey: string) => {
+        return {
+          label: AdminRoutes[menuItemKey] as string,
+          path: `/admin/${menuItemKey}`,
+        }
+      },
+    )
+    return [...baseMenuItems, ...additonalMenuItems]
+  }
+
+  useEffect(() => {
+    setMenuItems(getAdminMenuItems())
+  }, [])
 
   useEffect(() => {
     const delaySearch = setTimeout(() => {
       if (!searchTerm) {
-        setMenuItems(MenuItems)
+        setMenuItems(getAdminMenuItems())
       } else {
-        const filteredMenuItems = MenuItems.filter((item) =>
+        const filteredMenuItems = menuItems.filter((item) =>
           item.label.toLowerCase().includes(searchTerm.toLowerCase()),
         )
         setMenuItems(filteredMenuItems)
@@ -75,7 +80,7 @@ const AdminNav = ({ isSidebarOpen, setSidebarOpen }: AdminNavProps) => {
     if (!isSidebarOpen) {
       setSearchTerm('')
     }
-    setMenuItems(MenuItems)
+    setMenuItems(getAdminMenuItems())
   }, [isSidebarOpen])
 
   const handleClearSearch = () => {

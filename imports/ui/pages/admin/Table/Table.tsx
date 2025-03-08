@@ -6,11 +6,17 @@ import { generateTableFields } from '/imports/ui/components/generic/table/tableF
 import { Actions, Filters, Schemas } from '/imports/api'
 import { useReactiveCollectionData } from '/imports/ui/components/generic/table/data'
 
-interface FormProps {
+interface TableProps {
   collectionName: string
+  basicView?: boolean
+  defaultQuery?: Record<string, any>
 }
 
-const Table: React.FC<FormProps> = ({ collectionName }) => {
+const Table: React.FC<TableProps> = ({
+  collectionName,
+  basicView,
+  defaultQuery,
+}) => {
   const toast = useToast()
   const [selectedFilters, setSelectedFilters] = useState<SelectedFilters>({})
   const [tableFields, setTableFields] = useState([])
@@ -22,6 +28,7 @@ const Table: React.FC<FormProps> = ({ collectionName }) => {
     collectionName,
     filters,
     selectedFilters,
+    defaultQuery,
   )
 
   useEffect(() => {
@@ -42,6 +49,7 @@ const Table: React.FC<FormProps> = ({ collectionName }) => {
         setSelectedFilters={setSelectedFilters}
         actions={actions}
         toast={toast}
+        basicView={basicView}
       />
     </Box>
   )

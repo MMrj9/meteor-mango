@@ -99,6 +99,7 @@ const GenericForm = <T extends Record<string, any>>({
         <ObjectTabs
           collectionName={collectionName}
           objectId={formik.values._id}
+          object={formik.values}
         />
       )}
     </Flex>
