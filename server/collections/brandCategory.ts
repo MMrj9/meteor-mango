@@ -6,6 +6,7 @@ import {
 import { validateObject } from '/imports/utils/object'
 import { validateUserPermissions } from '/imports/api/user'
 import { insertOrUpdate } from './common'
+import { WebApp } from 'meteor/webapp'
 
 function validateBrandCategory(brandCategory: BrandCategoryInterface) {
   validateObject(brandCategory)
@@ -23,4 +24,14 @@ Meteor.methods({
     validateBrandCategory(brandCategory)
     insertOrUpdate('BrandCategory', brandCategory)
   },
+  'BrandCategory.getActive' () {
+    const activeBrandCategories = BrandCategory.find({ disabled: false }).fetch()
+    return activeBrandCategories
+  },
+})
+
+WebApp.connectHandlers.use('/api/brands', (req, res, next) => {
+  const activeBrandCategories = Meteor.call('BrandCategory.getActive')
+  res.writeHead(200, { 'Content-Type': 'application/json' })
+  res.end(JSON.stringify(activeBrandCategories))
 })
