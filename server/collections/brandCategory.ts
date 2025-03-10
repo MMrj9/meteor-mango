@@ -24,13 +24,15 @@ Meteor.methods({
     validateBrandCategory(brandCategory)
     insertOrUpdate('BrandCategory', brandCategory)
   },
-  'BrandCategory.getActive' () {
-    const activeBrandCategories = BrandCategory.find({ disabled: false }).fetch()
+  'BrandCategory.getActive'() {
+    const activeBrandCategories = BrandCategory.find({
+      disabled: false,
+    }).fetch()
     return activeBrandCategories
   },
 })
 
-WebApp.connectHandlers.use('/api/brands', (req, res, next) => {
+WebApp.connectHandlers.use('/api/brand-categories', (req, res, next) => {
   const activeBrandCategories = Meteor.call('BrandCategory.getActive')
   res.writeHead(200, { 'Content-Type': 'application/json' })
   res.end(JSON.stringify(activeBrandCategories))

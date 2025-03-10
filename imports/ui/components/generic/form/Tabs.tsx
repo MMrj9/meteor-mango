@@ -36,9 +36,13 @@ const ObjectTabs = ({ collectionName, objectId, object }: ObjectTabs) => {
             <ChangelogTable collection={collectionName} objectId={objectId} />
           </TabPanel>
           {relatedCollections.map((relatedCollection) => {
-            const defaultQuery: any= {}
-            if (relatedCollection.relatedCollectionField && relatedCollection.relateField) {
-              const relatedCollectionField = relatedCollection.relatedCollectionField
+            const defaultQuery: any = {}
+            if (
+              relatedCollection.relatedCollectionField &&
+              relatedCollection.relateField
+            ) {
+              const relatedCollectionField =
+                relatedCollection.relatedCollectionField
               const relateField = relatedCollection.relateField
               if (relatedCollection.relateFieldQuery) {
                 defaultQuery[relatedCollectionField] = {
@@ -50,16 +54,15 @@ const ObjectTabs = ({ collectionName, objectId, object }: ObjectTabs) => {
             }
 
             return (
-            <TabPanel>
-              <Table
-                collectionName={relatedCollection.collectionName}
-                basicView={true}
-                defaultQuery={defaultQuery}
-              />
-            </TabPanel>
-            ) 
-          }
-          )}
+              <TabPanel>
+                <Table
+                  collectionName={relatedCollection.collectionName}
+                  basicView={true}
+                  defaultQuery={defaultQuery}
+                />
+              </TabPanel>
+            )
+          })}
         </TabPanels>
       </Tabs>
     </Box>

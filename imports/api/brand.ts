@@ -117,12 +117,12 @@ Actions[BrandCollectionName] = [BaseDisableAction, BaseEnableAction]
 Filters[BrandCollectionName] = [DisabledTableFilter]
 AdminRoutes[BrandCollectionName] = BrandCollectionName
 RelatedCollections[BrandCollectionName] = [
-  { 
-    collectionName: 'BrandCategory', 
-    relatedCollectionField: 'name', 
+  {
+    collectionName: 'BrandCategory',
+    relatedCollectionField: 'name',
     relateField: 'categories',
-    relateFieldQuery: '$in'
-  }
+    relateFieldQuery: '$in',
+  },
 ]
 
 export { Brand, BrandSchema, BrandCollectionName }

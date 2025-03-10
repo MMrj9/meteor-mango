@@ -45,7 +45,9 @@ const Form: React.FC<FormProps> = ({ collectionName }) => {
         if (RelatedCollections[collectionName]) {
           RelatedCollections[collectionName].forEach((relatedCollection) => {
             console.log(relatedCollection)
-            const subscription = Meteor.subscribe(relatedCollection.collectionName)
+            const subscription = Meteor.subscribe(
+              relatedCollection.collectionName,
+            )
             relatedSubscriptions.push(subscription)
           })
         }
