@@ -21,7 +21,7 @@ export function renderAutoCompleteField(
 
   if (!options) return null;
 
-  const isArray = fieldConfig.type === FormFieldType.ARRAY
+  const isArray = fieldConfig.type === FormFieldType.AUTOCOMPLETE_ARRAY
   const selectedItems = isArray
     ? formik.values[fieldName].map((item: string) => ({
         value: item,

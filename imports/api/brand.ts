@@ -1,7 +1,7 @@
 import { Mongo } from 'meteor/mongo'
 // @ts-ignore
 import SimpleSchema from 'meteor/aldeed:simple-schema'
-import { Disabled, Timestamped } from './common'
+import { commonStringArray, commonStringArrayItem, Disabled, Timestamped } from './common'
 import {
   Actions,
   AdminRoutes,
@@ -20,7 +20,7 @@ import {
 } from '../ui/components/generic/actions/Actions'
 import { DisabledTableFilter } from '../ui/components/generic/filters/Filters'
 import { FormFieldType } from '../ui/components/generic/form/utils/types'
-import { BrandCategory, BrandCategoryCollectionName } from './brandCategory'
+import { BrandCategory } from './brandCategory'
 
 export interface BrandInterface extends Timestamped, Disabled {
   _id?: string
@@ -31,6 +31,10 @@ export interface BrandInterface extends Timestamped, Disabled {
   socialNetworks: { name: string; link: string }[]
   categories: string[]
   images: string[]
+  foundingDate?: Date
+  founders?: string[]
+  locations?: string[]
+  numberOfEmployees?: string
 }
 
 const BrandSchema: Record<string, FieldProperties> = {
@@ -96,6 +100,30 @@ const BrandSchema: Record<string, FieldProperties> = {
   'images.$': {
     type: String,
     formFieldType: FormFieldType.IMAGE,
+  },
+  foundingDate: {
+    type: Date,
+    label: 'Founding Date',
+    optional: true,
+    formFieldType: FormFieldType.DATE
+  },
+  founders: {
+    ...commonStringArray,
+    label: 'Founders',
+    optional: true,
+  },
+  'founders.$': commonStringArrayItem,
+  locations: {
+    ...commonStringArray,
+    label: 'Locations',
+    optional: true,
+  },
+  'locations.$': commonStringArrayItem,
+  numberOfEmployees: {
+    type: String,
+    label: 'Number of Employees',
+    optional: true,
+    allowedValues: [,'1-10', '11-50', '51-200', '201-500', '501-1000', '1000+'],
   },
   ...TimestampedSchemaBase,
   ...DisabledSchemaBase,

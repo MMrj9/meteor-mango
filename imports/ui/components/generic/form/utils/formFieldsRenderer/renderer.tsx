@@ -9,6 +9,7 @@ import { renderNumberField } from './renderNumberField'
 import { renderCheckboxField } from './renderCheckboxField'
 import { renderSelectField } from './renderSelectFields'
 import { renderImageField } from './renderImageField'
+import { renderDateField } from './renderDateField'
 
 /**
  * A central function that chooses which specific render function to call.
@@ -23,6 +24,8 @@ export function renderField(
   switch (type) {
     case FormFieldType.AUTOCOMPLETE:
       return renderAutoCompleteField(fieldName, fieldConfig, formik)
+      case FormFieldType.AUTOCOMPLETE_ARRAY:
+        return renderAutoCompleteField(fieldName, fieldConfig, formik)
     case FormFieldType.ARRAY:
       return renderList(fieldName, fieldConfig, formik)
     case FormFieldType.TEXTAREA:
@@ -35,6 +38,8 @@ export function renderField(
       return renderSelectField(fieldName, fieldConfig, formik)
     case FormFieldType.IMAGE:
       return renderImageField(fieldName, fieldConfig, formik)
+    case FormFieldType.DATE:
+      return renderDateField(fieldName, fieldConfig, formik)
     default:
       return renderTextField(fieldName, fieldConfig, formik)
   }

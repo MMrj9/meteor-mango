@@ -4,10 +4,12 @@ export enum FormFieldType {
   NUMBER = 'number',
   CHECKBOX = 'checkbox',
   AUTOCOMPLETE = 'autocomplete',
+  AUTOCOMPLETE_ARRAY = 'autocomplete-array',
   ARRAY = 'array',
   OBJECT = 'object',
   SELECT = 'select',
   IMAGE = 'image',
+  DATE = 'date',
 }
 
 export enum ArrayFieldType {

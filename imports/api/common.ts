@@ -1,10 +1,18 @@
-interface Timestamped {
+export interface Timestamped {
   createdOn?: Date
   updatedOn?: Date
 }
 
-interface Disabled {
+export interface Disabled {
   disabled?: boolean
 }
 
-export { Timestamped, Disabled }
+export const commonStringArray = {
+  type: Array,
+  optional: true,
+}
+
+export const commonStringArrayItem = {
+  type: String,
+}
+

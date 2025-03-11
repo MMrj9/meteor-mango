@@ -106,7 +106,7 @@ const generateFormFields = (
         cleanedField.objectFields = generateFormFields(objectSchema)
         cleanedField.arrayType = ArrayFieldType.OBJECT
       } else if (fieldProperties.formFieldType === FormFieldType.AUTOCOMPLETE) {
-        cleanedField.type = FormFieldType.AUTOCOMPLETE
+        cleanedField.type = FormFieldType.AUTOCOMPLETE_ARRAY
       } else if (arrayType) {
         cleanedField.arrayType = arrayType as any
       }
