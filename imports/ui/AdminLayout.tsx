@@ -11,19 +11,18 @@ import { AdminRoles } from '../api/user'
 // @ts-ignore
 import { Roles } from 'meteor/alanning:roles'
 
-
 const AdminLayout: React.FC = (props: any) => {
-  const isLoggedIn = !!Meteor.userId();
-  const [isSidebarOpen, setSidebarOpen] = useState(false);
+  const isLoggedIn = !!Meteor.userId()
+  const [isSidebarOpen, setSidebarOpen] = useState(false)
   const navigate = useNavigate()
 
   useEffect(() => {
     // Check if the user has the admin role
     if (isLoggedIn && !Roles.userIsInRole(Meteor.userId(), AdminRoles)) {
       // Redirect to home or not authorized page
-      navigate('/');
+      navigate('/')
     }
-  }, [isLoggedIn, navigate]);
+  }, [isLoggedIn, navigate])
 
   const handleLogout = () => {
     Meteor.logout()

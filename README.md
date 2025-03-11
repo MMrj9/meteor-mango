@@ -135,54 +135,54 @@ Here’s how the custom properties are applied in a schema:
 
 ```markdown
 const TimestampedSchemaBase: Record<string, FieldProperties> = {
-  createdOn: {
-    type: Date,
-    label: 'Created On',
-    editable: false,
-  },
-  updatedOn: {
-    type: Date,
-    label: 'Updated On',
-    optional: true,
-    editable: false,
-  },
+createdOn: {
+type: Date,
+label: 'Created On',
+editable: false,
+},
+updatedOn: {
+type: Date,
+label: 'Updated On',
+optional: true,
+editable: false,
+},
 }
 
 const DisabledSchemaBase = {
-  disabled: {
-    type: Boolean,
-    optional: true,
-  },
+disabled: {
+type: Boolean,
+optional: true,
+},
 }
 
 const CompanySchema: Record<string, FieldProperties> = {
-  name: {
-    type: String,
-    label: 'Name',
-    min: 1,
-    max: 50,
-  },
-  description: {
-    type: String,
-    label: 'Description',
-    min: 0,
-    max: 300,
-  },
-  numberOfEmployees: {
-    type: SimpleSchema.Integer,
-    label: 'Number of Employees',
-    min: 0,
-    max: 999,
-  },
-  tags: {
-    type: Array,
-    label: 'Tags',
-  },
-  'tags.$': {
-    type: String,
-  },
-  ...TimestampedSchemaBase,
-  ...DisabledSchemaBase,
+name: {
+type: String,
+label: 'Name',
+min: 1,
+max: 50,
+},
+description: {
+type: String,
+label: 'Description',
+min: 0,
+max: 300,
+},
+numberOfEmployees: {
+type: SimpleSchema.Integer,
+label: 'Number of Employees',
+min: 0,
+max: 999,
+},
+tags: {
+type: Array,
+label: 'Tags',
+},
+'tags.$': {
+type: String,
+},
+...TimestampedSchemaBase,
+...DisabledSchemaBase,
 }
 ```
 
@@ -190,45 +190,45 @@ const CompanySchema: Record<string, FieldProperties> = {
 
 ```markdown
 const BrandSchema: Record<string, FieldProperties> = {
-  name: {
-    type: String,
-    label: 'Name',
-    min: 1,
-    max: 100,
-    tableView: true,
-  },
-  description: {
-    type: String,
-    label: 'Description',
-    min: 0,
-    max: 5000,
-    optional: true,
-    formFieldType: FormFieldType.TEXTAREA,
-  },
-  website: {
-    type: String,
-    label: 'Website',
-    optional: true,
-  },
-  email: {
-    type: String,
-    label: 'Email',
-    optional: true,
-  },
-  socialNetworks: {
-    type: Array,
-    label: 'Social Networks',
-    optional: true,
-  },
-  'socialNetworks.$': {
+name: {
+type: String,
+label: 'Name',
+min: 1,
+max: 100,
+tableView: true,
+},
+description: {
+type: String,
+label: 'Description',
+min: 0,
+max: 5000,
+optional: true,
+formFieldType: FormFieldType.TEXTAREA,
+},
+website: {
+type: String,
+label: 'Website',
+optional: true,
+},
+email: {
+type: String,
+label: 'Email',
+optional: true,
+},
+socialNetworks: {
+type: Array,
+label: 'Social Networks',
+optional: true,
+},
+'socialNetworks.$': {
     type: Object,
   },
   'socialNetworks.$.name': {
-    type: String,
-    label: 'Name',
-    allowedValues: ['Facebook', 'Instagram', 'LinkedIn', 'YouTube'],
-  },
-  'socialNetworks.$.link': {
+type: String,
+label: 'Name',
+allowedValues: ['Facebook', 'Instagram', 'LinkedIn', 'YouTube'],
+},
+'socialNetworks.$.link': {
     type: String,
     label: 'Link',
   },
@@ -240,18 +240,18 @@ const BrandSchema: Record<string, FieldProperties> = {
     formFieldType: FormFieldType.AUTOCOMPLETE,
   },
   'categories.$': {
-    type: String,
-  },
-  images: {
-    type: Array,
-    label: 'Images',
-  },
-  'images.$': {
-    type: String,
-    formFieldType: FormFieldType.IMAGE,
-  },
-  ...TimestampedSchemaBase,
-  ...DisabledSchemaBase,
+type: String,
+},
+images: {
+type: Array,
+label: 'Images',
+},
+'images.$': {
+type: String,
+formFieldType: FormFieldType.IMAGE,
+},
+...TimestampedSchemaBase,
+...DisabledSchemaBase,
 }
 ```
 
@@ -259,29 +259,29 @@ const BrandSchema: Record<string, FieldProperties> = {
 
 ```markdown
 const BrandCategorySchema: Record<string, FieldProperties> = {
-  name: {
-    type: String,
-    label: 'Name',
-    min: 1,
-    max: 100,
-    tableView: true,
-  },
-  description: {
-    type: String,
-    label: 'Description',
-    min: 0,
-    max: 2000,
-    formFieldType: FormFieldType.TEXTAREA,
-    optional: true,
-  },
-  images: {
-    type: String,
-    label: 'Image',
-    formFieldType: FormFieldType.IMAGE,
-    optional: true,
-  },
-  ...TimestampedSchemaBase,
-  ...DisabledSchemaBase,
+name: {
+type: String,
+label: 'Name',
+min: 1,
+max: 100,
+tableView: true,
+},
+description: {
+type: String,
+label: 'Description',
+min: 0,
+max: 2000,
+formFieldType: FormFieldType.TEXTAREA,
+optional: true,
+},
+images: {
+type: String,
+label: 'Image',
+formFieldType: FormFieldType.IMAGE,
+optional: true,
+},
+...TimestampedSchemaBase,
+...DisabledSchemaBase,
 }
 ```
 
@@ -289,35 +289,35 @@ const BrandCategorySchema: Record<string, FieldProperties> = {
 
 ```markdown
 const ChangelogSchema: Record<string, FieldProperties> = {
-  _id: {
-    type: String,
-    optional: true,
-  },
-  objectId: {
-    type: String,
-    label: 'Object ID',
-  },
-  collection: {
-    type: String,
-    label: 'Collection',
-  },
-  user: {
-    type: String,
-    label: 'User Username',
-  },
-  changeType: {
-    type: String,
-    label: 'Change Type',
-  },
-  timestamp: {
-    type: Date,
-    label: 'Timestamp',
-  },
-  changes: {
-    type: Array,
-    label: 'Changes',
-    schema: FieldChangeSchema,
-  },
+\_id: {
+type: String,
+optional: true,
+},
+objectId: {
+type: String,
+label: 'Object ID',
+},
+collection: {
+type: String,
+label: 'Collection',
+},
+user: {
+type: String,
+label: 'User Username',
+},
+changeType: {
+type: String,
+label: 'Change Type',
+},
+timestamp: {
+type: Date,
+label: 'Timestamp',
+},
+changes: {
+type: Array,
+label: 'Changes',
+schema: FieldChangeSchema,
+},
 }
 ```
 
@@ -325,30 +325,29 @@ const ChangelogSchema: Record<string, FieldProperties> = {
 
 ```markdown
 const AdminCommentSchema: Record<string, FieldProperties> = {
-  _id: {
-    type: String,
-    optional: true,
-  },
-  objectId: {
-    type: String,
-    label: 'Object ID',
-  },
-  collection: {
-    type: String,
-    label: 'Collection',
-  },
-  user: {
-    type: String,
-    label: 'User Username',
-  },
-  text: {
-    type: String,
-    label: 'text',
-  },
-  ...TimestampedSchemaBase,
-  ...DisabledSchemaBase,
+\_id: {
+type: String,
+optional: true,
+},
+objectId: {
+type: String,
+label: 'Object ID',
+},
+collection: {
+type: String,
+label: 'Collection',
+},
+user: {
+type: String,
+label: 'User Username',
+},
+text: {
+type: String,
+label: 'text',
+},
+...TimestampedSchemaBase,
+...DisabledSchemaBase,
 }
 ```
 
 ---
-

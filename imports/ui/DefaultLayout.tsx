@@ -7,16 +7,15 @@ import '../api/forceImport'
 // @ts-ignore
 import { Roles } from 'meteor/alanning:roles'
 
-
 const DefaultLayout: React.FC = (props: any) => {
-  const isLoggedIn = !!Meteor.userId();
+  const isLoggedIn = !!Meteor.userId()
   const navigate = useNavigate()
 
   useEffect(() => {
     if (!isLoggedIn) {
-      navigate('/login');
+      navigate('/login')
     }
-  }, [isLoggedIn, navigate]);
+  }, [isLoggedIn, navigate])
 
   const handleLogout = () => {
     Meteor.logout()
@@ -96,7 +95,6 @@ const DefaultLayout: React.FC = (props: any) => {
       <GridItem pl="2" area={'footer'}>
         {/* ... (footer content) */}
       </GridItem>
-
     </Grid>
   )
 }
