@@ -1,5 +1,6 @@
+import { Mongo } from 'meteor/mongo'
 import { ArrayFieldType, FormField, FormFieldType } from './types'
-import { FieldProperties } from '/imports/api'
+import { Collections, FieldProperties } from '/imports/api'
 //@ts-ignore
 import SimpleSchema from 'meteor/aldeed:simple-schema'
 
@@ -115,6 +116,11 @@ const generateFormFields = (
         fieldProperties.optionsCollection &&
         fieldProperties.optionsCollectionKey
       ) {
+        if (typeof fieldProperties.optionsCollection === 'string') {
+          fieldProperties.optionsCollection = Collections[
+            fieldProperties.optionsCollection as string
+          ] as Mongo.Collection<any>
+        }
         const key = fieldProperties.optionsCollectionKey
         cleanedField.options = fieldProperties.optionsCollection
           .find()
@@ -125,6 +131,24 @@ const generateFormFields = (
         (value: string | number) => ({ value, label: value }),
       )
       cleanedField.type = FormFieldType.SELECT
+    } else if (fieldProperties.formFieldType === FormFieldType.AUTOCOMPLETE) {
+      cleanedField.type = FormFieldType.AUTOCOMPLETE
+      if (fieldProperties.options) {
+        cleanedField.options = fieldProperties.options
+      } else if (
+        fieldProperties.optionsCollection &&
+        fieldProperties.optionsCollectionKey
+      ) {
+        if (typeof fieldProperties.optionsCollection === 'string') {
+          fieldProperties.optionsCollection = Collections[
+            fieldProperties.optionsCollection as string
+          ] as Mongo.Collection<any>
+        }
+        const key = fieldProperties.optionsCollectionKey
+        cleanedField.options = fieldProperties.optionsCollection
+          .find()
+          .map((doc: any) => ({ value: doc[key], label: doc[key] }))
+      }
     }
 
     formFields[fieldName] = cleanedField

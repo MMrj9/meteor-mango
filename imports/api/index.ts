@@ -41,7 +41,7 @@ interface FieldProperties extends SimpleSchemaField {
   formFieldType?: FormFieldType
   tableView?: boolean
   options?: { value: string; label: string }[]
-  optionsCollection?: Mongo.Collection<any>
+  optionsCollection?: Mongo.Collection<any> | string
   optionsCollectionKey?: string
 }
 

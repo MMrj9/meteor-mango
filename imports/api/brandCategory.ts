@@ -50,6 +50,14 @@ const BrandCategorySchema: Record<string, FieldProperties> = {
     formFieldType: FormFieldType.IMAGE,
     optional: true,
   },
+  parentCategory: {
+    type: String,
+    label: 'Parent Category',
+    optional: true,
+    formFieldType: FormFieldType.AUTOCOMPLETE,
+    optionsCollection: 'BrandCategory',
+    optionsCollectionKey: 'name',
+  },
   ...TimestampedSchemaBase,
   ...DisabledSchemaBase,
 }
@@ -75,6 +83,11 @@ RelatedCollections[BrandCategoryCollectionName] = [
   {
     collectionName: 'Brand',
     relatedCollectionField: 'categories',
+    relateField: 'name',
+  },
+  {
+    collectionName: 'BrandCategory',
+    relatedCollectionField: 'parentCategory',
     relateField: 'name',
   },
 ]
