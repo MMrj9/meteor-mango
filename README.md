@@ -1,3 +1,5 @@
+---
+
 ## Running and Testing the App
 
 ### Prerequisites
@@ -28,20 +30,6 @@ meteor npm run start
 ```
 
 - This will start the app on the default Meteor port (usually `localhost:3000`).
-
----
-
-#### **Fresh Start**
-
-Resets the local database and starts the application. Useful for starting with a clean slate during development.
-
-```bash
-meteor npm run fresh-start
-```
-
-- **Warning**: This will delete all data in the local database.
-
----
 
 #### **Run Tests**
 
@@ -119,6 +107,8 @@ meteor npm run format-check
 | `editable`                  | `Boolean`                  | Indicates if the field can be edited by users.                                      | Yes          | Default is `true`.                         |
 | `formFieldType`             | `FormFieldType`            | Defines the type of form field. Possible values:                                    | Yes          | Used to generate form UI components.       |
 | `tableView`                 | `Boolean`                  | Indicates if the field will be shown in table view.                                 | Yes          | Default is `false`                         |
+| `optionsCollection`         | `String`                   | Specifies a collection to fetch options from.                                       | Yes          | Used for autocomplete fields.              |
+| `optionsCollectionKey`      | `String`                   | The key to use from the options collection.                                         | Yes          |                                            |
 
 ---
 
@@ -135,6 +125,7 @@ The `formFieldType` property supports the following values:
 | `AUTOCOMPLETE` | Autocomplete input for predefined values. |
 | `ARRAY`        | Input field for arrays of values.         |
 | `OBJECT`       | Input field for nested objects.           |
+| `IMAGE`        | Input field for image URLs.               |
 
 ---
 
@@ -144,53 +135,220 @@ Here’s how the custom properties are applied in a schema:
 
 ```markdown
 const TimestampedSchemaBase: Record<string, FieldProperties> = {
-createdOn: {
-type: Date,
-label: 'Created On',
-editable: false,
-},
-updatedOn: {
-type: Date,
-label: 'Updated On',
-optional: true,
-editable: false,
-},
+  createdOn: {
+    type: Date,
+    label: 'Created On',
+    editable: false,
+  },
+  updatedOn: {
+    type: Date,
+    label: 'Updated On',
+    optional: true,
+    editable: false,
+  },
 }
 
 const DisabledSchemaBase = {
-disabled: {
-type: Boolean,
-optional: true,
-},
+  disabled: {
+    type: Boolean,
+    optional: true,
+  },
 }
 
 const CompanySchema: Record<string, FieldProperties> = {
-name: {
-type: String,
-label: 'Name',
-min: 1,
-max: 50,
-},
-description: {
-type: String,
-label: 'Description',
-min: 0,
-max: 300,
-},
-numberOfEmployees: {
-type: SimpleSchema.Integer,
-label: 'Number of Employees',
-min: 0,
-max: 999,
-},
-tags: {
-type: Array,
-label: 'Tags',
-},
-'tags.$': {
-type: String,
-},
-...TimestampedSchemaBase,
-...DisabledSchemaBase,
+  name: {
+    type: String,
+    label: 'Name',
+    min: 1,
+    max: 50,
+  },
+  description: {
+    type: String,
+    label: 'Description',
+    min: 0,
+    max: 300,
+  },
+  numberOfEmployees: {
+    type: SimpleSchema.Integer,
+    label: 'Number of Employees',
+    min: 0,
+    max: 999,
+  },
+  tags: {
+    type: Array,
+    label: 'Tags',
+  },
+  'tags.$': {
+    type: String,
+  },
+  ...TimestampedSchemaBase,
+  ...DisabledSchemaBase,
 }
 ```
+
+### Example Schema: **`BrandSchema`**
+
+```markdown
+const BrandSchema: Record<string, FieldProperties> = {
+  name: {
+    type: String,
+    label: 'Name',
+    min: 1,
+    max: 100,
+    tableView: true,
+  },
+  description: {
+    type: String,
+    label: 'Description',
+    min: 0,
+    max: 5000,
+    optional: true,
+    formFieldType: FormFieldType.TEXTAREA,
+  },
+  website: {
+    type: String,
+    label: 'Website',
+    optional: true,
+  },
+  email: {
+    type: String,
+    label: 'Email',
+    optional: true,
+  },
+  socialNetworks: {
+    type: Array,
+    label: 'Social Networks',
+    optional: true,
+  },
+  'socialNetworks.$': {
+    type: Object,
+  },
+  'socialNetworks.$.name': {
+    type: String,
+    label: 'Name',
+    allowedValues: ['Facebook', 'Instagram', 'LinkedIn', 'YouTube'],
+  },
+  'socialNetworks.$.link': {
+    type: String,
+    label: 'Link',
+  },
+  categories: {
+    type: Array,
+    label: 'Categories',
+    optionsCollection: 'BrandCategory',
+    optionsCollectionKey: 'name',
+    formFieldType: FormFieldType.AUTOCOMPLETE,
+  },
+  'categories.$': {
+    type: String,
+  },
+  images: {
+    type: Array,
+    label: 'Images',
+  },
+  'images.$': {
+    type: String,
+    formFieldType: FormFieldType.IMAGE,
+  },
+  ...TimestampedSchemaBase,
+  ...DisabledSchemaBase,
+}
+```
+
+### Example Schema: **`BrandCategorySchema`**
+
+```markdown
+const BrandCategorySchema: Record<string, FieldProperties> = {
+  name: {
+    type: String,
+    label: 'Name',
+    min: 1,
+    max: 100,
+    tableView: true,
+  },
+  description: {
+    type: String,
+    label: 'Description',
+    min: 0,
+    max: 2000,
+    formFieldType: FormFieldType.TEXTAREA,
+    optional: true,
+  },
+  images: {
+    type: String,
+    label: 'Image',
+    formFieldType: FormFieldType.IMAGE,
+    optional: true,
+  },
+  ...TimestampedSchemaBase,
+  ...DisabledSchemaBase,
+}
+```
+
+### Example Schema: **`ChangelogSchema`**
+
+```markdown
+const ChangelogSchema: Record<string, FieldProperties> = {
+  _id: {
+    type: String,
+    optional: true,
+  },
+  objectId: {
+    type: String,
+    label: 'Object ID',
+  },
+  collection: {
+    type: String,
+    label: 'Collection',
+  },
+  user: {
+    type: String,
+    label: 'User Username',
+  },
+  changeType: {
+    type: String,
+    label: 'Change Type',
+  },
+  timestamp: {
+    type: Date,
+    label: 'Timestamp',
+  },
+  changes: {
+    type: Array,
+    label: 'Changes',
+    schema: FieldChangeSchema,
+  },
+}
+```
+
+### Example Schema: **`AdminCommentSchema`**
+
+```markdown
+const AdminCommentSchema: Record<string, FieldProperties> = {
+  _id: {
+    type: String,
+    optional: true,
+  },
+  objectId: {
+    type: String,
+    label: 'Object ID',
+  },
+  collection: {
+    type: String,
+    label: 'Collection',
+  },
+  user: {
+    type: String,
+    label: 'User Username',
+  },
+  text: {
+    type: String,
+    label: 'text',
+  },
+  ...TimestampedSchemaBase,
+  ...DisabledSchemaBase,
+}
+```
+
+---
+
