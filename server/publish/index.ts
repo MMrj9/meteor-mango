@@ -25,19 +25,17 @@ Meteor.publish(BrandCategoryCollectionName, function (_id) {
 
 Meteor.publish('User', function () {
   if (this.userId) {
-    // Only publish data for the logged-in user
     return Meteor.users.find(
       {},
       {
         fields: {
           username: 1,
           emails: 1,
-          profile: 1, // You can specify other fields you want to publish
+          profile: 1,
         },
       },
     )
   } else {
-    // User is not logged in, don't publish any data
     this.ready()
   }
 })

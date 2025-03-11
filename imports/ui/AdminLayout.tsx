@@ -1,16 +1,29 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Grid, GridItem, Button, Flex, Spacer } from '@chakra-ui/react'
 import { HamburgerIcon } from '@chakra-ui/icons'
 import { Meteor } from 'meteor/meteor'
-import { Link as RouterLink } from 'react-router-dom'
+import { Link as RouterLink, useNavigate } from 'react-router-dom'
 import AdminNav from './components/Nav/AdminNav'
 import Notifications from './components/generic/notifications/Notifications'
 import UserProfileLink from './components/generic/nav/UserProfileLink'
 import '../api/forceImport'
+import { AdminRoles } from '../api/user'
+// @ts-ignore
+import { Roles } from 'meteor/alanning:roles'
+
 
 const AdminLayout: React.FC = (props: any) => {
-  const isLoggedIn = !!Meteor.userId()
-  const [isSidebarOpen, setSidebarOpen] = useState(false)
+  const isLoggedIn = !!Meteor.userId();
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    // Check if the user has the admin role
+    if (isLoggedIn && !Roles.userIsInRole(Meteor.userId(), AdminRoles)) {
+      // Redirect to home or not authorized page
+      navigate('/');
+    }
+  }, [isLoggedIn, navigate]);
 
   const handleLogout = () => {
     Meteor.logout()

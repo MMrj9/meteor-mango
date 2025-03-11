@@ -12,6 +12,7 @@ import thunk from 'redux-thunk'
 import { ChakraProvider, ColorModeScript, theme } from '@chakra-ui/react'
 import appReducer from '../redux/reducers'
 import AdminLayout from './AdminLayout'
+import DefaultLayout from './DefaultLayout'
 
 const App = () => {
   const { user } = useTracker(() => ({
@@ -34,18 +35,15 @@ const App = () => {
         }
       />
 
-      {/* Non-Admin Routes */}
-      <Route
-        path="/login"
-        element={user ? <Navigate to="/admin" /> : <LoginForm />}
-      />
-      <Route
-        path="/register"
-        element={user ? <Navigate to="/admin" /> : <RegistrationForm />}
-      />
-
       {/* Default Routes */}
-      <Route path="/*" element={<DefaultRoutes />} />
+      <Route
+        path="/*"
+        element={
+          <DefaultLayout>
+            <DefaultRoutes />
+          </DefaultLayout>
+        }
+      />
     </Routes>
   )
 }

@@ -50,7 +50,8 @@ Meteor.methods({
 
     const id = await Accounts.createUser(data)
 
-    Roles.addUsersToRoles(id, DefaultRoles)
+    if (Meteor.users.find().count() === 1) Roles.addUsersToRoles(id, AdminRoles)
+    else Roles.addUsersToRoles(id, DefaultRoles)
 
     return id
   },

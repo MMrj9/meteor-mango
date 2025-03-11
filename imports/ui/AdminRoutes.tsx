@@ -1,7 +1,7 @@
 import React from 'react'
 import { Routes, Route } from 'react-router-dom'
 import Main from './components/Main'
-import UserTable from './pages/admin/User/UserTable'
+import UserTable from './pages/admin/Table/custom/UserTable'
 import Form from './pages/admin/Form/Form'
 import UserForm from './pages/admin/Form/custom/UserForm'
 import Table from './pages/admin/Table/Table'

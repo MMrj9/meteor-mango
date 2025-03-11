@@ -14,6 +14,9 @@ import { Formik, Form, Field, FieldProps, FormikHelpers } from 'formik'
 import * as Yup from 'yup'
 import { Meteor } from 'meteor/meteor'
 import { error, info } from '../generic/utils'
+import { AdminRoles } from '/imports/api/user'
+// @ts-ignore
+import { Roles } from 'meteor/alanning:roles'
 
 interface LoginFormValues {
   usernameOrEmail: string
@@ -36,7 +39,8 @@ const LoginForm: React.FC = () => {
 
   if (Meteor.isClient && Meteor.userId()) {
     info(toast, `Already logged in`)
-    navigate('/')
+    if (Roles.userIsInRole(Meteor.userId(), AdminRoles)) navigate('/admin')
+    else navigate('/')
   }
 
   const handleSubmit = (

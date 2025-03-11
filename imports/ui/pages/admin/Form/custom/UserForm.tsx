@@ -68,7 +68,12 @@ const UserForm: React.FC<FormProps> = ({ collectionName }) => {
         roleSubscription = Meteor.subscribe('role', objectId)
 
         trackerHandler = Tracker.autorun(() => {
-          const _object = collection.findOne({ _id: objectId })
+          const user = collection.findOne({ _id: objectId })
+          const roles = Roles.getRolesForUser(user)
+          const _object = {
+            ...user,
+            roles,
+          }
           setObject(_object as object)
         })
       }

@@ -42,7 +42,10 @@ export function renderAutoCompleteField(
         items={options as any}
         selectedItems={selectedItems || optionsInitialValues}
         onSelectedItemsChange={(changes: any) =>
-          formik.setFieldValue(fieldName, changes.selectedItems)
+          formik.setFieldValue(
+            fieldName,
+            changes.selectedItems.map((item: FormOption) => item.value),
+          )
         }
       />
     </FormControl>

@@ -97,7 +97,7 @@ Meteor.users.attachSchema(simpleSchema)
 
 export const AllRoles = ['admin', 'manager', 'basic']
 
-export const DefaultRoles = ['admin']
+export const DefaultRoles = ['basic']
 
 export const AdminRoles = ['admin']
 
