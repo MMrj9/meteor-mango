@@ -3,7 +3,7 @@ import { Box, useToast } from '@chakra-ui/react'
 import GenericTable from '../../../components/generic/table/Table'
 import { SelectedFilters } from '../../../components/generic/filters/Filters'
 import { generateTableFields } from '/imports/ui/components/generic/table/tableFieldsGenerator'
-import { Actions, Filters, Schemas } from '/imports/api'
+import { Actions, BulkActions, Filters, Schemas } from '/imports/api'
 import { useReactiveCollectionData } from '/imports/ui/components/generic/table/data'
 
 interface TableProps {
@@ -22,6 +22,7 @@ const Table: React.FC<TableProps> = ({
   const [tableFields, setTableFields] = useState([])
   const schema = Schemas[collectionName]
   const actions = Actions[collectionName]
+  const bulkActions = BulkActions[collectionName]
   const filters = Filters[collectionName]
 
   const data = useReactiveCollectionData(
@@ -48,6 +49,7 @@ const Table: React.FC<TableProps> = ({
         selectedFilters={selectedFilters}
         setSelectedFilters={setSelectedFilters}
         actions={actions}
+        bulkActions={bulkActions}
         toast={toast}
         basicView={basicView}
       />

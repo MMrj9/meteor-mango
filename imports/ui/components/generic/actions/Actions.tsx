@@ -47,18 +47,43 @@ const BaseActionEffect = (
   })
 }
 
+const applyActionToItems = async (
+  method: string,
+  collection: string,
+  items: any[],
+  fieldName: string,
+  value: any,
+  toast: any,
+  isApplicable: (item: any) => boolean
+) => {
+  try {
+    for (const item of items) {
+      if (isApplicable(item)) {
+        await BaseActionEffect(method, collection, item._id, fieldName, value)
+      }
+    }
+    if (toast) toast(ActionSuccessToastData)
+  } catch (error) {
+    if (toast) toast(ActionFailedToastData)
+  }
+}
+
 export const BaseDisableAction: Action = {
   name: 'disable',
   label: 'Disable',
   bgColor: 'red.500',
   isApplicable: (item: any) => !item.disabled,
-  effect: async (collection: string, id: string, toast = null) => {
-    try {
-      await BaseActionEffect('setField', collection, id, 'disabled', true)
-      if (toast) toast(ActionSuccessToastData)
-    } catch (error) {
-      if (toast) toast(ActionFailedToastData)
-    }
+  effect: async (collection: string, items: any | any[], toast = null) => {
+    const itemsArray = Array.isArray(items) ? items : [items]
+    await applyActionToItems(
+      'setField',
+      collection,
+      itemsArray,
+      'disabled',
+      true,
+      toast,
+      BaseDisableAction.isApplicable!
+    )
   },
 }
 
@@ -67,12 +92,16 @@ export const BaseEnableAction: Action = {
   label: 'Enable',
   bgColor: 'green.500',
   isApplicable: (item: any) => item.disabled,
-  effect: async (collection: string, id: string, toast = null) => {
-    try {
-      await BaseActionEffect('setField', collection, id, 'disabled', false)
-      if (toast) toast(ActionSuccessToastData)
-    } catch (error) {
-      if (toast) toast(ActionFailedToastData)
-    }
+  effect: async (collection: string, items: any | any[], toast = null) => {
+    const itemsArray = Array.isArray(items) ? items : [items]
+    await applyActionToItems(
+      'setField',
+      collection,
+      itemsArray,
+      'disabled',
+      false,
+      toast,
+      BaseEnableAction.isApplicable!
+    )
   },
 }

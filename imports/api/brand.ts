@@ -5,6 +5,7 @@ import { commonStringArray, commonStringArrayItem, Disabled, Timestamped } from 
 import {
   Actions,
   AdminRoutes,
+  BulkActions,
   Collections,
   DisabledSchemaBase,
   FieldProperties,
@@ -142,6 +143,7 @@ const simpleSchema: SimpleSchema = new SimpleSchema(
 Brand.attachSchema(simpleSchema)
 
 Actions[BrandCollectionName] = [BaseDisableAction, BaseEnableAction]
+BulkActions[BrandCollectionName] = [BaseDisableAction, BaseEnableAction]
 Filters[BrandCollectionName] = [DisabledTableFilter]
 AdminRoutes[BrandCollectionName] = BrandCollectionName
 RelatedCollections[BrandCollectionName] = [

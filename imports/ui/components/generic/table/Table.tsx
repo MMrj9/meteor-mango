@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   Box,
   Table,
@@ -15,6 +15,7 @@ import {
   Heading,
   Input,
   Select,
+  Checkbox,
   CreateToastFnReturn,
 } from '@chakra-ui/react'
 import { Link as RouterLink } from 'react-router-dom'
@@ -23,6 +24,8 @@ import {
   SearchIcon,
   ChevronDownIcon,
   ChevronUpIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
 } from '@chakra-ui/icons'
 import _ from 'lodash'
 import { formatTableData } from './utils'
@@ -38,6 +41,7 @@ interface GenericTableProps {
   selectedFilters?: { [key: string]: any }
   setSelectedFilters?: (prevFilters: { [key: string]: any }) => void
   actions?: Action[]
+  bulkActions?: Action[]
   toast: CreateToastFnReturn
   basicView?: boolean
   allowCreate?: boolean
@@ -51,6 +55,7 @@ const GenericTable = ({
   selectedFilters,
   setSelectedFilters,
   actions,
+  bulkActions = [],
   toast,
   allowCreate = true,
   basicView = false,
@@ -63,6 +68,10 @@ const GenericTable = ({
     key: 'createdOn',
     direction: 'desc',
   })
+  const [selectedRows, setSelectedRows] = useState<string[]>([])
+  const [selectedBulkAction, setSelectedBulkAction] = useState<string>('')
+  const [currentPage, setCurrentPage] = useState(1)
+  const rowsPerPage = 50
 
   const handleSort = (key: string) => {
     let direction: 'asc' | 'desc' = 'asc'
@@ -107,6 +116,46 @@ const GenericTable = ({
       )
     })
   })
+
+  const handleRowSelect = (id: string) => {
+    setSelectedRows((prevSelected) =>
+      prevSelected.includes(id)
+        ? prevSelected.filter((rowId) => rowId !== id)
+        : [...prevSelected, id],
+    )
+  }
+
+  const handleBulkAction = () => {
+    const selectedAction = bulkActions.find(
+      (action) => action.label === selectedBulkAction,
+    )
+    if (selectedAction) {
+      const selectedItems = data.filter((item) =>
+        selectedRows.includes(item._id),
+      )
+      selectedAction.effect(collectionName, selectedItems, toast)
+      setSelectedRows([])
+      setSelectedBulkAction('')
+    }
+  }
+
+  const handleSelectAllPages = () => {
+    setSelectedRows(filteredData.map((item) => item._id))
+  }
+
+  // Clear selected rows when filteredData changes
+  useEffect(() => {
+    setSelectedRows([])
+    setCurrentPage(1) // Reset to first page on data change
+  }, [filteredData.length])
+
+  const totalPages = Math.ceil(filteredData.length / rowsPerPage)
+  const currentTableData = filteredData.slice(
+    (currentPage - 1) * rowsPerPage,
+    currentPage * rowsPerPage,
+  )
+
+  const allItemsOnPageSelected = selectedRows.length === currentTableData.length
 
   return (
     <Box p={!basicView ? 4 : 0}>
@@ -159,7 +208,33 @@ const GenericTable = ({
           </Flex>
         )}
 
-        {allowCreate ||
+        {bulkActions.length > 0 && (
+          <Flex align="center" mr={8}>
+            <Select
+              value={selectedBulkAction}
+              onChange={(e) => setSelectedBulkAction(e.target.value)}
+              placeholder="Select Bulk Action"
+              mr={2}
+              height={8}
+            >
+              {bulkActions.map((action) => (
+                <option key={action.label} value={action.label}>
+                  {action.label}
+                </option>
+              ))}
+            </Select>
+            <Button
+              colorScheme="teal"
+              size="sm"
+              onClick={handleBulkAction}
+              disabled={!selectedBulkAction || selectedRows.length === 0}
+            >
+              Apply
+            </Button>
+          </Flex>
+        )}
+
+        {allowCreate &&
           (!basicView && (
             <Button as={RouterLink} to={`add`} colorScheme="teal" size="sm">
               <Flex align="center">
@@ -170,69 +245,138 @@ const GenericTable = ({
           ))}
       </Flex>
 
-      {filteredData.length > 0 ? (
-        <Table variant="simple">
-          <Thead>
-            <Tr>
-              {columns.map((column) => (
-                <Th
-                  key={column.key as string}
-                  onClick={() => handleSort(column.key)}
-                  _hover={{ cursor: 'pointer' }}
-                >
-                  {column.label}{' '}
-                  {column.key === sortConfig.key && getSortIcon(column.key)}
-                </Th>
-              ))}
-              {actions && actions.length > 0 && <Th>Actions</Th>}
-            </Tr>
-          </Thead>
-          <Tbody>
-            {filteredData.map((item: Record<string, any>, index: number) => (
-              <Tr key={index} backgroundColor={item.disabled ? 'gray.50' : ''}>
-                {columns.map((column, columnIndex) => (
-                  <Td key={column.key as string}>
-                    {columnIndex === 0 ? (
-                      <Link
-                        as={RouterLink}
-                        to={`edit/${item._id}`}
-                        color="teal.500"
-                      >
-                        {_.get(item, column.key).toString()}
-                      </Link>
-                    ) : (
-                      formatTableData(_.get(item, column.key))
-                    )}
-                  </Td>
-                ))}
-                {actions && actions.length > 0 && (
-                  <Td>
-                    {actions.map((action, actionIndex) => {
-                      const isApplicable = action.isApplicable
-                        ? action.isApplicable(item)
-                        : true
+      <Text mb={4}>
+        {selectedRows.length > 0
+          ? `Selected ${selectedRows.length} of ${filteredData.length} items`
+          : `${filteredData.length} items`}
+        {allItemsOnPageSelected && filteredData.length > 0 && (
+          <>
+            {' '}
+            -{' '}
+            <Link onClick={handleSelectAllPages} color="teal.500">
+              Select All Pages
+            </Link>
+          </>
+        )}
+      </Text>
 
-                      return (
-                        isApplicable && (
-                          <Button
-                            key={actionIndex}
-                            size="sm"
-                            onClick={() =>
-                              action.effect(collectionName, item._id, toast)
-                            }
-                            bgColor={action.bgColor}
-                          >
-                            {action.label}
-                          </Button>
-                        )
+      {currentTableData.length > 0 ? (
+        <>
+          <Table variant="simple">
+            <Thead>
+              <Tr>
+                <Th>
+                  <Checkbox
+                    isChecked={selectedRows.length === currentTableData.length}
+                    isIndeterminate={
+                      selectedRows.length > 0 &&
+                      selectedRows.length < currentTableData.length
+                    }
+                    onChange={(e) =>
+                      setSelectedRows(
+                        e.target.checked
+                          ? currentTableData.map((item) => item._id)
+                          : [],
                       )
-                    })}
-                  </Td>
-                )}
+                    }
+                  />
+                </Th>
+                {columns.map((column) => (
+                  <Th
+                    key={column.key as string}
+                    onClick={() => handleSort(column.key)}
+                    _hover={{ cursor: 'pointer' }}
+                  >
+                    {column.label}{' '}
+                    {column.key === sortConfig.key && getSortIcon(column.key)}
+                  </Th>
+                ))}
+                {actions && actions.length > 0 && <Th>Actions</Th>}
               </Tr>
-            ))}
-          </Tbody>
-        </Table>
+            </Thead>
+            <Tbody>
+              {currentTableData.map(
+                (item: Record<string, any>, index: number) => (
+                  <Tr
+                    key={index}
+                    backgroundColor={item.disabled ? 'gray.50' : ''}
+                  >
+                    <Td>
+                      <Checkbox
+                        isChecked={selectedRows.includes(item._id)}
+                        onChange={() => handleRowSelect(item._id)}
+                      />
+                    </Td>
+                    {columns.map((column, columnIndex) => (
+                      <Td key={column.key as string}>
+                        {columnIndex === 0 ? (
+                          <Link
+                            as={RouterLink}
+                            to={`edit/${item._id}`}
+                            color="teal.500"
+                          >
+                            {_.get(item, column.key).toString()}
+                          </Link>
+                        ) : (
+                          formatTableData(_.get(item, column.key))
+                        )}
+                      </Td>
+                    ))}
+                    {actions && actions.length > 0 && (
+                      <Td>
+                        {actions.map((action, actionIndex) => {
+                          const isApplicable = action.isApplicable
+                            ? action.isApplicable(item)
+                            : true
+
+                          return (
+                            isApplicable && (
+                              <Button
+                                key={actionIndex}
+                                size="sm"
+                                onClick={() =>
+                                  action.effect(collectionName, item, toast)
+                                }
+                                bgColor={action.bgColor}
+                              >
+                                {action.label}
+                              </Button>
+                            )
+                          )
+                        })}
+                      </Td>
+                    )}
+                  </Tr>
+                ),
+              )}
+            </Tbody>
+          </Table>
+
+          {/* Pagination Controls */}
+          <Flex justify="space-between" mt={4}>
+            <Button
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1}
+              size="sm"
+            >
+              <Icon as={ChevronLeftIcon} boxSize={4} />
+              Previous
+            </Button>
+            <Text>
+              Page {currentPage} of {totalPages}
+            </Text>
+            <Button
+              onClick={() =>
+                setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+              }
+              disabled={currentPage === totalPages}
+              size="sm"
+            >
+              Next
+              <Icon as={ChevronRightIcon} boxSize={4} />
+            </Button>
+          </Flex>
+        </>
       ) : (
         <Text>No results</Text>
       )}

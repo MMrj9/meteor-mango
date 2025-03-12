@@ -10,6 +10,7 @@ Collection2.load()
 const Schemas: Record<string, any> = {}
 const Collections: Record<string, any> = {}
 const Actions: Record<string, Action[]> = {}
+const BulkActions: Record<string, Action[]> = {}
 const Filters: Record<string, TableFilter[]> = {}
 const AdminRoutes: Record<string, string> = {}
 const RelatedCollections: Record<string, RelatedCollectionConfig[]> = {}
@@ -82,6 +83,7 @@ export {
   Schemas,
   Collections,
   Actions,
+  BulkActions,
   Filters,
   AdminRoutes,
   RelatedCollections,
