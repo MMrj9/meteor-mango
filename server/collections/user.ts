@@ -13,6 +13,7 @@ import {
 } from '/imports/api/user'
 import { logChanges } from '/imports/api/changelog'
 import { check } from 'meteor/check'
+import { WebApp } from 'meteor/webapp'
 
 function validateUser(user: any) {
   validateObject(user)
@@ -109,6 +110,94 @@ Meteor.methods({
 
 Meteor.startup(() => {
   AllRoles.forEach(function (role) {
-    Roles.createRole(role, { unlessExists: true })
-  })
-})
+    Roles.createRole(role, { unlessExists: true });
+  });
+
+  // Define API endpoints
+  WebApp.connectHandlers.use('/api/user/register', (req, res) => {
+    if (req.method === 'POST') {
+      let body = '';
+
+      req.on('data', chunk => {
+        body += chunk.toString();
+      });
+
+      req.on('end', async () => {
+        const data = JSON.parse(body);
+        try {
+          const userId = await Meteor.call('User.register', data);
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ userId }));
+        } catch (error: any) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: error.message }));
+        }
+      });
+    } else {
+      res.writeHead(405, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Method Not Allowed' }));
+    }
+  });
+
+  WebApp.connectHandlers.use('/api/user/login', (req, res) => {
+    if (req.method === 'POST') {
+      let body = '';
+  
+      req.on('data', chunk => {
+        body += chunk.toString();
+      });
+  
+      req.on('end', async () => {
+        const { username, password } = JSON.parse(body);
+        try {
+          const loginResult = await Meteor.call('login', { username, password });
+  
+          if (loginResult && loginResult.token) {
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ token: loginResult.token }));
+          } else {
+            res.writeHead(401, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Invalid username or password' }));
+          }
+        } catch (error: any) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: error.message }));
+        }
+      });
+    } else {
+      res.writeHead(405, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Method Not Allowed' }));
+    }
+  });
+
+  WebApp.connectHandlers.use('/api/user/change-password', (req, res) => {
+    if (req.method === 'POST') {
+      let body = '';
+
+      req.on('data', chunk => {
+        body += chunk.toString();
+      });
+
+      req.on('end', () => {
+        const { userId, oldPassword, newPassword } = JSON.parse(body);
+        try {
+          const user = Meteor.users.findOne(userId);
+          if (user && Accounts._checkPassword(user, oldPassword)) {
+            Accounts.setPassword(userId, newPassword);
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ success: true }));
+          } else {
+            res.writeHead(401, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Invalid old password' }));
+          }
+        } catch (error: any) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: error.message }));
+        }
+      });
+    } else {
+      res.writeHead(405, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Method Not Allowed' }));
+    }
+  });
+});

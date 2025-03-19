@@ -6,6 +6,11 @@ import { logChanges } from '/imports/api/changelog'
 import { Collections } from '/imports/api'
 import _ from 'lodash'
 
+export const GET = 'GET'
+export const POST = 'POST'
+export const PUT = 'PUT'
+export const DELETE = 'DELETE'
+
 export const insertOrUpdate = (
   collectionName: string,
   object: any,

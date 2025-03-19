@@ -7,13 +7,15 @@ import '../api/forceImport'
 // @ts-ignore
 import { Roles } from 'meteor/alanning:roles'
 
+const NON_AUTHENTICATED_ROUTES = ['/login', '/register']
+
 const DefaultLayout: React.FC = (props: any) => {
   const isLoggedIn = !!Meteor.userId()
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (!isLoggedIn) {
-      navigate('/login')
+    if (!isLoggedIn && !NON_AUTHENTICATED_ROUTES.includes(window.location.pathname)) {
+          navigate('/login')
     }
   }, [isLoggedIn, navigate])
 

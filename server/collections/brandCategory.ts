@@ -5,7 +5,7 @@ import {
 } from '../../imports/api/brandCategory'
 import { validateObject } from '/imports/utils/object'
 import { validateUserPermissions } from '/imports/api/user'
-import { insertOrUpdate } from './common'
+import { GET, insertOrUpdate } from './common'
 import { WebApp } from 'meteor/webapp'
 
 function validateBrandCategory(brandCategory: BrandCategoryInterface) {
@@ -33,7 +33,12 @@ Meteor.methods({
 })
 
 WebApp.connectHandlers.use('/api/brand-categories', (req, res, next) => {
-  const activeBrandCategories = Meteor.call('BrandCategory.getActive')
-  res.writeHead(200, { 'Content-Type': 'application/json' })
-  res.end(JSON.stringify(activeBrandCategories))
+  if (req.method === GET) {
+    const activeBrandCategories = Meteor.call('BrandCategory.getActive')
+    res.writeHead(200, { 'Content-Type': 'application/json' })
+    res.end(JSON.stringify(activeBrandCategories))
+  } else {
+    res.writeHead(405, { 'Content-Type': 'application/json' })
+    res.end(JSON.stringify({ message: 'Method not allowed' }))
+  }
 })
