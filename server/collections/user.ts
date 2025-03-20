@@ -14,6 +14,7 @@ import {
 import { logChanges } from '/imports/api/changelog'
 import { check } from 'meteor/check'
 import { WebApp } from 'meteor/webapp'
+import jwt from 'jsonwebtoken'
 
 function validateUser(user: any) {
   validateObject(user)
@@ -55,6 +56,26 @@ Meteor.methods({
     else Roles.addUsersToRoles(id, DefaultRoles)
 
     return id
+  },
+  'User.login'(credentials) {
+    const { username, password } = credentials
+    const user = Meteor.users.findOne({ username })
+
+    if (user && Accounts._checkPassword(user, password)) {
+      const token = jwt.sign(
+        { userId: user._id },
+        Meteor.settings.private.jwt.secret,
+        {
+          expiresIn: `${Meteor.settings.private.jwt.durationHours}h`,
+        },
+      )
+      return token
+    } else {
+      throw new Meteor.Error(
+        'invalid-credentials',
+        'Invalid username or password',
+      )
+    }
   },
   'User.insertOrUpdate': (data: any) => {
     validateUserPermissions()
@@ -129,6 +150,7 @@ Meteor.startup(() => {
           res.writeHead(200, { 'Content-Type': 'application/json' })
           res.end(JSON.stringify({ userId }))
         } catch (error: any) {
+          console.error(error)
           res.writeHead(400, { 'Content-Type': 'application/json' })
           res.end(JSON.stringify({ error: error.message }))
         }
@@ -150,18 +172,13 @@ Meteor.startup(() => {
       req.on('end', async () => {
         const { username, password } = JSON.parse(body)
         try {
-          const loginResult = await Meteor.call('login', { username, password })
-
-          if (loginResult && loginResult.token) {
-            res.writeHead(200, { 'Content-Type': 'application/json' })
-            res.end(JSON.stringify({ token: loginResult.token }))
-          } else {
-            res.writeHead(401, { 'Content-Type': 'application/json' })
-            res.end(JSON.stringify({ error: 'Invalid username or password' }))
-          }
-        } catch (error: any) {
-          res.writeHead(400, { 'Content-Type': 'application/json' })
-          res.end(JSON.stringify({ error: error.message }))
+          const token = await Meteor.call('User.login', { username, password })
+          res.writeHead(200, { 'Content-Type': 'application/json' })
+          res.end(JSON.stringify({ token }))
+        } catch (error) {
+          console.error(error)
+          res.writeHead(401, { 'Content-Type': 'application/json' })
+          res.end(JSON.stringify({ error: 'Invalid username or password' }))
         }
       })
     } else {
@@ -191,6 +208,7 @@ Meteor.startup(() => {
             res.end(JSON.stringify({ error: 'Invalid old password' }))
           }
         } catch (error: any) {
+          console.error(error)
           res.writeHead(400, { 'Content-Type': 'application/json' })
           res.end(JSON.stringify({ error: error.message }))
         }
