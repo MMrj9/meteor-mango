@@ -5,6 +5,7 @@ import { Meteor } from 'meteor/meteor'
 import SimpleSchema from 'meteor/aldeed:simple-schema'
 import { Collections, FieldProperties, Schemas } from '.'
 import { formatSimpleSchema } from './utils/simpleSchema'
+import { FormFieldType } from '../ui/components/generic/form/utils/types'
 
 interface Profile {
   firstName?: string
@@ -33,6 +34,7 @@ const UserSchema: Record<string, FieldProperties> = {
     optional: true,
     min: 6,
     max: 30,
+    label: 'Username',
   },
   emails: {
     type: Array,
@@ -73,6 +75,8 @@ const UserSchema: Record<string, FieldProperties> = {
   roles: {
     type: Array,
     optional: true,
+    formFieldType: FormFieldType.AUTOCOMPLETE_ARRAY,
+    label: 'Roles',
   },
   'roles.$': {
     type: String,

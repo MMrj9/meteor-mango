@@ -1,7 +1,7 @@
-import React from 'react';
-import { FormControl } from '@chakra-ui/react';
-import { FormField, FormFieldType, FormOption } from '../types';
-import { CUIAutoComplete } from 'chakra-ui-autocomplete';
+import React from 'react'
+import { FormControl } from '@chakra-ui/react'
+import { FormField, FormFieldType, FormOption } from '../types'
+import { CUIAutoComplete } from 'chakra-ui-autocomplete'
 
 /**
  * Render an autocomplete field.
@@ -17,9 +17,9 @@ export function renderAutoCompleteField(
     options,
     optionsAllowNewOptions = false,
     optionsInitialValues = [],
-  } = fieldConfig;
+  } = fieldConfig
 
-  if (!options) return null;
+  if (!options) return null
 
   const isArray = fieldConfig.type === FormFieldType.AUTOCOMPLETE_ARRAY
   const selectedItems = isArray
@@ -27,7 +27,9 @@ export function renderAutoCompleteField(
         value: item,
         label: item,
       })) || optionsInitialValues
-    : formik.values[fieldName] ? [{ value: formik.values[fieldName], label: formik.values[fieldName] }] : [];
+    : formik.values[fieldName]
+      ? [{ value: formik.values[fieldName], label: formik.values[fieldName] }]
+      : []
 
   return (
     <FormControl key={fieldName} mt={4}>
@@ -41,9 +43,9 @@ export function renderAutoCompleteField(
             formik.setFieldValue(fieldName, [
               ...(formik.values[fieldName] || []),
               item.value,
-            ]);
+            ])
           } else {
-            formik.setFieldValue(fieldName, item.value);
+            formik.setFieldValue(fieldName, item.value)
           }
         }}
         items={options as any}
@@ -53,12 +55,15 @@ export function renderAutoCompleteField(
             formik.setFieldValue(
               fieldName,
               changes.selectedItems.map((item: FormOption) => item.value),
-            );
+            )
           } else {
-            formik.setFieldValue(fieldName, changes.selectedItems[0]?.value || '');
+            formik.setFieldValue(
+              fieldName,
+              changes.selectedItems[0]?.value || '',
+            )
           }
         }}
       />
     </FormControl>
-  );
+  )
 }

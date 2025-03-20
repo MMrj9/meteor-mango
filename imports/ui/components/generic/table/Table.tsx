@@ -234,15 +234,14 @@ const GenericTable = ({
           </Flex>
         )}
 
-        {allowCreate &&
-          (!basicView && (
-            <Button as={RouterLink} to={`add`} colorScheme="teal" size="sm">
-              <Flex align="center">
-                <Icon as={AddIcon} boxSize={4} mr={2} />
-                <Text>Add</Text>
-              </Flex>
-            </Button>
-          ))}
+        {allowCreate && !basicView && (
+          <Button as={RouterLink} to={`add`} colorScheme="teal" size="sm">
+            <Flex align="center">
+              <Icon as={AddIcon} boxSize={4} mr={2} />
+              <Text>Add</Text>
+            </Flex>
+          </Button>
+        )}
       </Flex>
 
       <Text mb={4}>

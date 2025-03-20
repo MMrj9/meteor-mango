@@ -14,8 +14,11 @@ const DefaultLayout: React.FC = (props: any) => {
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (!isLoggedIn && !NON_AUTHENTICATED_ROUTES.includes(window.location.pathname)) {
-          navigate('/login')
+    if (
+      !isLoggedIn &&
+      !NON_AUTHENTICATED_ROUTES.includes(window.location.pathname)
+    ) {
+      navigate('/login')
     }
   }, [isLoggedIn, navigate])
 

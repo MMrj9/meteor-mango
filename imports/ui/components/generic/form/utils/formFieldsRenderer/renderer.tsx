@@ -24,8 +24,8 @@ export function renderField(
   switch (type) {
     case FormFieldType.AUTOCOMPLETE:
       return renderAutoCompleteField(fieldName, fieldConfig, formik)
-      case FormFieldType.AUTOCOMPLETE_ARRAY:
-        return renderAutoCompleteField(fieldName, fieldConfig, formik)
+    case FormFieldType.AUTOCOMPLETE_ARRAY:
+      return renderAutoCompleteField(fieldName, fieldConfig, formik)
     case FormFieldType.ARRAY:
       return renderList(fieldName, fieldConfig, formik)
     case FormFieldType.TEXTAREA:

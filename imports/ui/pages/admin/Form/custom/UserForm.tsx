@@ -34,7 +34,7 @@ const UserFormFields: Record<string, FormField> = {
   },
   roles: {
     label: 'roles',
-    type: FormFieldType.AUTOCOMPLETE,
+    type: FormFieldType.AUTOCOMPLETE_ARRAY,
     options: [],
     optionsInitialValues: [],
   },

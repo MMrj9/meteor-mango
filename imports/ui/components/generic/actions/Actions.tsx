@@ -54,7 +54,7 @@ const applyActionToItems = async (
   fieldName: string,
   value: any,
   toast: any,
-  isApplicable: (item: any) => boolean
+  isApplicable: (item: any) => boolean,
 ) => {
   try {
     for (const item of items) {
@@ -82,7 +82,7 @@ export const BaseDisableAction: Action = {
       'disabled',
       true,
       toast,
-      BaseDisableAction.isApplicable!
+      BaseDisableAction.isApplicable!,
     )
   },
 }
@@ -101,7 +101,7 @@ export const BaseEnableAction: Action = {
       'disabled',
       false,
       toast,
-      BaseEnableAction.isApplicable!
+      BaseEnableAction.isApplicable!,
     )
   },
 }

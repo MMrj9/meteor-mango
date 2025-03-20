@@ -1,7 +1,12 @@
 import { Mongo } from 'meteor/mongo'
 // @ts-ignore
 import SimpleSchema from 'meteor/aldeed:simple-schema'
-import { commonStringArray, commonStringArrayItem, Disabled, Timestamped } from './common'
+import {
+  commonStringArray,
+  commonStringArrayItem,
+  Disabled,
+  Timestamped,
+} from './common'
 import {
   Actions,
   AdminRoutes,
@@ -106,7 +111,7 @@ const BrandSchema: Record<string, FieldProperties> = {
     type: Date,
     label: 'Founding Date',
     optional: true,
-    formFieldType: FormFieldType.DATE
+    formFieldType: FormFieldType.DATE,
   },
   founders: {
     ...commonStringArray,
@@ -124,7 +129,15 @@ const BrandSchema: Record<string, FieldProperties> = {
     type: String,
     label: 'Number of Employees',
     optional: true,
-    allowedValues: [,'1-10', '11-50', '51-200', '201-500', '501-1000', '1000+'],
+    allowedValues: [
+      ,
+      '1-10',
+      '11-50',
+      '51-200',
+      '201-500',
+      '501-1000',
+      '1000+',
+    ],
   },
   ...TimestampedSchemaBase,
   ...DisabledSchemaBase,

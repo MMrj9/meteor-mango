@@ -15,4 +15,3 @@ export const commonStringArray = {
 export const commonStringArrayItem = {
   type: String,
 }
-
