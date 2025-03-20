@@ -15,6 +15,8 @@ import { logChanges } from '/imports/api/changelog'
 import { check } from 'meteor/check'
 import { WebApp } from 'meteor/webapp'
 import jwt from 'jsonwebtoken'
+import { AuthenticatedRequest, authenticateToken } from '../middleware'
+import { Response } from 'express'
 
 function validateUser(user: any) {
   validateObject(user)
@@ -187,35 +189,37 @@ Meteor.startup(() => {
     }
   })
 
-  WebApp.connectHandlers.use('/api/user/change-password', (req, res) => {
-    if (req.method === 'POST') {
-      let body = ''
+  WebApp.connectHandlers.use(
+    '/api/user/change-password',
+    authenticateToken,
+    //@ts-ignore
+    (req: AuthenticatedRequest, res: Response) => {
+      if (req.method === 'POST') {
+        let body = ''
 
-      req.on('data', (chunk) => {
-        body += chunk.toString()
-      })
+        req.on('data', (chunk) => {
+          body += chunk.toString()
+        })
 
-      req.on('end', () => {
-        const { userId, oldPassword, newPassword } = JSON.parse(body)
-        try {
-          const user = Meteor.users.findOne(userId)
-          if (user && Accounts._checkPassword(user, oldPassword)) {
-            Accounts.setPassword(userId, newPassword)
-            res.writeHead(200, { 'Content-Type': 'application/json' })
-            res.end(JSON.stringify({ success: true }))
-          } else {
-            res.writeHead(401, { 'Content-Type': 'application/json' })
-            res.end(JSON.stringify({ error: 'Invalid old password' }))
+        req.on('end', () => {
+          const { oldPassword, newPassword } = JSON.parse(body)
+
+          try {
+            const user = req.user
+            if (user && Accounts._checkPassword(user, oldPassword)) {
+              Accounts.setPassword(user._id, newPassword)
+              res.status(200).json({ success: true })
+            } else {
+              res.status(401).json({ error: 'Invalid old password' })
+            }
+          } catch (error: any) {
+            console.error(error)
+            res.status(400).json({ error: error.message })
           }
-        } catch (error: any) {
-          console.error(error)
-          res.writeHead(400, { 'Content-Type': 'application/json' })
-          res.end(JSON.stringify({ error: error.message }))
-        }
-      })
-    } else {
-      res.writeHead(405, { 'Content-Type': 'application/json' })
-      res.end(JSON.stringify({ error: 'Method Not Allowed' }))
-    }
-  })
+        })
+      } else {
+        res.status(405).json({ error: 'Method Not Allowed' })
+      }
+    },
+  )
 })
